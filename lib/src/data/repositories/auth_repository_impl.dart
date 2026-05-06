@@ -1,10 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:lung_care_mobile/features/auth/data/datasources/auth_remote_data_source.dart';
-import 'package:lung_care_mobile/features/auth/domain/repositories/auth_repository.dart';
+import 'package:lung_care_mobile/src/data/datasource/auth_remote_data_source.dart';
+import 'package:lung_care_mobile/src/domain/repositories/auth_repository.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
   AuthRepositoryImpl({required AuthRemoteDataSource remoteDataSource})
-      : _remoteDataSource = remoteDataSource;
+    : _remoteDataSource = remoteDataSource;
 
   final AuthRemoteDataSource _remoteDataSource;
 

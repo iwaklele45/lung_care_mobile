@@ -1,4 +1,4 @@
-import 'package:lung_care_mobile/features/auth/domain/repositories/auth_repository.dart';
+import 'package:lung_care_mobile/src/domain/repositories/auth_repository.dart';
 
 class SignOut {
   SignOut({required AuthRepository repository}) : _repository = repository;

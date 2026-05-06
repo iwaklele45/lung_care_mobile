@@ -2,11 +2,11 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:lung_care_mobile/features/auth/domain/usecases/create_user_with_email.dart';
-import 'package:lung_care_mobile/features/auth/domain/usecases/observe_auth_state.dart';
-import 'package:lung_care_mobile/features/auth/domain/usecases/send_password_reset.dart';
-import 'package:lung_care_mobile/features/auth/domain/usecases/sign_in_with_email.dart';
-import 'package:lung_care_mobile/features/auth/domain/usecases/sign_out.dart';
+import 'package:lung_care_mobile/src/domain/usecases/create_user_with_email.dart';
+import 'package:lung_care_mobile/src/domain/usecases/observe_auth_state.dart';
+import 'package:lung_care_mobile/src/domain/usecases/send_password_reset.dart';
+import 'package:lung_care_mobile/src/domain/usecases/sign_in_with_email.dart';
+import 'package:lung_care_mobile/src/domain/usecases/sign_out.dart';
 import 'package:meta/meta.dart';
 
 part 'auth_event.dart';
