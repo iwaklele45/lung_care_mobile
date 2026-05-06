@@ -11,13 +11,13 @@ Mobile app for monitoring pendampingan obat.
 ## Setup
 
 ```bash
-flutter pub get
+fvm flutter pub get
 ```
 
 ## Run
 
 ```bash
-flutter run
+fvm flutter run
 ```
 
 ## Project Structure (Clean Architecture)

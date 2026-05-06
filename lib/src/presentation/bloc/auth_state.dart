@@ -14,3 +14,5 @@ final class AuthError extends AuthState {
 
   final String message;
 }
+
+final class AuthLoading extends AuthState {}
