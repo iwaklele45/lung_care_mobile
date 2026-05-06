@@ -2,14 +2,11 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-<<<<<<< HEAD
-=======
 import 'package:lung_care_mobile/features/auth/domain/usecases/create_user_with_email.dart';
 import 'package:lung_care_mobile/features/auth/domain/usecases/observe_auth_state.dart';
 import 'package:lung_care_mobile/features/auth/domain/usecases/send_password_reset.dart';
 import 'package:lung_care_mobile/features/auth/domain/usecases/sign_in_with_email.dart';
 import 'package:lung_care_mobile/features/auth/domain/usecases/sign_out.dart';
->>>>>>> feature/login
 import 'package:meta/meta.dart';
 
 part 'auth_event.dart';
@@ -22,12 +19,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     required CreateUserWithEmail createUserWithEmail,
     required SendPasswordReset sendPasswordReset,
     required SignOut signOut,
-  })  : _observeAuthState = observeAuthState,
-        _signInWithEmail = signInWithEmail,
-        _createUserWithEmail = createUserWithEmail,
-        _sendPasswordReset = sendPasswordReset,
-        _signOut = signOut,
-        super(AuthInitial()) {
+  }) : _observeAuthState = observeAuthState,
+       _signInWithEmail = signInWithEmail,
+       _createUserWithEmail = createUserWithEmail,
+       _sendPasswordReset = sendPasswordReset,
+       _signOut = signOut,
+       super(AuthInitial()) {
     on<CheckAuthStatusEvent>(_onCheckAuthStatus);
     on<AuthUserChanged>(_onAuthUserChanged);
     on<AuthSignInRequested>(_onSignInRequested);
@@ -43,10 +40,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final SignOut _signOut;
   StreamSubscription<User?>? _authSubscription;
 
-  void _onCheckAuthStatus(
-    CheckAuthStatusEvent event,
-    Emitter<AuthState> emit,
-  ) {
+  void _onCheckAuthStatus(CheckAuthStatusEvent event, Emitter<AuthState> emit) {
     _authSubscription?.cancel();
     _authSubscription = _observeAuthState().listen(
       (user) => add(AuthUserChanged(user)),
@@ -54,10 +48,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     );
   }
 
-  void _onAuthUserChanged(
-    AuthUserChanged event,
-    Emitter<AuthState> emit,
-  ) {
+  void _onAuthUserChanged(AuthUserChanged event, Emitter<AuthState> emit) {
     final user = event.user;
     if (user is User) {
       emit(AuthAuthenticated());
@@ -70,24 +61,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     AuthSignInRequested event,
     Emitter<AuthState> emit,
   ) async {
-<<<<<<< HEAD
-    try {
-      final user = FirebaseAuth.instance.currentUser;
-      if (user == null) {
-        emit(AuthUnauthenticated());
-      } else {
-        emit(AuthAuthenticated());
-      }
-    } catch (error) {
-      emit(AuthError(error.toString()));
-    }
-=======
     emit(AuthLoading());
     try {
-      await _signInWithEmail(
-        email: event.email,
-        password: event.password,
-      );
+      await _signInWithEmail(email: event.email, password: event.password);
     } on FirebaseAuthException catch (error) {
       emit(AuthError(error.message ?? 'Login gagal.'));
     } catch (_) {
@@ -101,10 +77,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     emit(AuthLoading());
     try {
-      await _createUserWithEmail(
-        email: event.email,
-        password: event.password,
-      );
+      await _createUserWithEmail(email: event.email, password: event.password);
     } on FirebaseAuthException catch (error) {
       emit(AuthError(error.message ?? 'Pendaftaran gagal.'));
     } catch (_) {
@@ -146,6 +119,5 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   Future<void> close() {
     _authSubscription?.cancel();
     return super.close();
->>>>>>> feature/login
   }
 }
