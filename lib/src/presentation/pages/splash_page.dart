@@ -28,7 +28,7 @@ class _SplashPageState extends State<SplashPage>
       curve: Curves.easeOutCubic,
     );
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _startLoadingAndNavigate('/login');
+      _startLoadingAndNavigate('/password_reset');
     });
   }
 

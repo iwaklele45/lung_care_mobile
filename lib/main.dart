@@ -2,8 +2,11 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lung_care_mobile/firebase_options.dart';
+import 'package:lung_care_mobile/src/presentation/pages/auth/forgot_password_page.dart';
 import 'package:lung_care_mobile/src/presentation/pages/auth/login_page.dart';
 import 'package:lung_care_mobile/src/presentation/pages/auth/register_page.dart';
+import 'package:lung_care_mobile/src/presentation/pages/auth/reset_password_page.dart';
+import 'package:lung_care_mobile/src/presentation/pages/auth/verify_code_page.dart';
 import 'package:lung_care_mobile/src/presentation/pages/home_page.dart';
 import 'package:lung_care_mobile/src/presentation/pages/splash_page.dart';
 
@@ -25,6 +28,18 @@ class MyApp extends StatelessWidget {
         builder: (context, state) => const RegisterPage(),
       ),
       GoRoute(path: '/home', builder: (context, state) => const HomePage()),
+      GoRoute(
+        path: '/password_reset',
+        builder: (context, state) => const ForgotPasswordPage(),
+      ),
+      GoRoute(
+        path: '/verify_code',
+        builder: (context, state) => const VerifyCodePage(),
+      ),
+      GoRoute(
+        path: '/reset_password',
+        builder: (context, state) => const ResetPasswordPage(),
+      ),
     ],
   );
 

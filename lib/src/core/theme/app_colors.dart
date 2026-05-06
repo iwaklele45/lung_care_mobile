@@ -8,4 +8,7 @@ class AppColors {
   static const Color nautral = Color(0xFF607D8B);
   static const Color black = Color(0xFF001F2A);
   static const Color linear = Color(0xFFB4D2F4);
+  static const Color appbarColor = Color(0xFFF8FBFF);
+  static const Color bodyColor = Color(0xFFF5FAFE);
+  static const Color white = Color(0xFFFFFFFF);
 }

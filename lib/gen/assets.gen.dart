@@ -22,9 +22,17 @@ class $AssetsIconsGen {
   AssetGenImage get checkInIcon =>
       const AssetGenImage('assets/icons/check_in_icon.png');
 
+  /// File path: assets/icons/forgot_password_icon.png
+  AssetGenImage get forgotPasswordIcon =>
+      const AssetGenImage('assets/icons/forgot_password_icon.png');
+
   /// File path: assets/icons/google_icon.png
   AssetGenImage get googleIcon =>
       const AssetGenImage('assets/icons/google_icon.png');
+
+  /// File path: assets/icons/hide_eye_icon.png
+  AssetGenImage get hideEyeIcon =>
+      const AssetGenImage('assets/icons/hide_eye_icon.png');
 
   /// File path: assets/icons/home_icon.png
   AssetGenImage get homeIcon =>
@@ -66,7 +74,9 @@ class $AssetsIconsGen {
   List<AssetGenImage> get values => [
     addMemberIcon,
     checkInIcon,
+    forgotPasswordIcon,
     googleIcon,
+    hideEyeIcon,
     homeIcon,
     locationIcon,
     lockIcon,
