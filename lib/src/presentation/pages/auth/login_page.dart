@@ -228,21 +228,22 @@ class _AuthForm extends StatelessWidget {
               ),
               const Spacer(),
               TextButton(
-                onPressed: () {
-                  if (emailController.text.trim().isEmpty) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Masukkan email terlebih dahulu.'),
-                      ),
-                    );
-                    return;
-                  }
-                  context.read<AuthBloc>().add(
-                    AuthPasswordResetRequested(
-                      email: emailController.text.trim(),
-                    ),
-                  );
-                },
+                // onPressed: () {
+                //   if (emailController.text.trim().isEmpty) {
+                //     ScaffoldMessenger.of(context).showSnackBar(
+                //       const SnackBar(
+                //         content: Text('Masukkan email terlebih dahulu.'),
+                //       ),
+                //     );
+                //     return;
+                //   }
+                //   context.read<AuthBloc>().add(
+                //     AuthPasswordResetRequested(
+                //       email: emailController.text.trim(),
+                //     ),
+                //   );
+                // },
+                onPressed: () => context.push('/password_reset'),
                 style: TextButton.styleFrom(
                   foregroundColor: const Color(0xFF4A90E2),
                   padding: EdgeInsets.zero,
@@ -411,7 +412,7 @@ class _BottomLink extends StatelessWidget {
       children: [
         const Text('Belum punya akun? '),
         GestureDetector(
-          onTap: () => context.go('/register'),
+          onTap: () => context.push('/register'),
           child: const Text(
             'Daftar sekarang',
             style: TextStyle(
