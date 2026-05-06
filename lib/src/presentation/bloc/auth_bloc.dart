@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:meta/meta.dart';
 
 part 'auth_event.dart';
@@ -13,6 +14,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     CheckAuthStatusEvent event,
     Emitter<AuthState> emit,
   ) async {
-    emit(AuthAuthenticated());
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user == null) {
+        emit(AuthUnauthenticated());
+      } else {
+        emit(AuthAuthenticated());
+      }
+    } catch (error) {
+      emit(AuthError(error.toString()));
+    }
   }
 }
