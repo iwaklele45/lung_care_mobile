@@ -1,7 +1,24 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:lung_care_mobile/gen/assets.gen.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:lung_care_mobile/features/auth/data/datasources/auth_remote_data_source.dart';
+import 'package:lung_care_mobile/features/auth/data/repositories/auth_repository_impl.dart';
+import 'package:lung_care_mobile/features/auth/domain/usecases/create_user_with_email.dart';
+import 'package:lung_care_mobile/features/auth/domain/usecases/observe_auth_state.dart';
+import 'package:lung_care_mobile/features/auth/domain/usecases/send_password_reset.dart';
+import 'package:lung_care_mobile/features/auth/domain/usecases/sign_in_with_email.dart';
+import 'package:lung_care_mobile/features/auth/domain/usecases/sign_out.dart';
+import 'package:lung_care_mobile/firebase_options.dart';
+import 'package:lung_care_mobile/features/auth/presentation/pages/login_page.dart';
+import 'package:lung_care_mobile/features/auth/presentation/pages/splash_page.dart';
+import 'package:lung_care_mobile/src/presentation/bloc/auth_bloc.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MyApp());
 }
 
@@ -11,42 +28,59 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: .fromSeed(seedColor: Colors.deepPurple),
-      ),
-      home: const MyHomePage(),
+    final authRepository = AuthRepositoryImpl(
+      remoteDataSource: AuthRemoteDataSource(),
     );
-  }
-}
+    final observeAuthState = ObserveAuthState(repository: authRepository);
+    final signInWithEmail = SignInWithEmail(repository: authRepository);
+    final createUserWithEmail = CreateUserWithEmail(repository: authRepository);
+    final sendPasswordReset = SendPasswordReset(repository: authRepository);
+    final signOut = SignOut(repository: authRepository);
 
-class MyHomePage extends StatelessWidget {
-  const MyHomePage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: IconButton(
-          onPressed: () {},
-          icon: Assets.icons.googleIcon.image(),
+    final router = GoRouter(
+      routes: [
+        GoRoute(
+          path: '/',
+          builder: (context, state) => const SplashPage(),
         ),
+        GoRoute(
+          path: '/login',
+          builder: (context, state) => const LoginPage(),
+        ),
+        GoRoute(
+          path: '/register',
+          builder: (context, state) => const Scaffold(
+            body: Center(child: Text('Register page')),
+          ),
+        ),
+        GoRoute(
+          path: '/home',
+          builder: (context, state) => const Scaffold(
+            body: Center(child: Text('Home')),
+          ),
+        ),
+      ],
+    );
+
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<AuthBloc>(
+          create: (_) => AuthBloc(
+            observeAuthState: observeAuthState,
+            signInWithEmail: signInWithEmail,
+            createUserWithEmail: createUserWithEmail,
+            sendPasswordReset: sendPasswordReset,
+            signOut: signOut,
+          ),
+        ),
+      ],
+      child: MaterialApp.router(
+        title: 'LungCare+',
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+          scaffoldBackgroundColor: const Color(0xFFF4F8FF),
+        ),
+        routerConfig: router,
       ),
     );
   }
