@@ -27,12 +27,18 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<UserCredential> createUserWithEmailAndPassword({
+    required String fullName,
+    required String phoneNumber,
     required String email,
     required String password,
+    required String address,
   }) {
     return _remoteDataSource.createUserWithEmailAndPassword(
+      fullName: fullName,
+      phoneNumber: phoneNumber,
       email: email,
       password: password,
+      address: address,
     );
   }
 

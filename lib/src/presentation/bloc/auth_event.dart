@@ -19,10 +19,19 @@ final class AuthSignInRequested extends AuthEvent {
 }
 
 final class AuthSignUpRequested extends AuthEvent {
-  AuthSignUpRequested({required this.email, required this.password});
+  AuthSignUpRequested({
+    required this.fullName,
+    required this.phoneNumber,
+    required this.email,
+    required this.password,
+    required this.address,
+  });
 
+  final String fullName;
+  final String phoneNumber;
   final String email;
   final String password;
+  final String address;
 }
 
 final class AuthPasswordResetRequested extends AuthEvent {

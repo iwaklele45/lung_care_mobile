@@ -1,13 +1,13 @@
 import 'dart:async';
 
-import 'package:bloc/bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lung_care_mobile/src/domain/usecases/create_user_with_email.dart';
 import 'package:lung_care_mobile/src/domain/usecases/observe_auth_state.dart';
 import 'package:lung_care_mobile/src/domain/usecases/send_password_reset.dart';
 import 'package:lung_care_mobile/src/domain/usecases/sign_in_with_email.dart';
 import 'package:lung_care_mobile/src/domain/usecases/sign_out.dart';
-import 'package:meta/meta.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';
@@ -77,8 +77,16 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     emit(AuthLoading());
     try {
-      await _createUserWithEmail(email: event.email, password: event.password);
+      await _createUserWithEmail(
+        fullName: event.fullName,
+        phoneNumber: event.phoneNumber,
+        email: event.email,
+        password: event.password,
+        address: event.address,
+      );
     } on FirebaseAuthException catch (error) {
+      emit(AuthError(error.message ?? 'Pendaftaran gagal.'));
+    } on FirebaseException catch (error) {
       emit(AuthError(error.message ?? 'Pendaftaran gagal.'));
     } catch (_) {
       emit(AuthError('Pendaftaran gagal.'));

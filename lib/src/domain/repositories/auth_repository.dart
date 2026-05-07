@@ -8,8 +8,11 @@ abstract class AuthRepository {
     required String password,
   });
   Future<UserCredential> createUserWithEmailAndPassword({
+    required String fullName,
+    required String phoneNumber,
     required String email,
     required String password,
+    required String address,
   });
   Future<void> sendPasswordResetEmail({required String email});
   Future<void> signOut();
