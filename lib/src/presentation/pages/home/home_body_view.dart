@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lung_care_mobile/src/core/theme/app_colors.dart';
 import 'package:lung_care_mobile/src/presentation/bloc/home/home_bloc.dart';
+import 'package:lung_care_mobile/src/presentation/pages/hamburger/hamburger_menu.dart';
 import 'package:lung_care_mobile/src/presentation/pages/home/widgets/header.dart';
 import 'package:lung_care_mobile/src/presentation/pages/home/widgets/home_app_bar.dart';
 import 'package:lung_care_mobile/src/presentation/pages/home/widgets/home_bottom_nav_bar.dart';
@@ -68,6 +69,7 @@ class _HomeBodyViewState extends State<HomeBodyView> {
 
           return Scaffold(
             backgroundColor: AppColors.bodyColor,
+            drawer: HamburgerMenu(userName: loaded.userName),
             appBar: HomeAppBar(userName: loaded.userName),
             bottomNavigationBar: HomeBottomNavBar(
               currentIndex: _navIndex,

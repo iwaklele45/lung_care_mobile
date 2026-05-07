@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:lung_care_mobile/gen/assets.gen.dart';
 import 'package:lung_care_mobile/src/core/theme/app_colors.dart';
 
@@ -19,7 +18,7 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
       centerTitle: true,
       leading: IconButton(
         icon: Assets.icons.hamburgerIcon.image(),
-        onPressed: () => context.pop(),
+        onPressed: () => Scaffold.of(context).openDrawer(),
       ),
       title: const Text(
         'LungCare+',
