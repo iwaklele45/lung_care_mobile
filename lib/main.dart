@@ -11,7 +11,7 @@ import 'package:lung_care_mobile/src/domain/usecases/observe_auth_state.dart';
 import 'package:lung_care_mobile/src/domain/usecases/send_password_reset.dart';
 import 'package:lung_care_mobile/src/domain/usecases/sign_in_with_email.dart';
 import 'package:lung_care_mobile/src/domain/usecases/sign_out.dart';
-import 'package:lung_care_mobile/src/presentation/bloc/auth_bloc.dart';
+import 'package:lung_care_mobile/src/presentation/bloc/auth/auth_bloc.dart';
 import 'package:lung_care_mobile/src/presentation/pages/auth/forgot_password_page.dart';
 import 'package:lung_care_mobile/src/presentation/pages/auth/login_page.dart';
 import 'package:lung_care_mobile/src/presentation/pages/auth/register_page.dart';

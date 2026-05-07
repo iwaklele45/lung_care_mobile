@@ -1,32 +1,8 @@
-// import 'package:flutter/material.dart';
-// import 'package:lung_care_mobile/gen/assets.gen.dart';
-
-// class LoginPage extends StatefulWidget {
-//   const LoginPage({super.key});
-
-//   @override
-//   State<LoginPage> createState() => _LoginPageState();
-// }
-
-// class _LoginPageState extends State<LoginPage> {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       body: Center(
-//         child: Column(
-//           mainAxisAlignment: MainAxisAlignment.center,
-//           children: [Assets.icons.lungCareLogo.image()],
-//         ),
-//       ),
-//     );
-//   }
-// }
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lung_care_mobile/gen/assets.gen.dart';
-import 'package:lung_care_mobile/src/presentation/bloc/auth_bloc.dart';
+import 'package:lung_care_mobile/src/presentation/bloc/auth/auth_bloc.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -315,7 +291,8 @@ class _PrimaryButton extends StatelessWidget {
         builder: (context, state) {
           final isLoading = state is AuthLoading;
           return ElevatedButton(
-            onPressed: isLoading ? null : onPressed,
+            // onPressed: isLoading ? null : onPressed,
+            onPressed: () => context.push('/home'),
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFF4A90E2),
               foregroundColor: Colors.white,

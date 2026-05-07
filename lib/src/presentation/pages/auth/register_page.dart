@@ -13,21 +13,16 @@ class RegisterPage extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: AppColors.appbarColor,
         elevation: 1,
-        centerTitle: true,
         leading: IconButton(
           onPressed: () => context.pop(),
-          icon: const Icon(
-            Icons.arrow_back_rounded,
-            color: AppColors.primary,
-            size: 24,
-          ),
+          icon: Assets.icons.arrowLeftIcon.image(),
         ),
         title: const Text(
-          'LungCare+',
+          'Daftar Akun Baru',
           style: TextStyle(
-            fontSize: 20,
+            fontSize: 18,
             color: AppColors.primary,
-            fontWeight: FontWeight.w700,
+            fontWeight: FontWeight.w600,
           ),
         ),
       ),
