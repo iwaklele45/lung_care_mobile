@@ -291,8 +291,7 @@ class _PrimaryButton extends StatelessWidget {
         builder: (context, state) {
           final isLoading = state is AuthLoading;
           return ElevatedButton(
-            // onPressed: isLoading ? null : onPressed,
-            onPressed: () => context.push('/home'),
+            onPressed: isLoading ? null : onPressed,
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFF4A90E2),
               foregroundColor: Colors.white,

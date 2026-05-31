@@ -53,8 +53,13 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget build(BuildContext context) {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
-        if (state is AuthAuthenticated) {
-          context.go('/home');
+        if (state is AuthRegistrationSuccess) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Pendaftaran berhasil. Silakan login.'),
+            ),
+          );
+          context.go('/login');
           return;
         }
         if (state is AuthError) {

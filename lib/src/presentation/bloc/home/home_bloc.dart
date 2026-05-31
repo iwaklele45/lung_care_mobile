@@ -1,7 +1,20 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'home_event.dart';
 part 'home_state.dart';
+
+/// Returns the user's call name, skipping common honorific prefixes
+/// (e.g. "Muhammad Rafi Putra" -> "Rafi").
+String _displayName(String fullName) {
+  const prefixes = {'muhammad', 'muhamad', 'mohammad', 'mohamad', 'muh'};
+  final parts = fullName.trim().split(RegExp(r'\s+'));
+  if (parts.length > 1 && prefixes.contains(parts.first.toLowerCase())) {
+    return parts[1];
+  }
+  return parts.first;
+}
 
 /// Simple data model for a medication schedule item.
 class MedicationScheduleItem {
@@ -37,6 +50,13 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       // TODO(Week2): Replace with real Firestore fetch via use case.
       await Future.delayed(const Duration(milliseconds: 800));
 
+      final uid = FirebaseAuth.instance.currentUser?.uid;
+      final userDoc = uid == null
+          ? null
+          : await FirebaseFirestore.instance.collection('users').doc(uid).get();
+      final fullName = (userDoc?.data()?['name'] as String?) ?? 'User';
+      final userName = _displayName(fullName);
+
       final schedules = [
         const MedicationScheduleItem(
           id: 'sched_1',
@@ -63,7 +83,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
       emit(
         HomeLoaded(
-          userName: 'Jane',
+          userName: userName,
           treatmentDay: 45,
           totalDays: 180,
           progressPercent: 0.25,

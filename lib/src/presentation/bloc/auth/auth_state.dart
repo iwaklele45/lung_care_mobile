@@ -9,6 +9,8 @@ final class AuthAuthenticated extends AuthState {}
 
 final class AuthUnauthenticated extends AuthState {}
 
+final class AuthRegistrationSuccess extends AuthState {}
+
 final class AuthError extends AuthState {
   AuthError(this.message);
 

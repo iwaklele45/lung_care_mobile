@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lung_care_mobile/src/core/theme/app_colors.dart';
 import 'package:lung_care_mobile/src/presentation/bloc/home/home_bloc.dart';
 import 'package:lung_care_mobile/src/presentation/pages/hamburger/hamburger_menu.dart';
+import 'package:lung_care_mobile/src/presentation/pages/checkin/check_in_page.dart';
+import 'package:lung_care_mobile/src/presentation/pages/profile/profile_page.dart';
+import 'package:lung_care_mobile/src/presentation/pages/meds/add_medication_page.dart';
 import 'package:lung_care_mobile/src/presentation/pages/home/widgets/header.dart';
 import 'package:lung_care_mobile/src/presentation/pages/home/widgets/home_app_bar.dart';
 import 'package:lung_care_mobile/src/presentation/pages/home/widgets/home_bottom_nav_bar.dart';
@@ -70,12 +74,31 @@ class _HomeBodyViewState extends State<HomeBodyView> {
           return Scaffold(
             backgroundColor: AppColors.bodyColor,
             drawer: HamburgerMenu(userName: loaded.userName),
-            appBar: HomeAppBar(userName: loaded.userName),
+            appBar: _navIndex == 0
+                ? HomeAppBar(userName: loaded.userName)
+                : AppBar(
+                    backgroundColor: AppColors.appbarColor,
+                    elevation: 1,
+                    centerTitle: true,
+                    title: Text(
+                      const ['', 'Tambah Obat', 'Daily Check-in', 'My Profile']
+                          [_navIndex],
+                      style: const TextStyle(
+                        color: AppColors.primary,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                      ),
+                    ),
+                  ),
             bottomNavigationBar: HomeBottomNavBar(
               currentIndex: _navIndex,
               onTap: (index) => setState(() => _navIndex = index),
             ),
-            body: RefreshIndicator(
+            body: switch (_navIndex) {
+              1 => AddMedicationPage(),
+              2 => CheckInPage(userName: loaded.userName),
+              3 => const ProfilePage(),
+              _ => RefreshIndicator(
               color: AppColors.primary,
               onRefresh: () async {
                 context.read<HomeBloc>().add(HomeFetchSchedulesRequested());
@@ -115,9 +138,7 @@ class _HomeBodyViewState extends State<HomeBodyView> {
                             ),
                           ),
                           GestureDetector(
-                            onTap: () {
-                              // TODO(Week3): context.push('/schedule/all')
-                            },
+                            onTap: () => context.push('/schedule'),
                             child: const Text(
                               'View all',
                               style: TextStyle(
@@ -172,6 +193,7 @@ class _HomeBodyViewState extends State<HomeBodyView> {
                 ),
               ),
             ),
+            },
           );
         }
 

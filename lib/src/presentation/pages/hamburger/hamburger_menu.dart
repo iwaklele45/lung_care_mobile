@@ -1,19 +1,25 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lung_care_mobile/gen/assets.gen.dart';
 import 'package:lung_care_mobile/src/core/theme/app_colors.dart';
 
 class HamburgerMenu extends StatefulWidget {
-  const HamburgerMenu({super.key, this.userName = 'Jane'});
+  const HamburgerMenu({
+    super.key,
+    this.userName = 'Jane',
+    this.selectedIndex = 0,
+  });
 
   final String userName;
+  final int selectedIndex;
 
   @override
   State<HamburgerMenu> createState() => _HamburgerMenuState();
 }
 
 class _HamburgerMenuState extends State<HamburgerMenu> {
-  int _selectedIndex = 0;
+  late int _selectedIndex = widget.selectedIndex;
 
   static const _menuItems = [
     _MenuItem(label: 'Dashboard', icon: Icons.dashboard_rounded),
@@ -25,21 +31,17 @@ class _HamburgerMenuState extends State<HamburgerMenu> {
   void _onItemTap(int index) {
     setState(() => _selectedIndex = index);
 
-    // TODO(Week4): Replace with proper GoRouter navigation per item.
     Navigator.of(context).pop(); // close drawer
 
     switch (index) {
       case 0:
         context.go('/home');
       case 1:
-        // context.push('/history');
-        break;
+        context.push('/history');
       case 2:
-        // context.push('/chatbot');
-        break;
+        context.push('/chatbot');
       case 3:
-        // context.push('/facilities');
-        break;
+        context.push('/facilities');
     }
   }
 
@@ -133,7 +135,7 @@ class _HamburgerMenuState extends State<HamburgerMenu> {
                 isSelected: false,
                 isDestructive: true,
                 onTap: () {
-                  Navigator.of(context).pop();
+                  FirebaseAuth.instance.signOut();
                   // TODO: trigger AuthSignOutRequested
                   context.go('/login');
                 },

@@ -39,6 +39,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final SendPasswordReset _sendPasswordReset;
   final SignOut _signOut;
   StreamSubscription<User?>? _authSubscription;
+  bool _isRegistering = false;
 
   void _onCheckAuthStatus(CheckAuthStatusEvent event, Emitter<AuthState> emit) {
     _authSubscription?.cancel();
@@ -49,6 +50,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   }
 
   void _onAuthUserChanged(AuthUserChanged event, Emitter<AuthState> emit) {
+    if (_isRegistering) return;
     final user = event.user;
     if (user is User) {
       emit(AuthAuthenticated());
@@ -76,6 +78,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Emitter<AuthState> emit,
   ) async {
     emit(AuthLoading());
+    _isRegistering = true;
     try {
       await _createUserWithEmail(
         fullName: event.fullName,
@@ -84,12 +87,16 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         password: event.password,
         address: event.address,
       );
+      await _signOut();
+      emit(AuthRegistrationSuccess());
     } on FirebaseAuthException catch (error) {
       emit(AuthError(error.message ?? 'Pendaftaran gagal.'));
     } on FirebaseException catch (error) {
       emit(AuthError(error.message ?? 'Pendaftaran gagal.'));
     } catch (_) {
       emit(AuthError('Pendaftaran gagal.'));
+    } finally {
+      _isRegistering = false;
     }
   }
 
