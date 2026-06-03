@@ -35,16 +35,16 @@ import 'package:lung_care_mobile/src/presentation/pages/splash_page.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  await FirebaseAppCheck.instance.activate(
-    // Debug mode: uses debug token (register in Firebase Console per device).
-    // Release mode: uses Play Integrity (Android) / Device Check (iOS).
-    providerAndroid: kDebugMode
-        ? const AndroidDebugProvider()
-        : const AndroidPlayIntegrityProvider(),
-    providerApple: kDebugMode
-        ? const AppleDebugProvider()
-        : const AppleDeviceCheckProvider(),
-  );
+  // App Check hanya diaktifkan di debug mode.
+  // Di release mode (APK sideload via GitHub), Play Integrity akan gagal
+  // karena app tidak diinstall dari Play Store → skip agar tidak memblokir
+  // Firebase AI requests.
+  if (kDebugMode) {
+    await FirebaseAppCheck.instance.activate(
+      providerAndroid: const AndroidDebugProvider(),
+      providerApple: const AppleDebugProvider(),
+    );
+  }
   runApp(const MyApp());
 }
 
