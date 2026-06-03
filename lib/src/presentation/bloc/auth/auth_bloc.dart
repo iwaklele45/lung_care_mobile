@@ -96,9 +96,33 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     try {
       await _signInWithEmail(email: event.email, password: event.password);
     } on FirebaseAuthException catch (error) {
-      emit(AuthError(error.message ?? 'Login gagal.'));
+      // Menangkap kode error spesifik dari Firebase
+      switch (error.code) {
+        case 'invalid-credential':
+        case 'user-not-found': // Kode legacy (untuk kompatibilitas)
+        case 'wrong-password': // Kode legacy (untuk kompatibilitas)
+          emit(AuthError('Email atau password yang Anda masukkan salah.'));
+          break;
+        case 'invalid-email':
+          emit(AuthError('Format email tidak valid.'));
+          break;
+        case 'user-disabled':
+          emit(AuthError('Akun ini telah dinonaktifkan oleh Admin.'));
+          break;
+        case 'too-many-requests':
+          emit(
+            AuthError(
+              'Terlalu banyak percobaan. Silakan coba lagi beberapa saat.',
+            ),
+          );
+          break;
+        default:
+          // Fallback jika terjadi error lain (seperti server down)
+          emit(AuthError(error.message ?? 'Login gagal. Silakan coba lagi.'));
+      }
     } catch (_) {
-      emit(AuthError('Login gagal.'));
+      // Catch umum (biasanya karena tidak ada koneksi internet sama sekali)
+      emit(AuthError('Login gagal. Periksa koneksi internet Anda.'));
     }
   }
 
@@ -225,4 +249,3 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     return super.close();
   }
 }
-

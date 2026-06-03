@@ -288,7 +288,11 @@ class _RegisterPageState extends State<RegisterPage> {
                   SizedBox(
                     width: double.infinity,
                     child: OutlinedButton.icon(
-                      onPressed: null,
+                      onPressed: () {
+                        context.read<AuthBloc>().add(
+                          AuthGoogleSignInRequested(),
+                        );
+                      },
                       style: OutlinedButton.styleFrom(
                         side: const BorderSide(color: Color(0xFFC8CFDB)),
                         minimumSize: const Size.fromHeight(54),
