@@ -1,5 +1,6 @@
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -35,13 +36,18 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await FirebaseAppCheck.instance.activate(
-    // Development: prints a debug token to the console to register in Console.
-    // Production: switch to AndroidProvider.playIntegrity & AppleProvider.deviceCheck.
-    providerAndroid: const AndroidDebugProvider(),
-    providerApple: const AppleDebugProvider(),
+    // Debug mode: uses debug token (register in Firebase Console per device).
+    // Release mode: uses Play Integrity (Android) / Device Check (iOS).
+    providerAndroid: kDebugMode
+        ? const AndroidDebugProvider()
+        : const AndroidPlayIntegrityProvider(),
+    providerApple: kDebugMode
+        ? const AppleDebugProvider()
+        : const AppleDeviceCheckProvider(),
   );
   runApp(const MyApp());
 }
+
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
