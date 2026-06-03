@@ -1,138 +1,168 @@
 # LungCare+
 
-Mobile app for monitoring pendampingan obat.
+Aplikasi mobile **monitoring pendampingan pengobatan TBC (Tuberkulosis)** berbasis Flutter. Dibangun sebagai bagian dari Tugas Akhir.
 
-## Requirements
+## ✨ Fitur Utama
 
-- Flutter SDK (stable)
-- Dart SDK (see pubspec.yaml)
-- Android Studio or Xcode (for emulator/device)
+| Fitur | Deskripsi |
+|-------|-----------|
+| 🔐 **Autentikasi** | Login/Register dengan Email & Google Sign-In, Forgot Password, Complete Profile |
+| 🏠 **Dashboard** | Ringkasan jadwal obat hari ini, progress pengobatan, next dose card |
+| 💊 **Jadwal Obat** | CRUD jadwal pengobatan, reminder, check-in dosis harian |
+| 📋 **Riwayat Pengobatan** | Histori lengkap pengobatan dan adherence tracking |
+| 🤖 **Chatbot Edukasi TBC** | Asisten AI (Gemini 2.5 Flash) untuk edukasi TBC via Firebase AI Logic |
+| 🏥 **Fasilitas Kesehatan** | Peta fasilitas kesehatan terdekat (Google Maps) |
+| 📝 **Daily Check-in** | Symptom tracker dan health check-in harian |
+| 👤 **Profil** | Manajemen profil pengguna dengan edit data |
 
-## Setup
+## 🛠 Tech Stack
+
+- **Framework**: Flutter (Dart SDK ^3.11.5)
+- **State Management**: flutter_bloc (BLoC pattern)
+- **Routing**: go_router
+- **Backend**: Firebase
+  - Firebase Authentication (Email/Password + Google Sign-In)
+  - Cloud Firestore (database)
+  - Firebase AI Logic (Gemini 2.5 Flash — chatbot)
+  - Firebase App Check (security, debug mode only)
+- **Architecture**: Clean Architecture
+- **Version Manager**: FVM (Flutter Version Management)
+
+## 📋 Requirements
+
+- Flutter SDK >= 3.35.0 (stable)
+- Dart SDK ^3.11.5
+- FVM (recommended)
+- Android Studio / Xcode
+- `google-services.json` di `android/app/` (Firebase config)
+
+## 🚀 Setup & Run
 
 ```bash
+# Install dependencies
 fvm flutter pub get
-```
 
-## Run
+# Generate typed assets (FlutterGen)
+flutter pub run build_runner build --delete-conflicting-outputs
 
-```bash
+# Run di device/emulator (debug)
 fvm flutter run
+
+# Run di real device (release)
+fvm flutter run --release
+
+# Build APK release
+fvm flutter build apk --release
 ```
 
-## Project Structure (Clean Architecture)
+Output APK: `build/app/outputs/flutter-apk/app-release.apk`
+
+## 📁 Project Structure (Clean Architecture)
 
 ```
 lib/
-	features/
-		<feature>/
-			data/
-			domain/
-			presentation/
-	src/
-		core/
-			theme/
-		presentation/
-			bloc/
-	gen/
+├── main.dart                       # Entry point, Firebase init, routing
+├── firebase_options.dart           # Firebase configuration (auto-generated)
+├── gen/                            # FlutterGen output (typed assets)
+└── src/
+    ├── core/
+    │   └── theme/                  # AppColors, tema aplikasi
+    ├── data/
+    │   ├── datasource/             # Remote data sources (Firebase)
+    │   ├── repositories/           # Repository implementations
+    │   └── services/               # Services (TbcChatService, dll)
+    ├── domain/
+    │   ├── repositories/           # Repository contracts (abstract)
+    │   └── usecases/               # Use cases (SignIn, SignOut, dll)
+    └── presentation/
+        ├── bloc/                   # BLoC (auth, home)
+        └── pages/
+            ├── auth/               # Login, Register, Forgot Password
+            ├── chatbot/            # Chatbot Edukasi TBC (Gemini AI)
+            ├── checkin/            # Daily Health Check-in
+            ├── facilities/         # Peta Fasilitas Kesehatan
+            ├── hamburger/          # Drawer navigation menu
+            ├── history/            # Riwayat pengobatan
+            ├── home/               # Dashboard + widgets
+            ├── meds/               # Tambah obat / medication tracker
+            ├── profile/            # Profil pengguna
+            └── schedule/           # Jadwal pengobatan
 ```
 
-## FlutterGen (Assets)
+## 🔥 Firebase Services
 
-This project uses FlutterGen to generate typed asset accessors.
+| Service | Kegunaan |
+|---------|----------|
+| **Firebase Auth** | Autentikasi pengguna (Email + Google) |
+| **Cloud Firestore** | Database untuk users, schedules, medication logs |
+| **Firebase AI Logic** | Chatbot AI menggunakan Gemini 2.5 Flash |
+| **Firebase App Check** | Proteksi API (aktif hanya di debug mode) |
 
-### Add new asset
+### Chatbot (Firebase AI Logic)
 
-1. Put the asset under `assets/` (for example `assets/icons/`).
-2. Ensure the folder is listed in `pubspec.yaml` under `flutter/assets`.
-3. Run build_runner to regenerate:
+- Model: `gemini-2.5-flash` (free tier: 5 RPM)
+- Retry logic otomatis untuk rate limit & server errors
+- Status indikator dinamis (Online / Mengetik / Sibuk / Offline)
+- App Check di-skip di release mode agar APK sideload berfungsi
+
+### App Check (Release vs Debug)
+
+```
+Debug mode  → AndroidDebugProvider (perlu daftarkan debug token di Firebase Console)
+Release mode → App Check di-skip (untuk distribusi APK via GitHub/sideload)
+```
+
+## 🏗 State Management (BLoC)
+
+- Satu BLoC per fitur utama (Auth, Home)
+- Events di `*_event.dart`, States di `*_state.dart`
+- UI menggunakan `BlocBuilder` untuk render, `BlocListener` untuk side effects
+
+## 📦 FlutterGen (Typed Assets)
 
 ```bash
+# Tambah asset baru:
+# 1. Letakkan file di assets/ (contoh: assets/icons/)
+# 2. Pastikan folder terdaftar di pubspec.yaml → flutter → assets
+# 3. Regenerate:
 flutter pub run build_runner build --delete-conflicting-outputs
 ```
 
-### Use asset in code
-
+Penggunaan:
 ```dart
+// Image
 Assets.icons.lungCareLogo.image(width: 120, height: 120)
-```
-
-If you add SVGs, make sure `flutter_svg` is already enabled (it is) and use:
-
-```dart
+// SVG
 Assets.icons.logoApp.svg(width: 120, height: 120)
 ```
 
-## Firebase
-
-Firebase integration will be used for authentication, analytics, and storage.
-When adding Firebase:
-
-1. Add `firebase_core` and other required packages.
-2. Configure Android/iOS using the official Firebase setup guide.
-3. Initialize Firebase in `main.dart` before `runApp`.
-
-## State Management (BLoC)
-
-This project uses `flutter_bloc`.
-
-Guidelines:
-
-- Keep events in `auth_event.dart` and states in `auth_state.dart`.
-- Use a dedicated BLoC per feature (Auth, Home, Profile, etc.).
-- UI listens to state changes with `BlocBuilder` and handles one-off actions
-	with `BlocListener`.
-
-Example usage:
-
-```dart
-BlocListener<AuthBloc, AuthState>(
-	listener: (context, state) {
-		if (state is AuthAuthenticated) {
-			context.go('/home');
-		}
-	},
-	child: const SplashPage(),
-)
-```
-
-## Flutter State Management (Overview)
-
-Flutter state management separates UI rendering from app logic and data flow.
-In this project we use BLoC to keep state predictable and testable.
-
-Core ideas:
-
-- UI is a function of state; widgets rebuild when state changes.
-- Events trigger logic inside BLoC, which emits new states.
-- Side effects (navigation, snackbars) are handled in listeners, not builders.
-
-When to use:
-
-- Use BLoC for feature-level state that is shared by multiple widgets.
-- Use local widget state for small, isolated UI interactions.
-
-## Clean Architecture (Overview)
-
-Clean Architecture organizes code by responsibility and dependency direction.
-Dependencies should point inward: presentation -> domain -> data.
-
-Layers:
-
-- Presentation: UI, BLoC, pages, widgets.
-- Domain: entities, use cases, repository contracts.
-- Data: repository implementations, remote/local datasources, models.
-
-Rules of thumb:
-
-- Domain has no Flutter imports.
-- Data depends on Domain, not the other way around.
-- Presentation depends on Domain and triggers use cases through BLoC.
-
-## Useful Commands
+## 📱 Build & Distribution
 
 ```bash
-flutter pub get
+# Build APK release
+fvm flutter build apk --release
+
+# Build App Bundle (untuk Play Store)
+fvm flutter build appbundle --release
+```
+
+> **Catatan**: Release build saat ini menggunakan debug signing key. Untuk distribusi ke Play Store, perlu membuat release keystore terpisah.
+
+## ⚙️ Useful Commands
+
+```bash
+# Install dependencies
+fvm flutter pub get
+
+# Generate assets
 flutter pub run build_runner build --delete-conflicting-outputs
+
+# Watch mode (auto-regenerate)
 flutter pub run build_runner watch --delete-conflicting-outputs
+
+# Analyze code
+fvm flutter analyze
+
+# Run tests
+fvm flutter test
 ```

@@ -23,6 +23,9 @@ class _ChatbotPageState extends State<ChatbotPage> {
   final _chatService = TbcChatService();
   bool _sending = false;
 
+  // Status AI: 'online', 'typing', 'rate_limited', 'server_busy', 'offline'
+  String _aiStatus = 'online';
+
   final List<_Message> _messages = [
     const _Message(
       'Halo! Saya Asisten TBC dari Serene Care. Ada yang bisa saya bantu hari '
@@ -51,22 +54,47 @@ class _ChatbotPageState extends State<ChatbotPage> {
       _messages.add(_Message(trimmed, fromUser: true));
       _controller.clear();
       _sending = true;
+      _aiStatus = 'typing';
     });
     _scrollToBottom();
     try {
       final reply = await _chatService.send(trimmed);
       if (!mounted) return;
-      setState(() => _messages.add(_Message(reply, fromUser: false)));
-    } catch (_) {
+      setState(() {
+        _messages.add(_Message(reply, fromUser: false));
+        _aiStatus = 'online';
+      });
+    } catch (e) {
       if (!mounted) return;
+      final errorStr = e.toString();
+      String errorMsg;
+
+      if (errorStr.contains('Quota exceeded') || errorStr.contains('429')) {
+        errorMsg =
+            'Asisten sedang sibuk (batas penggunaan tercapai). '
+            'Tunggu sekitar 1 menit lalu coba lagi ya.';
+        _aiStatus = 'rate_limited';
+      } else if (errorStr.contains('500') ||
+          errorStr.contains('503') ||
+          errorStr.contains('high demand')) {
+        errorMsg =
+            'Server AI sedang ramai. Coba lagi dalam beberapa detik.';
+        _aiStatus = 'server_busy';
+      } else {
+        errorMsg = 'Maaf, terjadi gangguan koneksi. Coba lagi sebentar ya.';
+        _aiStatus = 'offline';
+      }
+
       setState(
-        () => _messages.add(
-          const _Message(
-            'Maaf, terjadi gangguan koneksi. Coba lagi sebentar ya.',
-            fromUser: false,
-          ),
-        ),
+        () => _messages.add(_Message(errorMsg, fromUser: false)),
       );
+
+      // Auto-recover status setelah 15 detik
+      Future.delayed(const Duration(seconds: 15), () {
+        if (mounted && _aiStatus != 'online' && _aiStatus != 'typing') {
+          setState(() => _aiStatus = 'online');
+        }
+      });
     } finally {
       if (mounted) setState(() => _sending = false);
       _scrollToBottom();
@@ -84,6 +112,22 @@ class _ChatbotPageState extends State<ChatbotPage> {
       }
     });
   }
+
+  // Helper untuk status text & warna
+  String get _statusText => switch (_aiStatus) {
+    'typing' => 'Serene Care • Mengetik...',
+    'rate_limited' => 'Serene Care • Sibuk (tunggu 1 menit)',
+    'server_busy' => 'Serene Care • Server sibuk',
+    'offline' => 'Serene Care • Offline',
+    _ => 'Serene Care • Online',
+  };
+
+  Color get _statusColor => switch (_aiStatus) {
+    'typing' => AppColors.primary,
+    'rate_limited' || 'server_busy' => Colors.orange,
+    'offline' => Colors.red,
+    _ => const Color(0xFF4CAF50), // green
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -114,8 +158,8 @@ class _ChatbotPageState extends State<ChatbotPage> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
-              children: const [
-                Text(
+              children: [
+                const Text(
                   'Asisten TBC',
                   style: TextStyle(
                     color: AppColors.black,
@@ -123,9 +167,22 @@ class _ChatbotPageState extends State<ChatbotPage> {
                     fontSize: 17,
                   ),
                 ),
-                Text(
-                  'Serene Care • Online',
-                  style: TextStyle(color: AppColors.primary, fontSize: 12),
+                Row(
+                  children: [
+                    Container(
+                      width: 8,
+                      height: 8,
+                      decoration: BoxDecoration(
+                        color: _statusColor,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    const SizedBox(width: 5),
+                    Text(
+                      _statusText,
+                      style: TextStyle(color: _statusColor, fontSize: 12),
+                    ),
+                  ],
                 ),
               ],
             ),
