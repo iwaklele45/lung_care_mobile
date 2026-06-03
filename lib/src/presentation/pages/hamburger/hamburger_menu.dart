@@ -1,8 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lung_care_mobile/gen/assets.gen.dart';
 import 'package:lung_care_mobile/src/core/theme/app_colors.dart';
+import 'package:lung_care_mobile/src/presentation/bloc/auth/auth_bloc.dart';
 
 class HamburgerMenu extends StatefulWidget {
   const HamburgerMenu({
@@ -47,101 +49,110 @@ class _HamburgerMenuState extends State<HamburgerMenu> {
 
   @override
   Widget build(BuildContext context) {
-    return Drawer(
-      backgroundColor: AppColors.white,
-      elevation: 0,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-          topRight: Radius.circular(24),
-          bottomRight: Radius.circular(24),
+    return BlocListener<AuthBloc, AuthState>(
+      listener: (context, state) {
+        if (state is AuthLoggedOut) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(state.message)),
+          );
+          context.go('/login');
+        }
+      },
+      child: Drawer(
+        backgroundColor: AppColors.white,
+        elevation: 0,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            topRight: Radius.circular(24),
+            bottomRight: Radius.circular(24),
+          ),
         ),
-      ),
-      child: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 28),
+        child: SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 28),
 
-            // ── User profile row ──────────────────────────────────
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: Row(
-                children: [
-                  // Avatar circle
-                  Container(
-                    width: 56,
-                    height: 56,
-                    decoration: BoxDecoration(
-                      color: AppColors.black,
-                      shape: BoxShape.circle,
-                      border: Border.all(color: AppColors.primary, width: 2),
+              // ── User profile row ──────────────────────────────────
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: Row(
+                  children: [
+                    // Avatar circle
+                    Container(
+                      width: 56,
+                      height: 56,
+                      decoration: BoxDecoration(
+                        color: AppColors.black,
+                        shape: BoxShape.circle,
+                        border: Border.all(color: AppColors.primary, width: 2),
+                      ),
+                      child: ClipOval(
+                        child: Assets.icons.profileMotivationImg.image(),
+                      ),
                     ),
-                    child: ClipOval(
-                      child: Assets.icons.profileMotivationImg.image(),
+                    const SizedBox(width: 14),
+                    // Name
+                    Text(
+                      widget.userName,
+                      style: const TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.primary,
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: 14),
-                  // Name
-                  Text(
-                    widget.userName,
-                    style: const TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.primary,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            const SizedBox(height: 28),
-
-            // ── Divider ───────────────────────────────────────────
-            Divider(
-              color: AppColors.ternary,
-              thickness: 1,
-              indent: 24,
-              endIndent: 24,
-            ),
-
-            const SizedBox(height: 8),
-
-            // ── Navigation items ──────────────────────────────────
-            Expanded(
-              child: ListView.builder(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                itemCount: _menuItems.length,
-                itemBuilder: (context, index) {
-                  final item = _menuItems[index];
-                  final isSelected = _selectedIndex == index;
-
-                  return _DrawerTile(
-                    item: item,
-                    isSelected: isSelected,
-                    onTap: () => _onItemTap(index),
-                  );
-                },
-              ),
-            ),
-
-            // ── Logout at bottom ──────────────────────────────────
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 20),
-              child: _DrawerTile(
-                item: const _MenuItem(
-                  label: 'Keluar',
-                  icon: Icons.logout_rounded,
+                  ],
                 ),
-                isSelected: false,
-                isDestructive: true,
-                onTap: () {
-                  FirebaseAuth.instance.signOut();
-                  // TODO: trigger AuthSignOutRequested
-                  context.go('/login');
-                },
               ),
-            ),
-          ],
+
+              const SizedBox(height: 28),
+
+              // ── Divider ───────────────────────────────────────────
+              Divider(
+                color: AppColors.ternary,
+                thickness: 1,
+                indent: 24,
+                endIndent: 24,
+              ),
+
+              const SizedBox(height: 8),
+
+              // ── Navigation items ──────────────────────────────────
+              Expanded(
+                child: ListView.builder(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  itemCount: _menuItems.length,
+                  itemBuilder: (context, index) {
+                    final item = _menuItems[index];
+                    final isSelected = _selectedIndex == index;
+
+                    return _DrawerTile(
+                      item: item,
+                      isSelected: isSelected,
+                      onTap: () => _onItemTap(index),
+                    );
+                  },
+                ),
+              ),
+
+              // ── Logout at bottom ──────────────────────────────────
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 20),
+                child: _DrawerTile(
+                  item: const _MenuItem(
+                    label: 'Keluar',
+                    icon: Icons.logout_rounded,
+                  ),
+                  isSelected: false,
+                  isDestructive: true,
+                  onTap: () {
+                    Navigator.of(context).pop(); // close drawer first
+                    context.read<AuthBloc>().add(AuthSignOutRequested());
+                  },
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

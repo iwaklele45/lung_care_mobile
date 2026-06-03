@@ -31,100 +31,109 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(20, 24, 20, 24),
-      child: FutureBuilder<DocumentSnapshot<Map<String, dynamic>>?>(
-        future: _cachedFuture,
-        builder: (context, snapshot) {
-          final data = snapshot.data?.data() ?? const {};
-          final name = (data['name'] as String?) ?? 'User';
-          final email = (data['email'] as String?) ?? _user?.email ?? '';
-
-          return Column(
-            children: [
-              Stack(
-                alignment: Alignment.bottomRight,
-                children: [
-                  CircleAvatar(
-                    radius: 52,
-                    backgroundColor: AppColors.ternary,
-                    child: const Icon(
-                      Icons.person,
-                      size: 56,
-                      color: AppColors.primary,
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: const BoxDecoration(
-                      color: AppColors.primary,
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(
-                      Icons.camera_alt,
-                      size: 16,
-                      color: Colors.white,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 14),
-              Text(
-                name,
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.black,
-                ),
-              ),
-              Text(
-                email,
-                style: const TextStyle(fontSize: 14, color: AppColors.nautral),
-              ),
-              const SizedBox(height: 24),
-              _Tile(
-                icon: Icons.edit_outlined,
-                label: 'Edit Profil',
-                onTap: () => _openEditForm(context, data),
-              ),
-              const SizedBox(height: 12),
-              _Tile(
-                icon: Icons.notifications_none_rounded,
-                label: 'Notification Settings',
-                onTap: () {},
-              ),
-              const SizedBox(height: 12),
-              _Tile(
-                icon: Icons.help_outline_rounded,
-                label: 'Help & Support',
-                onTap: () {},
-              ),
-              const SizedBox(height: 24),
-              SizedBox(
-                height: 54,
-                width: double.infinity,
-                child: OutlinedButton.icon(
-                  onPressed: () {
-                    context.read<AuthBloc>().add(AuthSignOutRequested());
-                    context.go('/login');
-                  },
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: Colors.red,
-                    side: const BorderSide(color: Colors.red),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                  ),
-                  icon: const Icon(Icons.logout_rounded, size: 20),
-                  label: const Text(
-                    'Logout',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                  ),
-                ),
-              ),
-            ],
+    return BlocListener<AuthBloc, AuthState>(
+      listener: (context, state) {
+        if (state is AuthLoggedOut) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(state.message)),
           );
-        },
+          context.go('/login');
+        }
+      },
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.fromLTRB(20, 24, 20, 24),
+        child: FutureBuilder<DocumentSnapshot<Map<String, dynamic>>?>(
+          future: _cachedFuture,
+          builder: (context, snapshot) {
+            final data = snapshot.data?.data() ?? const {};
+            final name = (data['name'] as String?) ?? 'User';
+            final email = (data['email'] as String?) ?? _user?.email ?? '';
+
+            return Column(
+              children: [
+                Stack(
+                  alignment: Alignment.bottomRight,
+                  children: [
+                    CircleAvatar(
+                      radius: 52,
+                      backgroundColor: AppColors.ternary,
+                      child: const Icon(
+                        Icons.person,
+                        size: 56,
+                        color: AppColors.primary,
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: const BoxDecoration(
+                        color: AppColors.primary,
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.camera_alt,
+                        size: 16,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 14),
+                Text(
+                  name,
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.black,
+                  ),
+                ),
+                Text(
+                  email,
+                  style: const TextStyle(fontSize: 14, color: AppColors.nautral),
+                ),
+                const SizedBox(height: 24),
+                _Tile(
+                  icon: Icons.edit_outlined,
+                  label: 'Edit Profil',
+                  onTap: () => _openEditForm(context, data),
+                ),
+                const SizedBox(height: 12),
+                _Tile(
+                  icon: Icons.notifications_none_rounded,
+                  label: 'Notification Settings',
+                  onTap: () {},
+                ),
+                const SizedBox(height: 12),
+                _Tile(
+                  icon: Icons.help_outline_rounded,
+                  label: 'Help & Support',
+                  onTap: () {},
+                ),
+                const SizedBox(height: 24),
+                SizedBox(
+                  height: 54,
+                  width: double.infinity,
+                  child: OutlinedButton.icon(
+                    onPressed: () {
+                      context.read<AuthBloc>().add(AuthSignOutRequested());
+                    },
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: Colors.red,
+                      side: const BorderSide(color: Colors.red),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                    ),
+                    icon: const Icon(Icons.logout_rounded, size: 20),
+                    label: const Text(
+                      'Logout',
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
       ),
     );
   }

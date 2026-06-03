@@ -1,49 +1,63 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lung_care_mobile/gen/assets.gen.dart';
 import 'package:lung_care_mobile/src/core/theme/app_colors.dart';
 import 'package:lung_care_mobile/src/presentation/bloc/auth/auth_bloc.dart';
 
-class RegisterPage extends StatefulWidget {
-  const RegisterPage({super.key});
+class CompleteProfilePage extends StatefulWidget {
+  const CompleteProfilePage({super.key});
 
   @override
-  State<RegisterPage> createState() => _RegisterPageState();
+  State<CompleteProfilePage> createState() => _CompleteProfilePageState();
 }
 
-class _RegisterPageState extends State<RegisterPage> {
+class _CompleteProfilePageState extends State<CompleteProfilePage> {
   final _formKey = GlobalKey<FormState>();
   final _fullNameController = TextEditingController();
   final _phoneNumberController = TextEditingController();
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
   final _addressController = TextEditingController();
-  bool _obscurePassword = true;
+
+  // AutovalidateMode: only validate after first submit attempt
+  AutovalidateMode _autovalidateMode = AutovalidateMode.disabled;
+
+  @override
+  void initState() {
+    super.initState();
+    // Pre-fill name from Google account if available
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null && user.displayName != null) {
+      _fullNameController.text = user.displayName!;
+    }
+  }
 
   @override
   void dispose() {
     _fullNameController.dispose();
     _phoneNumberController.dispose();
-    _emailController.dispose();
-    _passwordController.dispose();
     _addressController.dispose();
     super.dispose();
   }
 
   void _submit() {
     FocusScope.of(context).unfocus();
+
+    // Enable real-time validation after first submit attempt
+    if (_autovalidateMode != AutovalidateMode.onUserInteraction) {
+      setState(() {
+        _autovalidateMode = AutovalidateMode.onUserInteraction;
+      });
+    }
+
     if (!_formKey.currentState!.validate()) {
       return;
     }
 
     context.read<AuthBloc>().add(
-      AuthSignUpRequested(
-        fullName: _fullNameController.text.trim(),
+      AuthSaveProfileRequested(
+        name: _fullNameController.text.trim(),
         phoneNumber: _phoneNumberController.text.trim(),
-        email: _emailController.text.trim(),
-        password: _passwordController.text,
         address: _addressController.text.trim(),
       ),
     );
@@ -51,15 +65,12 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   Widget build(BuildContext context) {
+    final user = FirebaseAuth.instance.currentUser;
+
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
-        if (state is AuthRegistrationSuccess) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Pendaftaran berhasil. Silakan login.'),
-            ),
-          );
-          context.go('/login');
+        if (state is AuthProfileSaved) {
+          context.go('/home');
           return;
         }
         if (state is AuthError) {
@@ -74,14 +85,7 @@ class _RegisterPageState extends State<RegisterPage> {
           backgroundColor: AppColors.appbarColor,
           elevation: 1,
           centerTitle: true,
-          leading: IconButton(
-            onPressed: () => context.pop(),
-            icon: const Icon(
-              Icons.arrow_back_rounded,
-              color: AppColors.primary,
-              size: 24,
-            ),
-          ),
+          automaticallyImplyLeading: false,
           title: const Text(
             'LungCare+',
             style: TextStyle(
@@ -97,9 +101,14 @@ class _RegisterPageState extends State<RegisterPage> {
             padding: const EdgeInsets.fromLTRB(24, 28, 24, 24),
             child: Form(
               key: _formKey,
+              autovalidateMode: _autovalidateMode,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // Google account info header
+                  _GoogleAccountHeader(user: user),
+                  const SizedBox(height: 28),
+                  // Page hero
                   const _PageHero(),
                   const SizedBox(height: 28),
                   const _SectionTitle(text: 'INFORMASI PRIBADI'),
@@ -108,7 +117,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     controller: _fullNameController,
                     label: 'Nama Lengkap',
                     hint: 'Contoh: Budi Santoso',
-                    icon: Assets.icons.profileIcon,
+                    icon: Icons.person_outline_rounded,
                     textInputAction: TextInputAction.next,
                     validator: (value) {
                       final fullName = value?.trim() ?? '';
@@ -127,7 +136,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     label: 'Nomor WhatsApp',
                     hint: '08123456789',
                     maxLength: 15,
-                    icon: Assets.icons.messageIcon,
+                    icon: Icons.phone_outlined,
                     keyboardType: TextInputType.phone,
                     textInputAction: TextInputAction.next,
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
@@ -143,58 +152,13 @@ class _RegisterPageState extends State<RegisterPage> {
                     },
                   ),
                   const SizedBox(height: 30),
-                  const _SectionTitle(text: 'INFORMASI AKUN'),
-                  const SizedBox(height: 14),
-                  _LabeledInput(
-                    controller: _emailController,
-                    label: 'Email',
-                    hint: 'contoh@email.com',
-                    icon: Assets.icons.mainIcon,
-                    keyboardType: TextInputType.emailAddress,
-                    textInputAction: TextInputAction.next,
-                    validator: (value) {
-                      final email = value?.trim() ?? '';
-                      if (email.isEmpty) {
-                        return 'Email wajib diisi.';
-                      }
-                      if (!RegExp(
-                        r'^[^\s@]+@[^\s@]+\.[^\s@]+$',
-                      ).hasMatch(email)) {
-                        return 'Format email tidak valid.';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  _LabeledInput(
-                    controller: _passwordController,
-                    label: 'Password',
-                    hint: 'Masukkan password',
-                    icon: Assets.icons.lockIcon,
-                    obscureText: _obscurePassword,
-                    textInputAction: TextInputAction.next,
-                    onToggleObscure: () => setState(() {
-                      _obscurePassword = !_obscurePassword;
-                    }),
-                    validator: (value) {
-                      final password = value ?? '';
-                      if (password.isEmpty) {
-                        return 'Password wajib diisi.';
-                      }
-                      if (password.length < 6) {
-                        return 'Password minimal 6 karakter.';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 30),
                   const _SectionTitle(text: 'LOKASI'),
                   const SizedBox(height: 14),
                   _LabeledInput(
                     controller: _addressController,
                     label: 'Alamat (Kota Surabaya)',
                     hint: 'Kecamatan, Kelurahan...',
-                    icon: Assets.icons.locationIcon,
+                    icon: Icons.location_on_outlined,
                     textInputAction: TextInputAction.done,
                     onFieldSubmitted: (_) => _submit(),
                     validator: (value) {
@@ -217,7 +181,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       height: 1.35,
                     ),
                   ),
-                  const SizedBox(height: 18),
+                  const SizedBox(height: 28),
                   SizedBox(
                     width: double.infinity,
                     child: BlocBuilder<AuthBloc, AuthState>(
@@ -249,14 +213,17 @@ class _RegisterPageState extends State<RegisterPage> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Text(
-                                      'Buat Akun',
+                                      'Simpan & Lanjutkan',
                                       style: TextStyle(
-                                        fontSize: 27 / 2,
+                                        fontSize: 15,
                                         fontWeight: FontWeight.w600,
                                       ),
                                     ),
                                     SizedBox(width: 8),
-                                    Icon(Icons.arrow_forward_rounded, size: 22),
+                                    Icon(
+                                      Icons.arrow_forward_rounded,
+                                      size: 22,
+                                    ),
                                   ],
                                 ),
                         );
@@ -264,64 +231,138 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                   ),
                   const SizedBox(height: 18),
-                  const Row(
-                    children: [
-                      Expanded(
-                        child: Divider(thickness: 1, color: Color(0xFFD1D8E5)),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 14),
-                        child: Text(
-                          'atau daftar dengan',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Color(0xFF566174),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: Divider(thickness: 1, color: Color(0xFFD1D8E5)),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  SizedBox(
-                    width: double.infinity,
-                    child: OutlinedButton.icon(
-                      onPressed: () {
-                        context.read<AuthBloc>().add(
-                          AuthGoogleSignInRequested(),
-                        );
-                      },
-                      style: OutlinedButton.styleFrom(
-                        side: const BorderSide(color: Color(0xFFC8CFDB)),
-                        minimumSize: const Size.fromHeight(54),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        backgroundColor: Colors.white,
-                      ),
-                      icon: Assets.icons.googleIcon.image(
-                        width: 22,
-                        height: 22,
-                      ),
-                      label: const Text(
-                        'Daftar dengan Google',
-                        style: TextStyle(
-                          fontSize: 15,
-                          color: Color(0xFF21374A),
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 18),
-                  const _BottomLink(),
                 ],
               ),
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _GoogleAccountHeader extends StatelessWidget {
+  const _GoogleAccountHeader({required this.user});
+
+  final User? user;
+
+  @override
+  Widget build(BuildContext context) {
+    if (user == null) return const SizedBox.shrink();
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: const Color(0xFFDDE6F4)),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x0A000000),
+            blurRadius: 10,
+            offset: Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          // Top row: avatar + name + status badge
+          Row(
+            children: [
+              CircleAvatar(
+                radius: 24,
+                backgroundColor: const Color(0xFFE1F0FF),
+                backgroundImage: user!.photoURL != null
+                    ? NetworkImage(user!.photoURL!)
+                    : null,
+                child: user!.photoURL == null
+                    ? const Icon(
+                        Icons.person_rounded,
+                        color: AppColors.primary,
+                        size: 26,
+                      )
+                    : null,
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  user!.displayName ?? 'Akun Google',
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xFF0E2A3C),
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              const SizedBox(width: 8),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 5,
+                ),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFE8F5E9),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.check_circle,
+                      color: Color(0xFF4CAF50),
+                      size: 14,
+                    ),
+                    SizedBox(width: 4),
+                    Text(
+                      'Terhubung',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xFF4CAF50),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          // Email row – separated for clarity
+          if (user!.email != null && user!.email!.isNotEmpty) ...[
+            const SizedBox(height: 10),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              decoration: BoxDecoration(
+                color: const Color(0xFFF5F8FC),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Row(
+                children: [
+                  const Icon(
+                    Icons.email_outlined,
+                    size: 16,
+                    color: Color(0xFF7A8A9E),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      user!.email!,
+                      style: const TextStyle(
+                        fontSize: 13.5,
+                        color: Color(0xFF586372),
+                        fontWeight: FontWeight.w500,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ],
       ),
     );
   }
@@ -350,14 +391,14 @@ class _PageHero extends StatelessWidget {
             ],
           ),
           child: const Icon(
-            Icons.person_add_alt_1_rounded,
+            Icons.edit_note_rounded,
             color: Colors.white,
-            size: 24,
+            size: 26,
           ),
         ),
         const SizedBox(height: 16),
         const Text(
-          'Daftar Akun Baru',
+          'Lengkapi Profil',
           style: TextStyle(
             fontSize: 14,
             letterSpacing: 0.5,
@@ -367,9 +408,9 @@ class _PageHero extends StatelessWidget {
         ),
         const SizedBox(height: 10),
         const Text(
-          'Mulai Perjalanan\nSehat',
+          'Satu Langkah\nLagi!',
           style: TextStyle(
-            fontSize: 48 / 2,
+            fontSize: 24,
             height: 1.15,
             color: Color(0xFF0E2A3C),
             fontWeight: FontWeight.w800,
@@ -377,8 +418,7 @@ class _PageHero extends StatelessWidget {
         ),
         const SizedBox(height: 10),
         const Text(
-          'Lengkapi data diri Anda untuk bergabung\n'
-          'dengan platform pemantauan TBC.',
+          'Lengkapi data diri Anda untuk mulai\nmenggunakan layanan LungCare+.',
           style: TextStyle(
             fontSize: 17,
             height: 1.45,
@@ -401,7 +441,7 @@ class _SectionTitle extends StatelessWidget {
       text,
       style: const TextStyle(
         letterSpacing: 0.5,
-        fontSize: 14 / 1.02,
+        fontSize: 13.5,
         color: Color(0xFF557486),
         fontWeight: FontWeight.w700,
       ),
@@ -417,8 +457,6 @@ class _LabeledInput extends StatelessWidget {
     required this.icon,
     this.maxLength,
     this.keyboardType,
-    this.obscureText = false,
-    this.onToggleObscure,
     this.validator,
     this.textInputAction,
     this.onFieldSubmitted,
@@ -429,10 +467,8 @@ class _LabeledInput extends StatelessWidget {
   final int? maxLength;
   final String label;
   final String hint;
-  final AssetGenImage icon;
+  final IconData icon;
   final TextInputType? keyboardType;
-  final bool obscureText;
-  final VoidCallback? onToggleObscure;
   final String? Function(String?)? validator;
   final TextInputAction? textInputAction;
   final void Function(String)? onFieldSubmitted;
@@ -446,82 +482,73 @@ class _LabeledInput extends StatelessWidget {
         Text(
           label,
           style: const TextStyle(
-            fontSize: 27 / 2,
+            fontSize: 13.5,
             color: Color(0xFF3E8DE4),
             fontWeight: FontWeight.w600,
           ),
         ),
         const SizedBox(height: 8),
-        Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(14),
-            border: Border.all(color: const Color(0xFFBEC8D6)),
-          ),
-          child: TextFormField(
-            controller: controller,
-            maxLength: maxLength,
-            keyboardType: keyboardType,
-            obscureText: obscureText,
-            textInputAction: textInputAction,
-            onFieldSubmitted: onFieldSubmitted,
-            inputFormatters: inputFormatters,
-            validator: validator,
-            style: const TextStyle(fontSize: 16, color: Color(0xFF21374A)),
-            decoration: InputDecoration(
-              isDense: true,
-              hintText: hint,
-              hintStyle: const TextStyle(
-                color: Color(0xFF6E7886),
-                fontSize: 17 / 1.02,
-              ),
-              counterText: '',
-              border: InputBorder.none,
-              prefixIcon: Padding(
-                padding: const EdgeInsets.all(14),
-                child: icon.image(width: 20, height: 20, fit: BoxFit.contain),
-              ),
-              suffixIcon: onToggleObscure == null
-                  ? null
-                  : IconButton(
-                      onPressed: onToggleObscure,
-                      icon: Icon(
-                        obscureText
-                            ? Icons.visibility_off_outlined
-                            : Icons.visibility_outlined,
-                        color: const Color(0xFF717B8A),
-                      ),
-                    ),
-              suffixIconConstraints: const BoxConstraints(
-                minWidth: 44,
-                minHeight: 44,
-              ),
-              contentPadding: const EdgeInsets.symmetric(vertical: 18),
+        TextFormField(
+          controller: controller,
+          maxLength: maxLength,
+          keyboardType: keyboardType,
+          textInputAction: textInputAction,
+          onFieldSubmitted: onFieldSubmitted,
+          inputFormatters: inputFormatters,
+          validator: validator,
+          style: const TextStyle(fontSize: 16, color: Color(0xFF21374A)),
+          decoration: InputDecoration(
+            isDense: true,
+            hintText: hint,
+            hintStyle: const TextStyle(
+              color: Color(0xFF6E7886),
+              fontSize: 16,
             ),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _BottomLink extends StatelessWidget {
-  const _BottomLink();
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const Text('Sudah punya akun? '),
-        GestureDetector(
-          onTap: () => context.push('/login'),
-          child: const Text(
-            'Login sekarang',
-            style: TextStyle(
-              fontWeight: FontWeight.w600,
-              color: Color(0xFF4A90E2),
+            counterText: '',
+            filled: true,
+            fillColor: Colors.white,
+            prefixIcon: Padding(
+              padding: const EdgeInsets.all(14),
+              child: Icon(icon, size: 22, color: const Color(0xFF3E8DE4)),
             ),
+            contentPadding: const EdgeInsets.symmetric(vertical: 18),
+            // Normal state border
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(14),
+              borderSide: const BorderSide(color: Color(0xFFBEC8D6)),
+            ),
+            // Focused state border
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(14),
+              borderSide: const BorderSide(
+                color: Color(0xFF3E8DE4),
+                width: 1.5,
+              ),
+            ),
+            // Error state border
+            errorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(14),
+              borderSide: const BorderSide(
+                color: Color(0xFFE53935),
+                width: 1.2,
+              ),
+            ),
+            // Focused + error state border
+            focusedErrorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(14),
+              borderSide: const BorderSide(
+                color: Color(0xFFE53935),
+                width: 1.5,
+              ),
+            ),
+            // Error text style
+            errorStyle: const TextStyle(
+              fontSize: 12.5,
+              color: Color(0xFFE53935),
+              fontWeight: FontWeight.w500,
+              height: 1.3,
+            ),
+            errorMaxLines: 2,
           ),
         ),
       ],

@@ -46,6 +46,14 @@ class _LoginPageState extends State<LoginPage> {
           context.go('/home');
           return;
         }
+        if (state is AuthProfileIncomplete) {
+          context.go('/complete-profile');
+          return;
+        }
+        if (state is AuthProfileSaved) {
+          context.go('/home');
+          return;
+        }
         if (state is AuthError) {
           ScaffoldMessenger.of(
             context,
@@ -358,7 +366,9 @@ class _GoogleButton extends StatelessWidget {
     return SizedBox(
       height: 52,
       child: OutlinedButton(
-        onPressed: () {},
+        onPressed: () {
+          context.read<AuthBloc>().add(AuthGoogleSignInRequested());
+        },
         style: OutlinedButton.styleFrom(
           foregroundColor: const Color(0xFF1B2C3F),
           side: const BorderSide(color: Color(0xFFDDE6F4)),

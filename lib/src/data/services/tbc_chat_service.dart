@@ -1,9 +1,12 @@
 import 'package:firebase_ai/firebase_ai.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 /// Gemini-backed chat service focused on TBC education, via Firebase AI Logic.
 class TbcChatService {
   TbcChatService() {
-    final model = FirebaseAI.googleAI().generativeModel(
+    final model = FirebaseAI.googleAI(
+      auth: FirebaseAuth.instance,
+    ).generativeModel(
       model: 'gemini-2.5-flash',
       systemInstruction: Content.system(
         'Kamu adalah "Asisten TBC" dari aplikasi LungCare+. Jawab dalam Bahasa '
@@ -29,3 +32,4 @@ class TbcChatService {
         : 'Maaf, saya belum bisa menjawab itu. Coba tanyakan hal lain seputar TBC.';
   }
 }
+
