@@ -104,7 +104,11 @@ class _ChatbotPageState extends State<ChatbotPage> {
             CircleAvatar(
               radius: 18,
               backgroundColor: AppColors.ternary,
-              child: const Icon(Icons.smart_toy, color: AppColors.primary, size: 20),
+              child: const Icon(
+                Icons.smart_toy,
+                color: AppColors.primary,
+                size: 20,
+              ),
             ),
             const SizedBox(width: 10),
             Column(
@@ -240,7 +244,7 @@ class _Composer extends StatelessWidget {
         color: AppColors.white,
         child: Row(
           children: [
-            const Icon(Icons.add_circle_outline, color: AppColors.nautral),
+            // const Icon(Icons.add_circle_outline, color: AppColors.nautral),
             const SizedBox(width: 8),
             Expanded(
               child: TextField(

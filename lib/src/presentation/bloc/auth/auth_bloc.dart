@@ -55,6 +55,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   StreamSubscription<User?>? _authSubscription;
   bool _isRegistering = false;
   bool _isGoogleSigningIn = false;
+  bool _isSigningOut = false;
 
   void _onCheckAuthStatus(CheckAuthStatusEvent event, Emitter<AuthState> emit) {
     _authSubscription?.cancel();
@@ -68,7 +69,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     AuthUserChanged event,
     Emitter<AuthState> emit,
   ) async {
-    if (_isRegistering || _isGoogleSigningIn) return;
+    if (_isRegistering || _isGoogleSigningIn || _isSigningOut) return;
     final user = event.user;
     if (user is User) {
       // Check if the user has completed their profile in Firestore
@@ -233,6 +234,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Emitter<AuthState> emit,
   ) async {
     emit(AuthLoading());
+    _isSigningOut = true;
     try {
       await _signOut();
       emit(AuthLoggedOut());
@@ -240,6 +242,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(AuthError(error.message ?? 'Logout gagal.'));
     } catch (_) {
       emit(AuthError('Logout gagal.'));
+    } finally {
+      _isSigningOut = false;
     }
   }
 

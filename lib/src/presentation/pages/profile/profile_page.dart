@@ -31,16 +31,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<AuthBloc, AuthState>(
-      listener: (context, state) {
-        if (state is AuthLoggedOut) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.message)),
-          );
-          context.go('/login');
-        }
-      },
-      child: SingleChildScrollView(
+    return SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(20, 24, 20, 24),
         child: FutureBuilder<DocumentSnapshot<Map<String, dynamic>>?>(
           future: _cachedFuture,
@@ -115,6 +106,10 @@ class _ProfilePageState extends State<ProfilePage> {
                   child: OutlinedButton.icon(
                     onPressed: () {
                       context.read<AuthBloc>().add(AuthSignOutRequested());
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Berhasil logout.')),
+                      );
+                      context.go('/login');
                     },
                     style: OutlinedButton.styleFrom(
                       foregroundColor: Colors.red,
@@ -134,7 +129,6 @@ class _ProfilePageState extends State<ProfilePage> {
             );
           },
         ),
-      ),
     );
   }
 

@@ -73,7 +73,7 @@ class _HomeBodyViewState extends State<HomeBodyView> {
 
           return Scaffold(
             backgroundColor: AppColors.bodyColor,
-            drawer: HamburgerMenu(userName: loaded.userName),
+            drawer: const HamburgerMenu(),
             appBar: _navIndex == 0
                 ? HomeAppBar(userName: loaded.userName)
                 : AppBar(
