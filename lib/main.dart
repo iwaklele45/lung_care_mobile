@@ -7,12 +7,16 @@ import 'package:lung_care_mobile/firebase_options.dart';
 import 'package:lung_care_mobile/src/data/datasource/auth_remote_data_source.dart';
 import 'package:lung_care_mobile/src/data/repositories/auth_repository_impl.dart';
 import 'package:lung_care_mobile/src/domain/repositories/auth_repository.dart';
+import 'package:lung_care_mobile/src/domain/usecases/check_user_profile.dart';
 import 'package:lung_care_mobile/src/domain/usecases/create_user_with_email.dart';
 import 'package:lung_care_mobile/src/domain/usecases/observe_auth_state.dart';
+import 'package:lung_care_mobile/src/domain/usecases/save_user_profile.dart';
 import 'package:lung_care_mobile/src/domain/usecases/send_password_reset.dart';
 import 'package:lung_care_mobile/src/domain/usecases/sign_in_with_email.dart';
+import 'package:lung_care_mobile/src/domain/usecases/sign_in_with_google.dart';
 import 'package:lung_care_mobile/src/domain/usecases/sign_out.dart';
 import 'package:lung_care_mobile/src/presentation/bloc/auth/auth_bloc.dart';
+import 'package:lung_care_mobile/src/presentation/pages/auth/complete_profile_page.dart';
 import 'package:lung_care_mobile/src/presentation/pages/auth/forgot_password_page.dart';
 import 'package:lung_care_mobile/src/presentation/pages/auth/login_page.dart';
 import 'package:lung_care_mobile/src/presentation/pages/auth/register_page.dart';
@@ -87,6 +91,10 @@ class MyApp extends StatelessWidget {
         path: '/reset_password',
         builder: (context, state) => const ResetPasswordPage(),
       ),
+      GoRoute(
+        path: '/complete-profile',
+        builder: (context, state) => const CompleteProfilePage(),
+      ),
     ],
   );
 
@@ -114,6 +122,15 @@ class MyApp extends StatelessWidget {
             repository: context.read<AuthRepository>(),
           ),
           signOut: SignOut(repository: context.read<AuthRepository>()),
+          signInWithGoogle: SignInWithGoogle(
+            repository: context.read<AuthRepository>(),
+          ),
+          checkUserProfile: CheckUserProfile(
+            repository: context.read<AuthRepository>(),
+          ),
+          saveUserProfile: SaveUserProfile(
+            repository: context.read<AuthRepository>(),
+          ),
         )..add(CheckAuthStatusEvent()),
         child: MaterialApp.router(
           debugShowCheckedModeBanner: false,

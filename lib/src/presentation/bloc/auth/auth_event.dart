@@ -41,3 +41,17 @@ final class AuthPasswordResetRequested extends AuthEvent {
 }
 
 final class AuthSignOutRequested extends AuthEvent {}
+
+final class AuthGoogleSignInRequested extends AuthEvent {}
+
+final class AuthSaveProfileRequested extends AuthEvent {
+  AuthSaveProfileRequested({
+    required this.name,
+    required this.phoneNumber,
+    required this.address,
+  });
+
+  final String name;
+  final String phoneNumber;
+  final String address;
+}

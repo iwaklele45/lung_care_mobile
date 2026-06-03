@@ -48,5 +48,32 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
+  Future<UserCredential> signInWithGoogle() {
+    return _remoteDataSource.signInWithGoogle();
+  }
+
+  @override
+  Future<bool> checkUserProfileExists(String uid) {
+    return _remoteDataSource.checkUserProfileExists(uid);
+  }
+
+  @override
+  Future<void> saveUserProfile({
+    required String uid,
+    required String name,
+    required String phoneNumber,
+    required String address,
+    required String email,
+  }) {
+    return _remoteDataSource.saveUserProfile(
+      uid: uid,
+      name: name,
+      phoneNumber: phoneNumber,
+      address: address,
+      email: email,
+    );
+  }
+
+  @override
   Future<void> signOut() => _remoteDataSource.signOut();
 }

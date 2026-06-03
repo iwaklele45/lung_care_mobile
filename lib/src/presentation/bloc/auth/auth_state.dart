@@ -18,3 +18,7 @@ final class AuthError extends AuthState {
 }
 
 final class AuthLoading extends AuthState {}
+
+final class AuthProfileIncomplete extends AuthState {}
+
+final class AuthProfileSaved extends AuthState {}
