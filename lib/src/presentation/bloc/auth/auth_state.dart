@@ -22,3 +22,9 @@ final class AuthLoading extends AuthState {}
 final class AuthProfileIncomplete extends AuthState {}
 
 final class AuthProfileSaved extends AuthState {}
+
+final class AuthLoggedOut extends AuthState {
+  AuthLoggedOut({this.message = 'Berhasil logout.'});
+
+  final String message;
+}

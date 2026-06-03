@@ -211,7 +211,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(AuthLoading());
     try {
       await _signOut();
-      emit(AuthUnauthenticated());
+      emit(AuthLoggedOut());
     } on FirebaseAuthException catch (error) {
       emit(AuthError(error.message ?? 'Logout gagal.'));
     } catch (_) {
