@@ -64,11 +64,25 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     );
   }
 
-  void _onAuthUserChanged(AuthUserChanged event, Emitter<AuthState> emit) {
+  Future<void> _onAuthUserChanged(
+    AuthUserChanged event,
+    Emitter<AuthState> emit,
+  ) async {
     if (_isRegistering || _isGoogleSigningIn) return;
     final user = event.user;
     if (user is User) {
-      emit(AuthAuthenticated());
+      // Check if the user has completed their profile in Firestore
+      try {
+        final profileExists = await _checkUserProfile(uid: user.uid);
+        if (profileExists) {
+          emit(AuthAuthenticated());
+        } else {
+          emit(AuthProfileIncomplete());
+        }
+      } catch (_) {
+        // If profile check fails, assume incomplete to be safe
+        emit(AuthProfileIncomplete());
+      }
       return;
     }
     emit(AuthUnauthenticated());

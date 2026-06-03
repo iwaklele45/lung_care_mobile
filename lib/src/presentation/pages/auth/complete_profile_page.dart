@@ -19,6 +19,9 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
   final _phoneNumberController = TextEditingController();
   final _addressController = TextEditingController();
 
+  // AutovalidateMode: only validate after first submit attempt
+  AutovalidateMode _autovalidateMode = AutovalidateMode.disabled;
+
   @override
   void initState() {
     super.initState();
@@ -39,6 +42,14 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
 
   void _submit() {
     FocusScope.of(context).unfocus();
+
+    // Enable real-time validation after first submit attempt
+    if (_autovalidateMode != AutovalidateMode.onUserInteraction) {
+      setState(() {
+        _autovalidateMode = AutovalidateMode.onUserInteraction;
+      });
+    }
+
     if (!_formKey.currentState!.validate()) {
       return;
     }
@@ -90,6 +101,7 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
             padding: const EdgeInsets.fromLTRB(24, 28, 24, 24),
             child: Form(
               key: _formKey,
+              autovalidateMode: _autovalidateMode,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -252,67 +264,104 @@ class _GoogleAccountHeader extends StatelessWidget {
           ),
         ],
       ),
-      child: Row(
+      child: Column(
         children: [
-          CircleAvatar(
-            radius: 26,
-            backgroundColor: const Color(0xFFE1F0FF),
-            backgroundImage:
-                user!.photoURL != null ? NetworkImage(user!.photoURL!) : null,
-            child: user!.photoURL == null
-                ? const Icon(
-                    Icons.person_rounded,
-                    color: AppColors.primary,
-                    size: 28,
-                  )
-                : null,
-          ),
-          const SizedBox(width: 14),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
+          // Top row: avatar + name + status badge
+          Row(
+            children: [
+              CircleAvatar(
+                radius: 24,
+                backgroundColor: const Color(0xFFE1F0FF),
+                backgroundImage: user!.photoURL != null
+                    ? NetworkImage(user!.photoURL!)
+                    : null,
+                child: user!.photoURL == null
+                    ? const Icon(
+                        Icons.person_rounded,
+                        color: AppColors.primary,
+                        size: 26,
+                      )
+                    : null,
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
                   user!.displayName ?? 'Akun Google',
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                     color: Color(0xFF0E2A3C),
                   ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(height: 2),
-                Text(
-                  user!.email ?? '',
-                  style: const TextStyle(
-                    fontSize: 13,
-                    color: Color(0xFF586372),
-                  ),
+              ),
+              const SizedBox(width: 8),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 5,
                 ),
-              ],
-            ),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFE8F5E9),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.check_circle,
+                      color: Color(0xFF4CAF50),
+                      size: 14,
+                    ),
+                    SizedBox(width: 4),
+                    Text(
+                      'Terhubung',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xFF4CAF50),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-            decoration: BoxDecoration(
-              color: const Color(0xFFE8F5E9),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: const Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(Icons.check_circle, color: Color(0xFF4CAF50), size: 14),
-                SizedBox(width: 4),
-                Text(
-                  'Terhubung',
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    color: Color(0xFF4CAF50),
+          // Email row – separated for clarity
+          if (user!.email != null && user!.email!.isNotEmpty) ...[
+            const SizedBox(height: 10),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              decoration: BoxDecoration(
+                color: const Color(0xFFF5F8FC),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Row(
+                children: [
+                  const Icon(
+                    Icons.email_outlined,
+                    size: 16,
+                    color: Color(0xFF7A8A9E),
                   ),
-                ),
-              ],
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      user!.email!,
+                      style: const TextStyle(
+                        fontSize: 13.5,
+                        color: Color(0xFF586372),
+                        fontWeight: FontWeight.w500,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
+          ],
         ],
       ),
     );
@@ -439,36 +488,67 @@ class _LabeledInput extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 8),
-        Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(14),
-            border: Border.all(color: const Color(0xFFBEC8D6)),
-          ),
-          child: TextFormField(
-            controller: controller,
-            maxLength: maxLength,
-            keyboardType: keyboardType,
-            textInputAction: textInputAction,
-            onFieldSubmitted: onFieldSubmitted,
-            inputFormatters: inputFormatters,
-            validator: validator,
-            style: const TextStyle(fontSize: 16, color: Color(0xFF21374A)),
-            decoration: InputDecoration(
-              isDense: true,
-              hintText: hint,
-              hintStyle: const TextStyle(
-                color: Color(0xFF6E7886),
-                fontSize: 16,
-              ),
-              counterText: '',
-              border: InputBorder.none,
-              prefixIcon: Padding(
-                padding: const EdgeInsets.all(14),
-                child: Icon(icon, size: 22, color: const Color(0xFF3E8DE4)),
-              ),
-              contentPadding: const EdgeInsets.symmetric(vertical: 18),
+        TextFormField(
+          controller: controller,
+          maxLength: maxLength,
+          keyboardType: keyboardType,
+          textInputAction: textInputAction,
+          onFieldSubmitted: onFieldSubmitted,
+          inputFormatters: inputFormatters,
+          validator: validator,
+          style: const TextStyle(fontSize: 16, color: Color(0xFF21374A)),
+          decoration: InputDecoration(
+            isDense: true,
+            hintText: hint,
+            hintStyle: const TextStyle(
+              color: Color(0xFF6E7886),
+              fontSize: 16,
             ),
+            counterText: '',
+            filled: true,
+            fillColor: Colors.white,
+            prefixIcon: Padding(
+              padding: const EdgeInsets.all(14),
+              child: Icon(icon, size: 22, color: const Color(0xFF3E8DE4)),
+            ),
+            contentPadding: const EdgeInsets.symmetric(vertical: 18),
+            // Normal state border
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(14),
+              borderSide: const BorderSide(color: Color(0xFFBEC8D6)),
+            ),
+            // Focused state border
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(14),
+              borderSide: const BorderSide(
+                color: Color(0xFF3E8DE4),
+                width: 1.5,
+              ),
+            ),
+            // Error state border
+            errorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(14),
+              borderSide: const BorderSide(
+                color: Color(0xFFE53935),
+                width: 1.2,
+              ),
+            ),
+            // Focused + error state border
+            focusedErrorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(14),
+              borderSide: const BorderSide(
+                color: Color(0xFFE53935),
+                width: 1.5,
+              ),
+            ),
+            // Error text style
+            errorStyle: const TextStyle(
+              fontSize: 12.5,
+              color: Color(0xFFE53935),
+              fontWeight: FontWeight.w500,
+              height: 1.3,
+            ),
+            errorMaxLines: 2,
           ),
         ),
       ],

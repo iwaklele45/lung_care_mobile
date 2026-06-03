@@ -134,7 +134,7 @@ class AuthRemoteDataSource {
   }
 
   Future<void> signOut() async {
-    await _googleSignIn.signOut();
+    await _googleSignIn.disconnect();
     await _firebaseAuth.signOut();
   }
 }

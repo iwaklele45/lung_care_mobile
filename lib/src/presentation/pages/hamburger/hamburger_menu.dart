@@ -1,8 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lung_care_mobile/gen/assets.gen.dart';
 import 'package:lung_care_mobile/src/core/theme/app_colors.dart';
+import 'package:lung_care_mobile/src/presentation/bloc/auth/auth_bloc.dart';
 
 class HamburgerMenu extends StatefulWidget {
   const HamburgerMenu({
@@ -135,8 +137,7 @@ class _HamburgerMenuState extends State<HamburgerMenu> {
                 isSelected: false,
                 isDestructive: true,
                 onTap: () {
-                  FirebaseAuth.instance.signOut();
-                  // TODO: trigger AuthSignOutRequested
+                  context.read<AuthBloc>().add(AuthSignOutRequested());
                   context.go('/login');
                 },
               ),
