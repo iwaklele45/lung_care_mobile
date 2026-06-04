@@ -1,12 +1,11 @@
 import 'package:firebase_ai/firebase_ai.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 /// Gemini-backed chat service focused on TBC education, via Firebase AI Logic.
 class TbcChatService {
   TbcChatService() {
-    final model = FirebaseAI.googleAI(
-      auth: FirebaseAuth.instance,
-    ).generativeModel(
+    // Menggunakan Vertex AI backend → billing via Firebase Blaze (pay as you go).
+    // Sebelumnya pakai googleAI() yang billing-nya via AI Studio prepaid credits.
+    final model = FirebaseAI.vertexAI().generativeModel(
       // gemini-2.0-flash sudah shutdown per 1 Juni 2026.
       // Free tier gemini-2.5-flash: 5 RPM — retry logic menangani rate limit.
       model: 'gemini-2.5-flash',

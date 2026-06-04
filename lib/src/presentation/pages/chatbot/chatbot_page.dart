@@ -67,6 +67,8 @@ class _ChatbotPageState extends State<ChatbotPage> {
     } catch (e) {
       if (!mounted) return;
       final errorStr = e.toString();
+      // Log error detail untuk debugging
+      debugPrint('[ChatbotPage] Error: $errorStr');
       String errorMsg;
 
       if (errorStr.contains('Quota exceeded') || errorStr.contains('429')) {

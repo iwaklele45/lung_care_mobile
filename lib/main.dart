@@ -1,6 +1,4 @@
-import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -35,16 +33,11 @@ import 'package:lung_care_mobile/src/presentation/pages/splash_page.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  // App Check hanya diaktifkan di debug mode.
-  // Di release mode (APK sideload via GitHub), Play Integrity akan gagal
-  // karena app tidak diinstall dari Play Store → skip agar tidak memblokir
-  // Firebase AI requests.
-  if (kDebugMode) {
-    await FirebaseAppCheck.instance.activate(
-      providerAndroid: const AndroidDebugProvider(),
-      providerApple: const AppleDebugProvider(),
-    );
-  }
+  // App Check DINONAKTIFKAN untuk sideloaded APK (Tugas Akhir).
+  // - DebugProvider → butuh daftarkan token per device (tidak scalable).
+  // - PlayIntegrity → hanya untuk app dari Play Store.
+  // Pastikan App Check enforcement juga DIMATIKAN di Firebase Console.
+  // TODO: Aktifkan kembali dengan PlayIntegrityProvider saat publish ke Play Store.
   runApp(const MyApp());
 }
 
