@@ -10,8 +10,13 @@
 - Generated output goes to `lib/gen/`.
 
 ## Structure
-- Clean Architecture layout under `lib/` with `features/<feature>/{data,domain,presentation}` and shared code in `lib/src/`.
-- Ensure all new features from the Roadmap follow this separation of concerns.
+- Clean Architecture layout under `lib/src/` with `core/`, `data/`, `domain/`, `presentation/`.
+- Auth BLoC lives in `lib/src/presentation/bloc/`.
+
+## Auth flow
+- Firebase initializes in `lib/main.dart` and routes are defined with GoRouter.
+- Login UI lives in `lib/src/presentation/pages/auth/login_page.dart` and dispatches `AuthSignInRequested` / `AuthPasswordResetRequested`.
+- Email/password auth is wired; Google sign-in button is UI-only.
 
 ## Linting
 - Lints come from `analysis_options.yaml` (includes `package:flutter_lints/flutter.yaml`).

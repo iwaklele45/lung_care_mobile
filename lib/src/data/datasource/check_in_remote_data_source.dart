@@ -62,4 +62,12 @@ class CheckInRemoteDataSource {
       'created_at': FieldValue.serverTimestamp(),
     });
   }
+
+  Future<int> getCheckInCount() async {
+    final snapshot = await _firestore
+        .collection('health_tracking')
+        .where('patient_id', isEqualTo: _uid)
+        .get();
+    return snapshot.docs.length;
+  }
 }

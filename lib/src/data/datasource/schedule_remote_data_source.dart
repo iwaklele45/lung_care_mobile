@@ -27,12 +27,25 @@ class ScheduleRemoteDataSource {
     return uid;
   }
 
+  Future<List<Medication>> fetchSchedules() async {
+    final snapshot =
+        await _collection.where('uid', isEqualTo: _uid).get();
+    final meds = snapshot.docs
+        .map((doc) => Medication.fromMap(doc.id, doc.data()))
+        .toList();
+    meds.sort((a, b) {
+      final ta = a.times.isEmpty ? 0 : a.times.first.hour * 60 + a.times.first.minute;
+      final tb = b.times.isEmpty ? 0 : b.times.first.hour * 60 + b.times.first.minute;
+      return ta - tb;
+    });
+    return meds;
+  }
+
   Stream<List<Medication>> watchSchedules() {
     return _collection.where('uid', isEqualTo: _uid).snapshots().map((snapshot) {
       final meds = snapshot.docs
           .map((doc) => Medication.fromMap(doc.id, doc.data()))
           .toList();
-      // Sort client-side to avoid requiring a composite index.
       meds.sort((a, b) {
         final ta = a.times.isEmpty ? 0 : a.times.first.hour * 60 + a.times.first.minute;
         final tb = b.times.isEmpty ? 0 : b.times.first.hour * 60 + b.times.first.minute;
@@ -49,4 +62,18 @@ class ScheduleRemoteDataSource {
       _collection.doc(med.id).update(med.toMap());
 
   Future<void> deleteSchedule(String id) => _collection.doc(id).delete();
+
+  /// Decrements the integer value of `amount` by 1 for the given schedule doc.
+  /// Uses a Firestore transaction to avoid lost updates.
+  Future<void> decrementAmount(String scheduleId) async {
+    final ref = _collection.doc(scheduleId);
+    return _firestore.runTransaction((tx) async {
+      final snapshot = await tx.get(ref);
+      if (!snapshot.exists) return;
+      final current = snapshot.data()?['amount'];
+      final parsed = int.tryParse(current?.toString() ?? '') ?? 0;
+      if (parsed <= 0) return;
+      tx.update(ref, {'amount': (parsed - 1).toString()});
+    });
+  }
 }
