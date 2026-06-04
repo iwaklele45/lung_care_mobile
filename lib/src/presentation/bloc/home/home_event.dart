@@ -7,7 +7,7 @@ final class HomeFetchSchedulesRequested extends HomeEvent {}
 
 /// Triggered when the user taps "Check-in Dose" button.
 final class HomeCheckInDoseRequested extends HomeEvent {
-  HomeCheckInDoseRequested({required this.scheduleId});
+  HomeCheckInDoseRequested({required this.item});
 
-  final String scheduleId;
+  final MedicationScheduleItem item;
 }

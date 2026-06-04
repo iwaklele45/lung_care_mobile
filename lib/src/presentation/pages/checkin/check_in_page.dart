@@ -29,6 +29,7 @@ class _CheckInPageState extends State<CheckInPage> {
   bool _saving = false;
   bool _done = false;
   bool _loading = true;
+  int _streakDays = 0;
 
   @override
   void initState() {
@@ -39,20 +40,22 @@ class _CheckInPageState extends State<CheckInPage> {
   Future<void> _checkToday() async {
     try {
       final data = await _dataSource.getTodayCheckIn();
-      if (data != null && mounted) {
-        final symptoms = (data['symptoms'] as Map?) ?? const {};
+      final count = await _dataSource.getCheckInCount();
+      if (mounted) {
         setState(() {
-          _done = true;
-          // Prefill the labels that match saved (lowercased) keys.
-          for (final label in _symptoms.keys) {
-            final value = symptoms[label.toLowerCase()];
-            if (value is int) _ratings[label] = value;
+          _streakDays = count;
+          if (data != null) {
+            final symptoms = (data['symptoms'] as Map?) ?? const {};
+            _done = true;
+            for (final label in _symptoms.keys) {
+              final value = symptoms[label.toLowerCase()];
+              if (value is int) _ratings[label] = value;
+            }
+            _notesController.text = (data['additional_notes'] as String?) ?? '';
           }
-          _notesController.text = (data['additional_notes'] as String?) ?? '';
         });
       }
     } catch (_) {
-      // Ignore: treat as not-yet-done so the user can still try.
     } finally {
       if (mounted) setState(() => _loading = false);
     }
@@ -86,6 +89,7 @@ class _CheckInPageState extends State<CheckInPage> {
       );
       setState(() {
         _done = true;
+        _streakDays += 1;
       });
     } catch (e) {
       if (mounted) {
@@ -124,7 +128,7 @@ class _CheckInPageState extends State<CheckInPage> {
             style: const TextStyle(fontSize: 15, color: AppColors.nautral),
           ),
           const SizedBox(height: 18),
-          _StreakCard(),
+          _StreakCard(streakDays: _streakDays),
           const SizedBox(height: 22),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -244,6 +248,10 @@ class _CheckInPageState extends State<CheckInPage> {
 }
 
 class _StreakCard extends StatelessWidget {
+  const _StreakCard({required this.streakDays});
+
+  final int streakDays;
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -268,17 +276,17 @@ class _StreakCard extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 14),
-          const Expanded(
+          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                const Text(
                   'Current Streak',
                   style: TextStyle(fontSize: 14, color: AppColors.nautral),
                 ),
                 Text(
-                  '12 Days',
-                  style: TextStyle(
+                  '$streakDays Day${streakDays == 1 ? '' : 's'}',
+                  style: const TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.w700,
                     color: AppColors.primary,

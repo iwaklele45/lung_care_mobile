@@ -162,9 +162,8 @@ class _HomeBodyViewState extends State<HomeBodyView> {
                       onCheckIn: () {
                         context.read<HomeBloc>().add(
                           HomeCheckInDoseRequested(
-                            scheduleId: loaded.schedules
-                                .firstWhere((s) => s.status == 'pending')
-                                .id,
+                            item: loaded.schedules
+                                .firstWhere((s) => s.status == 'pending'),
                           ),
                         );
                       },
