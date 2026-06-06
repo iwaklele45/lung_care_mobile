@@ -13,6 +13,7 @@ class CreateUserWithEmail {
     required String email,
     required String password,
     required String address,
+    String? profilePicturePath,
   }) {
     return _repository.createUserWithEmailAndPassword(
       fullName: fullName,
@@ -20,6 +21,7 @@ class CreateUserWithEmail {
       email: email,
       password: password,
       address: address,
+      profilePicturePath: profilePicturePath,
     );
   }
 }
