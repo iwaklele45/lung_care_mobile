@@ -17,7 +17,6 @@ class AuthRemoteDataSource {
   }) : _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance,
        _firestore = firestore ?? FirebaseFirestore.instance,
        _functions = functions ?? FirebaseFunctions.instance,
-       _googleSignIn = googleSignIn ?? GoogleSignIn();
        _googleSignIn = googleSignIn ?? GoogleSignIn(),
        _profileStorage = profileStorage ?? ProfileStorageService();
 

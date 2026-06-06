@@ -145,6 +145,7 @@ class _FakeAuthRepository implements AuthRepository {
     required String email,
     required String password,
     required String address,
+    String? profilePicturePath,
   }) {
     throw UnimplementedError();
   }
@@ -182,6 +183,7 @@ class _FakeAuthRepository implements AuthRepository {
     required String phoneNumber,
     required String address,
     required String email,
+    String? profilePicturePath,
   }) async {}
 
   @override

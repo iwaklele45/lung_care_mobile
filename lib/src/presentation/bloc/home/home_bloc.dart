@@ -113,12 +113,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           final timeOfDay = entry.value;
           final hours = timeOfDay.hour;
           final minutes = timeOfDay.minute;
-          final ampm = hours >= 12 ? 'PM' : 'AM';
-          final displayHour = hours == 0
-              ? 12
-              : hours > 12
-              ? hours - 12
-              : hours;
           final timeStr =
               '${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}';
           return MedicationScheduleItem(

@@ -3,8 +3,8 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
-  flutter_timezone
   file_selector_linux
+  flutter_timezone
   url_launcher_linux
 )
 
