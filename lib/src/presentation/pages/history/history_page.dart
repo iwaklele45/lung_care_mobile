@@ -8,8 +8,29 @@ import 'package:lung_care_mobile/src/presentation/pages/history/activity_summary
 class HistoryPage extends StatelessWidget {
   const HistoryPage({super.key});
 
+  static const _bulanIndo = [
+    '', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+    'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember',
+  ];
+
+  static String _formatDateIndo(DateTime dt) =>
+      '${dt.day} ${_bulanIndo[dt.month]} ${dt.year}';
+
+  static String _formatDateEn(DateTime dt) {
+    const months = [
+      '', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+    ];
+    return '${dt.day.toString().padLeft(2, '0')} ${months[dt.month]} ${dt.year}';
+  }
+
   @override
   Widget build(BuildContext context) {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final yesterday = today.subtract(const Duration(days: 1));
+    final weekAgo = today.subtract(const Duration(days: 7));
+
     return Scaffold(
       backgroundColor: AppColors.bodyColor,
       drawer: const HamburgerMenu(selectedIndex: 1),
@@ -61,24 +82,24 @@ class HistoryPage extends StatelessWidget {
           ),
           const SizedBox(height: 14),
           _LogCard(
-            date: '20 May 2024',
+            date: _formatDateEn(today),
             time: '09:05 AM',
             status: _LogStatus.verified,
-            onTap: () => ActivitySummarySheet.show(context, date: '20 Mei 2024'),
+            onTap: () => ActivitySummarySheet.show(context, date: _formatDateIndo(today)),
           ),
           const SizedBox(height: 12),
           _LogCard(
-            date: '07 May 2024',
+            date: _formatDateEn(weekAgo),
             time: '09:00 AM',
             status: _LogStatus.missed,
-            onTap: () => ActivitySummarySheet.show(context, date: '07 Mei 2024'),
+            onTap: () => ActivitySummarySheet.show(context, date: _formatDateIndo(weekAgo)),
           ),
           const SizedBox(height: 12),
           _LogCard(
-            date: '21 May 2024',
+            date: _formatDateEn(yesterday),
             time: '09:05 AM',
             status: _LogStatus.verified,
-            onTap: () => ActivitySummarySheet.show(context, date: '21 Mei 2024'),
+            onTap: () => ActivitySummarySheet.show(context, date: _formatDateIndo(yesterday)),
           ),
           const SizedBox(height: 22),
           SizedBox(
@@ -112,25 +133,57 @@ class _CalendarCard extends StatefulWidget {
 }
 
 class _CalendarCardState extends State<_CalendarCard> {
-  // Demo data: day -> status (taken/missed). Days beyond 21 are disabled.
-  static const _taken = {
-    1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
-  };
-  static const _missed = {7};
   static const _months = [
     'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
     'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember',
   ];
 
-  int _selectedDay = 20;
+  late DateTime _now;
+  late int _today;
+  late int _daysInMonth;
+  late int _firstWeekday; // 0=Sun, 1=Mon ... 6=Sat
+  late Set<int> _taken;
+  late Set<int> _missed;
+  late int _selectedDay;
+
+  @override
+  void initState() {
+    super.initState();
+    _now = DateTime.now();
+    _today = _now.day;
+    _daysInMonth = DateTime(_now.year, _now.month + 1, 0).day;
+    // DateTime.weekday: 1=Mon ... 7=Sun → convert ke 0=Sun grid
+    final firstOfMonth = DateTime(_now.year, _now.month, 1);
+    _firstWeekday = firstOfMonth.weekday % 7; // 0=Sun
+
+    // Demo: semua hari sampai kemarin = taken, kecuali 7 hari lalu = missed
+    final missedDay = _today - 7;
+    _taken = {};
+    _missed = {};
+    for (var d = 1; d < _today; d++) {
+      if (d == missedDay) {
+        _missed.add(d);
+      } else {
+        _taken.add(d);
+      }
+    }
+    _selectedDay = _today;
+  }
 
   void _onDayTap(int day) {
     setState(() => _selectedDay = day);
-    ActivitySummarySheet.show(context, date: '$day ${_months[4]} 2024');
+    ActivitySummarySheet.show(
+      context,
+      date: '$day ${_months[_now.month - 1]} ${_now.year}',
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    final monthLabel = '${_months[_now.month - 1]} ${_now.year}';
+    final totalCells = _firstWeekday + _daysInMonth;
+    final rows = ((totalCells + 6) ~/ 7) * 7; // round up to full weeks
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -141,17 +194,17 @@ class _CalendarCardState extends State<_CalendarCard> {
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: const [
-              Icon(Icons.chevron_left, color: AppColors.nautral),
+            children: [
+              const Icon(Icons.chevron_left, color: AppColors.nautral),
               Text(
-                'May 2024',
-                style: TextStyle(
+                monthLabel,
+                style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w700,
                   color: AppColors.black,
                 ),
               ),
-              Icon(Icons.chevron_right, color: AppColors.nautral),
+              const Icon(Icons.chevron_right, color: AppColors.nautral),
             ],
           ),
           const SizedBox(height: 14),
@@ -174,16 +227,15 @@ class _CalendarCardState extends State<_CalendarCard> {
                 .toList(),
           ),
           const SizedBox(height: 8),
-          // May 2024 starts on Wednesday (offset 3).
           GridView.count(
             crossAxisCount: 7,
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             childAspectRatio: 0.9,
-            children: List.generate(35, (i) {
-              final day = i - 2; // offset so day 1 lands on Wednesday
-              if (day < 1 || day > 25) return const SizedBox.shrink();
-              final disabled = day > 21;
+            children: List.generate(rows, (i) {
+              final day = i - _firstWeekday + 1;
+              if (day < 1 || day > _daysInMonth) return const SizedBox.shrink();
+              final disabled = day > _today;
               return _DayCell(
                 day: day,
                 taken: _taken.contains(day),

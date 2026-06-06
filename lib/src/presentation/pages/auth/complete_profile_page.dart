@@ -85,7 +85,13 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
           backgroundColor: AppColors.appbarColor,
           elevation: 1,
           centerTitle: true,
-          automaticallyImplyLeading: false,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back_rounded, color: AppColors.primary),
+            onPressed: () {
+              context.read<AuthBloc>().add(AuthSignOutRequested());
+              context.go('/login');
+            },
+          ),
           title: const Text(
             'LungCare+',
             style: TextStyle(

@@ -54,6 +54,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final SaveUserProfile _saveUserProfile;
   StreamSubscription<User?>? _authSubscription;
   bool _isRegistering = false;
+  bool _isSigningIn = false;
   bool _isGoogleSigningIn = false;
   bool _isSigningOut = false;
 
@@ -69,7 +70,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     AuthUserChanged event,
     Emitter<AuthState> emit,
   ) async {
-    if (_isRegistering || _isGoogleSigningIn || _isSigningOut) return;
+    if (_isRegistering || _isSigningIn || _isGoogleSigningIn || _isSigningOut) return;
     final user = event.user;
     if (user is User) {
       // Check if the user has completed their profile in Firestore
@@ -94,8 +95,24 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Emitter<AuthState> emit,
   ) async {
     emit(AuthLoading());
+    _isSigningIn = true;
     try {
-      await _signInWithEmail(email: event.email, password: event.password);
+      final userCredential = await _signInWithEmail(
+        email: event.email,
+        password: event.password,
+      );
+      final user = userCredential.user;
+      if (user == null) {
+        emit(AuthError('Login gagal.'));
+        return;
+      }
+
+      final profileExists = await _checkUserProfile(uid: user.uid);
+      if (profileExists) {
+        emit(AuthAuthenticated());
+      } else {
+        emit(AuthProfileIncomplete());
+      }
     } on FirebaseAuthException catch (error) {
       // Menangkap kode error spesifik dari Firebase
       switch (error.code) {
@@ -124,6 +141,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     } catch (_) {
       // Catch umum (biasanya karena tidak ada koneksi internet sama sekali)
       emit(AuthError('Login gagal. Periksa koneksi internet Anda.'));
+    } finally {
+      _isSigningIn = false;
     }
   }
 
