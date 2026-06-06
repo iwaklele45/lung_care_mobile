@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lung_care_mobile/src/core/notifications/notification_service.dart';
 import 'package:lung_care_mobile/src/data/datasource/check_in_remote_data_source.dart';
 import 'package:lung_care_mobile/src/data/datasource/dose_check_in_data_source.dart';
 import 'package:lung_care_mobile/src/data/datasource/schedule_remote_data_source.dart';
@@ -42,11 +43,11 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     CheckInRemoteDataSource? checkInDataSource,
     ScheduleRemoteDataSource? scheduleDataSource,
     DoseCheckInDataSource? doseCheckInDataSource,
-  })  : _checkInDataSource = checkInDataSource ?? CheckInRemoteDataSource(),
-        _scheduleDataSource = scheduleDataSource ?? ScheduleRemoteDataSource(),
-        _doseCheckInDataSource =
-            doseCheckInDataSource ?? DoseCheckInDataSource(),
-        super(HomeInitial()) {
+  }) : _checkInDataSource = checkInDataSource ?? CheckInRemoteDataSource(),
+       _scheduleDataSource = scheduleDataSource ?? ScheduleRemoteDataSource(),
+       _doseCheckInDataSource =
+           doseCheckInDataSource ?? DoseCheckInDataSource(),
+       super(HomeInitial()) {
     on<HomeFetchSchedulesRequested>(_onFetchSchedules);
     on<HomeCheckInDoseRequested>(_onCheckInDose);
   }
@@ -74,7 +75,19 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       final progressPercent = treatmentDay / totalDays;
 
       final medications = await _scheduleDataSource.fetchSchedules();
-      final checkedInKeys = await _doseCheckInDataSource.getCheckedInKeysToday();
+      try {
+        final notificationPreferences = await NotificationService.instance
+            .loadPreferences();
+        if (notificationPreferences.generalNotification ||
+            notificationPreferences.medicationReminder) {
+          await NotificationService.instance.registerCurrentDeviceToken();
+        }
+        await NotificationService.instance.syncMedicationReminders(medications);
+      } catch (_) {
+        // Notification setup should never block the home schedule itself.
+      }
+      final checkedInKeys = await _doseCheckInDataSource
+          .getCheckedInKeysToday();
 
       final schedules = medications.expand<MedicationScheduleItem>((med) {
         if (med.times.isEmpty) {
@@ -100,8 +113,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           final displayHour = hours == 0
               ? 12
               : hours > 12
-                  ? hours - 12
-                  : hours;
+              ? hours - 12
+              : hours;
           final timeStr =
               '$displayHour:${minutes.toString().padLeft(2, '0')} $ampm';
           return MedicationScheduleItem(
