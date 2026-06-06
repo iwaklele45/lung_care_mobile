@@ -1,33 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:lung_care_mobile/src/core/theme/app_colors.dart';
-import 'package:lung_care_mobile/src/data/models/facility.dart';
 
-/// Detail page for a single health facility in Surabaya.
+/// Detail page for a single health facility.
 class FacilityDetailPage extends StatelessWidget {
-  const FacilityDetailPage({super.key, required this.facility});
+  const FacilityDetailPage({
+    super.key,
+    required this.name,
+    required this.type,
+    required this.address,
+  });
 
-  final Facility facility;
+  final String name;
+  final String type;
+  final String address;
 
   @override
   Widget build(BuildContext context) {
-    final isPuskesmas = facility.type == 'Puskesmas';
-    final is24h = facility.hours == 'Buka 24 Jam';
-
+    final isPuskesmas = type == 'Puskesmas';
     return Scaffold(
       backgroundColor: AppColors.bodyColor,
       body: ListView(
         padding: EdgeInsets.zero,
         children: [
-          _Header(facility: facility, isPuskesmas: isPuskesmas),
+          _Header(name: name, type: type, isPuskesmas: isPuskesmas),
           Padding(
             padding: const EdgeInsets.fromLTRB(20, 20, 20, 28),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (facility.hasTbcService) ...[
-                  const _TbcServiceCard(),
-                  const SizedBox(height: 22),
-                ],
+                const _TbcServiceCard(),
+                const SizedBox(height: 22),
                 const _SectionLabel('LOKASI'),
                 const SizedBox(height: 10),
                 Row(
@@ -44,7 +46,7 @@ class FacilityDetailPage extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            facility.address,
+                            address,
                             style: const TextStyle(
                               fontSize: 15,
                               height: 1.5,
@@ -53,16 +55,16 @@ class FacilityDetailPage extends StatelessWidget {
                           ),
                           const SizedBox(height: 6),
                           Row(
-                            children: [
-                              const Icon(
+                            children: const [
+                              Icon(
                                 Icons.directions_walk,
                                 size: 16,
                                 color: AppColors.primary,
                               ),
-                              const SizedBox(width: 4),
+                              SizedBox(width: 4),
                               Text(
-                                '${facility.distance.toStringAsFixed(1)} km dari lokasi Anda',
-                                style: const TextStyle(
+                                '1.2 km dari lokasi Anda',
+                                style: TextStyle(
                                   fontSize: 13,
                                   color: AppColors.primary,
                                 ),
@@ -77,22 +79,16 @@ class FacilityDetailPage extends StatelessWidget {
                 const Divider(height: 32, color: Color(0xFFE8EEF6)),
                 const _SectionLabel('KONTAK'),
                 const SizedBox(height: 10),
-                _ContactCard(phone: facility.phone),
+                const _ContactCard(),
                 const SizedBox(height: 22),
                 const _SectionLabel('JAM OPERASIONAL'),
                 const SizedBox(height: 10),
-                _HoursCard(
-                  is24h: is24h,
-                  weekday: facility.hoursWeekday,
-                  weekend: facility.hoursWeekend,
-                ),
+                const _HoursCard(),
                 const SizedBox(height: 28),
                 SizedBox(
                   height: 54,
                   child: ElevatedButton.icon(
-                    onPressed: () {
-                      // TODO: Open Google Maps with the facility's location
-                    },
+                    onPressed: () {},
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF5B9BE8),
                       foregroundColor: Colors.white,
@@ -120,9 +116,14 @@ class FacilityDetailPage extends StatelessWidget {
 }
 
 class _Header extends StatelessWidget {
-  const _Header({required this.facility, required this.isPuskesmas});
+  const _Header({
+    required this.name,
+    required this.type,
+    required this.isPuskesmas,
+  });
 
-  final Facility facility;
+  final String name;
+  final String type;
   final bool isPuskesmas;
 
   @override
@@ -167,6 +168,7 @@ class _Header extends StatelessWidget {
                   icon: Icons.arrow_back_rounded,
                   onTap: () => Navigator.of(context).pop(),
                 ),
+                // _CircleButton(icon: Icons.share_outlined, onTap: () {}),
               ],
             ),
           ),
@@ -199,7 +201,7 @@ class _Header extends StatelessWidget {
                     ),
                     const SizedBox(width: 4),
                     Text(
-                      facility.type,
+                      type,
                       style: const TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w600,
@@ -211,7 +213,7 @@ class _Header extends StatelessWidget {
               ),
               const SizedBox(height: 10),
               Text(
-                facility.name,
+                name,
                 style: const TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.w800,
@@ -221,12 +223,12 @@ class _Header extends StatelessWidget {
               ),
               const SizedBox(height: 6),
               Row(
-                children: [
-                  const Icon(Icons.star, size: 16, color: Color(0xFFFBBF24)),
-                  const SizedBox(width: 4),
+                children: const [
+                  Icon(Icons.star, size: 16, color: Colors.white),
+                  SizedBox(width: 4),
                   Text(
-                    '${facility.rating} (${facility.reviewCount} Ulasan)',
-                    style: const TextStyle(fontSize: 14, color: Colors.white),
+                    '4.8 (124 Ulasan)',
+                    style: TextStyle(fontSize: 14, color: Colors.white),
                   ),
                 ],
               ),
@@ -321,9 +323,7 @@ class _TbcServiceCard extends StatelessWidget {
 }
 
 class _ContactCard extends StatelessWidget {
-  const _ContactCard({required this.phone});
-
-  final String phone;
+  const _ContactCard();
 
   @override
   Widget build(BuildContext context) {
@@ -346,12 +346,12 @@ class _ContactCard extends StatelessWidget {
             child: const Icon(Icons.phone, color: AppColors.primary, size: 20),
           ),
           const SizedBox(width: 12),
-          Expanded(
+          const Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Telepon',
+                Text(
+                  'Telepon Klinik',
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
@@ -359,8 +359,8 @@ class _ContactCard extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  phone,
-                  style: const TextStyle(fontSize: 13, color: AppColors.nautral),
+                  '(021) 31930108',
+                  style: TextStyle(fontSize: 13, color: AppColors.nautral),
                 ),
               ],
             ),
@@ -373,15 +373,7 @@ class _ContactCard extends StatelessWidget {
 }
 
 class _HoursCard extends StatelessWidget {
-  const _HoursCard({
-    required this.is24h,
-    required this.weekday,
-    required this.weekend,
-  });
-
-  final bool is24h;
-  final String weekday;
-  final String? weekend;
+  const _HoursCard();
 
   @override
   Widget build(BuildContext context) {
@@ -393,18 +385,10 @@ class _HoursCard extends StatelessWidget {
         border: Border.all(color: const Color(0xFFE8EEF6)),
       ),
       child: Column(
-        children: [
-          if (is24h) ...[
-            const _HoursRow(day: 'Setiap Hari', time: '24 Jam'),
-          ] else ...[
-            _HoursRow(day: 'Senin - Jumat', time: weekday),
-            if (weekend != null) ...[
-              const SizedBox(height: 8),
-              _HoursRow(day: 'Sabtu', time: weekend!),
-            ],
-            const SizedBox(height: 8),
-            const _HoursRow(day: 'Minggu & Libur', time: 'Tutup'),
-          ],
+        children: const [
+          _HoursRow(day: 'Senin - Jumat', time: '08:00 - 15:00'),
+          SizedBox(height: 8),
+          _HoursRow(day: 'Sabtu', time: '08:00 - 12:00'),
         ],
       ),
     );
