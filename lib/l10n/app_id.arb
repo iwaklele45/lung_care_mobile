@@ -104,5 +104,16 @@
   "save": "Simpan",
   "requiredField": "Wajib diisi.",
   "saveProfileFailed": "Gagal menyimpan profil.",
-  "dataNotFound": "Data tidak ditemukan."
+  "dataNotFound": "Data tidak ditemukan.",
+
+  "greetingMorning": "Selamat pagi",
+  "greetingAfternoon": "Selamat siang",
+  "greetingEvening": "Selamat malam",
+  "helloName": "Halo, {name}!",
+  "@helloName": { "placeholders": { "name": { "type": "String" } } },
+
+  "navHome": "Beranda",
+  "navMeds": "Obat",
+  "navCheckIn": "Check-in",
+  "navProfile": "Profil"
 }

@@ -97,5 +97,15 @@
   "save": "Save",
   "requiredField": "Required.",
   "saveProfileFailed": "Failed to save profile.",
-  "dataNotFound": "Data not found."
+  "dataNotFound": "Data not found.",
+
+  "greetingMorning": "Good morning",
+  "greetingAfternoon": "Good afternoon",
+  "greetingEvening": "Good evening",
+  "helloName": "Hello, {name}!",
+
+  "navHome": "Home",
+  "navMeds": "Meds",
+  "navCheckIn": "Check-in",
+  "navProfile": "Profile"
 }

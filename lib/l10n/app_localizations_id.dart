@@ -286,4 +286,30 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get dataNotFound => 'Data tidak ditemukan.';
+
+  @override
+  String get greetingMorning => 'Selamat pagi';
+
+  @override
+  String get greetingAfternoon => 'Selamat siang';
+
+  @override
+  String get greetingEvening => 'Selamat malam';
+
+  @override
+  String helloName(String name) {
+    return 'Halo, $name!';
+  }
+
+  @override
+  String get navHome => 'Beranda';
+
+  @override
+  String get navMeds => 'Obat';
+
+  @override
+  String get navCheckIn => 'Check-in';
+
+  @override
+  String get navProfile => 'Profil';
 }

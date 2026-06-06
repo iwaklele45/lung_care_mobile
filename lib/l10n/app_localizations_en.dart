@@ -285,4 +285,30 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dataNotFound => 'Data not found.';
+
+  @override
+  String get greetingMorning => 'Good morning';
+
+  @override
+  String get greetingAfternoon => 'Good afternoon';
+
+  @override
+  String get greetingEvening => 'Good evening';
+
+  @override
+  String helloName(String name) {
+    return 'Hello, $name!';
+  }
+
+  @override
+  String get navHome => 'Home';
+
+  @override
+  String get navMeds => 'Meds';
+
+  @override
+  String get navCheckIn => 'Check-in';
+
+  @override
+  String get navProfile => 'Profile';
 }

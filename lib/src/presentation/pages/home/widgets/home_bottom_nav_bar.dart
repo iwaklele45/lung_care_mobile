@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lung_care_mobile/l10n/app_localizations.dart';
 import 'package:lung_care_mobile/gen/assets.gen.dart';
 import 'package:lung_care_mobile/src/core/theme/app_colors.dart';
 
@@ -15,6 +16,7 @@ class HomeBottomNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     return Container(
       padding: const EdgeInsets.only(top: 10),
       decoration: BoxDecoration(
@@ -38,25 +40,25 @@ class HomeBottomNavBar extends StatelessWidget {
             children: [
               _NavItem(
                 icon: Assets.icons.homeIcon.image(width: 22, height: 22),
-                label: 'Home',
+                label: l.navHome,
                 isSelected: currentIndex == 0,
                 onTap: () => onTap(0),
               ),
               _NavItem(
                 icon: Assets.icons.medsIcon.image(width: 22, height: 22),
-                label: 'Meds',
+                label: l.navMeds,
                 isSelected: currentIndex == 1,
                 onTap: () => onTap(1),
               ),
               _NavItem(
                 icon: Assets.icons.checkInIcon.image(width: 22, height: 22),
-                label: 'Check-in',
+                label: l.navCheckIn,
                 isSelected: currentIndex == 2,
                 onTap: () => onTap(2),
               ),
               _NavItem(
                 icon: Assets.icons.profileIcon.image(width: 22, height: 22),
-                label: 'Profile',
+                label: l.navProfile,
                 isSelected: currentIndex == 3,
                 onTap: () => onTap(3),
               ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lung_care_mobile/l10n/app_localizations.dart';
 import 'package:lung_care_mobile/gen/assets.gen.dart';
 import 'package:lung_care_mobile/src/core/theme/app_colors.dart';
 
@@ -10,15 +11,16 @@ class Header extends StatelessWidget {
 
   final String userName;
 
-  String _greeting() {
+  String _greeting(AppLocalizations l) {
     final hour = DateTime.now().hour;
-    if (hour < 12) return 'Good morning';
-    if (hour < 17) return 'Good afternoon';
-    return 'Good evening,';
+    if (hour < 12) return l.greetingMorning;
+    if (hour < 17) return l.greetingAfternoon;
+    return l.greetingEvening;
   }
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 20, 20, 4),
       child: Row(
@@ -30,7 +32,7 @@ class Header extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  _greeting(),
+                  _greeting(l),
                   style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
@@ -40,7 +42,7 @@ class Header extends StatelessWidget {
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  'Hello, $userName!',
+                  l.helloName(userName),
                   style: const TextStyle(
                     fontSize: 32,
                     fontWeight: FontWeight.w600,
@@ -57,3 +59,4 @@ class Header extends StatelessWidget {
     );
   }
 }
+

@@ -619,6 +619,54 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Data tidak ditemukan.'**
   String get dataNotFound;
+
+  /// No description provided for @greetingMorning.
+  ///
+  /// In id, this message translates to:
+  /// **'Selamat pagi'**
+  String get greetingMorning;
+
+  /// No description provided for @greetingAfternoon.
+  ///
+  /// In id, this message translates to:
+  /// **'Selamat siang'**
+  String get greetingAfternoon;
+
+  /// No description provided for @greetingEvening.
+  ///
+  /// In id, this message translates to:
+  /// **'Selamat malam'**
+  String get greetingEvening;
+
+  /// No description provided for @helloName.
+  ///
+  /// In id, this message translates to:
+  /// **'Halo, {name}!'**
+  String helloName(String name);
+
+  /// No description provided for @navHome.
+  ///
+  /// In id, this message translates to:
+  /// **'Beranda'**
+  String get navHome;
+
+  /// No description provided for @navMeds.
+  ///
+  /// In id, this message translates to:
+  /// **'Obat'**
+  String get navMeds;
+
+  /// No description provided for @navCheckIn.
+  ///
+  /// In id, this message translates to:
+  /// **'Check-in'**
+  String get navCheckIn;
+
+  /// No description provided for @navProfile.
+  ///
+  /// In id, this message translates to:
+  /// **'Profil'**
+  String get navProfile;
 }
 
 class _AppLocalizationsDelegate
