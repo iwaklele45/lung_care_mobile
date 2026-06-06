@@ -1,12 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:lung_care_mobile/src/core/theme/app_colors.dart';
 import 'package:lung_care_mobile/src/data/models/facility.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 /// Detail page for a single health facility in Surabaya.
 class FacilityDetailPage extends StatelessWidget {
   const FacilityDetailPage({super.key, required this.facility});
 
   final Facility facility;
+
+  String get _googleMapsUrl =>
+      'https://www.google.com/maps/search/?api=1&query=${Uri.encodeQueryComponent(facility.address)}';
+
+  Future<void> _openGoogleMaps() async {
+    final uri = Uri.parse(_googleMapsUrl);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -90,9 +101,7 @@ class FacilityDetailPage extends StatelessWidget {
                 SizedBox(
                   height: 54,
                   child: ElevatedButton.icon(
-                    onPressed: () {
-                      // TODO: Open Google Maps with the facility's location
-                    },
+                    onPressed: _openGoogleMaps,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF5B9BE8),
                       foregroundColor: Colors.white,
@@ -125,38 +134,63 @@ class _Header extends StatelessWidget {
   final Facility facility;
   final bool isPuskesmas;
 
+  /// Default gradient when no cover image is available.
+  static const _defaultGradient = LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [Color(0xFF8FB7DC), Color(0xFF5B7A93)],
+  );
+
   @override
   Widget build(BuildContext context) {
+    final hasCover = facility.coverImageUrl != null &&
+        facility.coverImageUrl!.isNotEmpty;
+
     return Stack(
       children: [
-        Container(
-          height: 280,
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [Color(0xFF8FB7DC), Color(0xFF5B7A93)],
+        // Background: cover image or gradient
+        if (hasCover)
+          SizedBox(
+            height: 280,
+            child: Image.network(
+              facility.coverImageUrl!,
+              width: double.infinity,
+              height: 280,
+              fit: BoxFit.cover,
+              errorBuilder: (_, __, ___) => _gradientContainer(),
+              loadingBuilder: (context, child, loadingProgress) {
+                if (loadingProgress == null) return child;
+                return _gradientContainer(
+                  child: const Center(
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white54),
+                    ),
+                  ),
+                );
+              },
             ),
-            borderRadius: BorderRadius.vertical(bottom: Radius.circular(24)),
-          ),
-        ),
-        Positioned.fill(
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: const BorderRadius.vertical(
-                bottom: Radius.circular(24),
-              ),
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  Colors.transparent,
-                  Colors.black.withValues(alpha: 0.45),
-                ],
+          )
+        else
+          _gradientContainer(),
+
+        // Dark overlay for text readability on cover image
+        if (hasCover)
+          Positioned.fill(
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.transparent,
+                    Colors.black.withValues(alpha: 0.55),
+                  ],
+                ),
               ),
             ),
           ),
-        ),
+
+        // Back button
         SafeArea(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -171,6 +205,8 @@ class _Header extends StatelessWidget {
             ),
           ),
         ),
+
+        // Facility info overlay at bottom
         Positioned(
           left: 20,
           right: 20,
@@ -234,6 +270,17 @@ class _Header extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _gradientContainer({Widget? child}) {
+    return Container(
+      height: 280,
+      decoration: const BoxDecoration(
+        gradient: _defaultGradient,
+        borderRadius: BorderRadius.vertical(bottom: Radius.circular(24)),
+      ),
+      child: child,
     );
   }
 }

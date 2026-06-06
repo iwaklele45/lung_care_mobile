@@ -5,12 +5,20 @@ import 'package:lung_care_mobile/src/presentation/pages/facilities/facility_deta
 import 'package:lung_care_mobile/src/presentation/pages/hamburger/hamburger_menu.dart';
 
 /// "CareFinder": list of nearby health facilities in Surabaya.
-class CareFinderPage extends StatelessWidget {
+class CareFinderPage extends StatefulWidget {
   const CareFinderPage({super.key});
+
+  @override
+  State<CareFinderPage> createState() => _CareFinderPageState();
+}
+
+class _CareFinderPageState extends State<CareFinderPage> {
+  /// Current filter: null = all, 'Rumah Sakit' or 'Puskesmas'
+  String? _selectedFilter;
 
   /// Curated list of real healthcare facilities in Surabaya.
   /// Data sourced from Wikipedia & Dinkes Surabaya.
-  static const List<Facility> _facilities = [
+  static const List<Facility> _allFacilities = [
     // ─── RUMAH SAKIT ───
     Facility(
       type: 'Rumah Sakit',
@@ -24,6 +32,7 @@ class CareFinderPage extends StatelessWidget {
       reviewCount: 520,
       distance: 2.5,
       hasTbcService: true,
+      coverImageUrl: 'https://images.unsplash.com/photo-1587351021759-3772687fe598?w=600&h=400&fit=crop',
     ),
     Facility(
       type: 'Rumah Sakit',
@@ -37,6 +46,7 @@ class CareFinderPage extends StatelessWidget {
       reviewCount: 210,
       distance: 4.1,
       hasTbcService: true,
+      coverImageUrl: 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=600&h=400&fit=crop',
     ),
     Facility(
       type: 'Rumah Sakit',
@@ -50,6 +60,7 @@ class CareFinderPage extends StatelessWidget {
       reviewCount: 340,
       distance: 3.8,
       hasTbcService: true,
+      coverImageUrl: 'https://images.unsplash.com/photo-1551076805-e1869033e561?w=600&h=400&fit=crop',
     ),
     Facility(
       type: 'Rumah Sakit',
@@ -63,6 +74,7 @@ class CareFinderPage extends StatelessWidget {
       reviewCount: 185,
       distance: 5.2,
       hasTbcService: true,
+      coverImageUrl: 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=600&h=400&fit=crop',
     ),
     Facility(
       type: 'Rumah Sakit',
@@ -76,6 +88,7 @@ class CareFinderPage extends StatelessWidget {
       reviewCount: 410,
       distance: 1.8,
       hasTbcService: true,
+      coverImageUrl: 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=600&h=400&fit=crop',
     ),
     Facility(
       type: 'Rumah Sakit',
@@ -89,6 +102,7 @@ class CareFinderPage extends StatelessWidget {
       reviewCount: 95,
       distance: 6.0,
       hasTbcService: true,
+      coverImageUrl: 'https://images.unsplash.com/photo-1584515933487-779824d29309?w=600&h=400&fit=crop',
     ),
     Facility(
       type: 'Rumah Sakit',
@@ -102,6 +116,7 @@ class CareFinderPage extends StatelessWidget {
       reviewCount: 280,
       distance: 7.5,
       hasTbcService: false,
+      coverImageUrl: 'https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=600&h=400&fit=crop',
     ),
     Facility(
       type: 'Rumah Sakit',
@@ -115,6 +130,7 @@ class CareFinderPage extends StatelessWidget {
       reviewCount: 160,
       distance: 6.8,
       hasTbcService: true,
+      coverImageUrl: 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=600&h=400&fit=crop',
     ),
     Facility(
       type: 'Rumah Sakit',
@@ -128,6 +144,7 @@ class CareFinderPage extends StatelessWidget {
       reviewCount: 130,
       distance: 4.5,
       hasTbcService: true,
+      coverImageUrl: 'https://images.unsplash.com/photo-1579154204601-01588f6f1a1c?w=600&h=400&fit=crop',
     ),
     Facility(
       type: 'Rumah Sakit',
@@ -141,6 +158,7 @@ class CareFinderPage extends StatelessWidget {
       reviewCount: 75,
       distance: 3.2,
       hasTbcService: true,
+      coverImageUrl: 'https://images.unsplash.com/photo-1587351021759-3772687fe598?w=600&h=400&fit=crop',
     ),
 
     // ─── PUSKESMAS ───
@@ -250,8 +268,19 @@ class CareFinderPage extends StatelessWidget {
     ),
   ];
 
+  List<Facility> get _filteredFacilities {
+    if (_selectedFilter == null) return _allFacilities;
+    return _allFacilities.where((f) => f.type == _selectedFilter).toList();
+  }
+
+  int get _totalCount => _allFacilities.length;
+  int get _rsCount => _allFacilities.where((f) => f.type == 'Rumah Sakit').length;
+  int get _puskesmasCount => _allFacilities.where((f) => f.type == 'Puskesmas').length;
+
   @override
   Widget build(BuildContext context) {
+    final filtered = _filteredFacilities;
+
     return Scaffold(
       backgroundColor: AppColors.bodyColor,
       drawer: const HamburgerMenu(selectedIndex: 3),
@@ -298,12 +327,20 @@ class CareFinderPage extends StatelessWidget {
             style: TextStyle(fontSize: 14, color: AppColors.nautral),
           ),
           const SizedBox(height: 18),
-          // Type filter chips
-          _FilterRow(facilities: _facilities),
+          // Type filter chips — tappable now!
+          _FilterRow(
+            selectedFilter: _selectedFilter,
+            totalCount: _totalCount,
+            rsCount: _rsCount,
+            puskesmasCount: _puskesmasCount,
+            onFilter: (filter) {
+              setState(() => _selectedFilter = filter);
+            },
+          ),
           const SizedBox(height: 12),
           // Results count
           Text(
-            '${_facilities.length} fasilitas terdekat',
+            '${filtered.length} fasilitas${_selectedFilter != null ? ' ${_selectedFilter!.toLowerCase()}' : ''}',
             style: const TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.w600,
@@ -311,32 +348,52 @@ class CareFinderPage extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 14),
-          ..._facilities.map((f) => FacilityCard(facility: f)),
+          ...filtered.map((f) => FacilityCard(facility: f)),
         ],
       ),
     );
   }
 }
 
-/// Filter chips for Puskesmas / Rumah Sakit / Semua
+/// Filter chips for Semua / Rumah Sakit / Puskesmas
 class _FilterRow extends StatelessWidget {
-  const _FilterRow({required this.facilities});
+  const _FilterRow({
+    required this.selectedFilter,
+    required this.totalCount,
+    required this.rsCount,
+    required this.puskesmasCount,
+    required this.onFilter,
+  });
 
-  final List<Facility> facilities;
+  final String? selectedFilter;
+  final int totalCount;
+  final int rsCount;
+  final int puskesmasCount;
+  final void Function(String?) onFilter;
 
   @override
   Widget build(BuildContext context) {
-    final puskesmasCount = facilities.where((f) => f.type == 'Puskesmas').length;
-    final rsCount = facilities.where((f) => f.type == 'Rumah Sakit').length;
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
         children: [
-          _Chip(label: 'Semua ($puskesmasCount)', selected: true),
+          _Chip(
+            label: 'Semua ($totalCount)',
+            selected: selectedFilter == null,
+            onTap: () => onFilter(null),
+          ),
           const SizedBox(width: 10),
-          _Chip(label: 'Rumah Sakit ($rsCount)'),
+          _Chip(
+            label: 'Rumah Sakit ($rsCount)',
+            selected: selectedFilter == 'Rumah Sakit',
+            onTap: () => onFilter('Rumah Sakit'),
+          ),
           const SizedBox(width: 10),
-          _Chip(label: 'Puskesmas ($puskesmasCount)'),
+          _Chip(
+            label: 'Puskesmas ($puskesmasCount)',
+            selected: selectedFilter == 'Puskesmas',
+            onTap: () => onFilter('Puskesmas'),
+          ),
         ],
       ),
     );
@@ -344,28 +401,36 @@ class _FilterRow extends StatelessWidget {
 }
 
 class _Chip extends StatelessWidget {
-  const _Chip({required this.label, this.selected = false});
+  const _Chip({
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
 
   final String label;
   final bool selected;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 9),
-      decoration: BoxDecoration(
-        color: selected ? AppColors.primary : AppColors.white,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: selected ? AppColors.primary : const Color(0xFFD8E2F0),
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 9),
+        decoration: BoxDecoration(
+          color: selected ? AppColors.primary : AppColors.white,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: selected ? AppColors.primary : const Color(0xFFD8E2F0),
+          ),
         ),
-      ),
-      child: Text(
-        label,
-        style: TextStyle(
-          fontSize: 13,
-          fontWeight: FontWeight.w600,
-          color: selected ? Colors.white : AppColors.nautral,
+        child: Text(
+          label,
+          style: TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.w600,
+            color: selected ? Colors.white : AppColors.nautral,
+          ),
         ),
       ),
     );

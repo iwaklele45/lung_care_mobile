@@ -12,6 +12,7 @@ class Facility {
     this.reviewCount = 100,
     this.distance = 1.0,
     this.hasTbcService = true,
+    this.coverImageUrl,
   });
 
   /// 'Puskesmas' | 'Rumah Sakit'
@@ -32,4 +33,7 @@ class Facility {
   /// Estimated distance in km
   final double distance;
   final bool hasTbcService;
+
+  /// Cover photo URL for the detail page header (Unsplash or similar).
+  final String? coverImageUrl;
 }
