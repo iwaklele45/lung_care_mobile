@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lung_care_mobile/l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lung_care_mobile/src/core/theme/app_colors.dart';
 import 'package:lung_care_mobile/src/presentation/bloc/home/home_bloc.dart';
@@ -109,7 +110,7 @@ class _HomeBodyViewState extends State<HomeBodyView> {
         if (state is HomeCheckInSuccess) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: const Text('Dose check-in recorded! 🎉'),
+              content: Text(AppLocalizations.of(context)!.doseCheckInSuccess),
               backgroundColor: AppColors.primary,
               behavior: SnackBarBehavior.floating,
               shape: RoundedRectangleBorder(
@@ -147,7 +148,7 @@ class _HomeBodyViewState extends State<HomeBodyView> {
                     elevation: 1,
                     centerTitle: true,
                     title: Text(
-                      const ['', 'Tambah Obat', 'Daily Check-in', 'My Profile']
+                      ['', AppLocalizations.of(context)!.addMedicine, AppLocalizations.of(context)!.dailyCheckIn, AppLocalizations.of(context)!.myProfile]
                           [_navIndex],
                       style: const TextStyle(
                         color: AppColors.primary,
@@ -195,9 +196,9 @@ class _HomeBodyViewState extends State<HomeBodyView> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text(
-                            "Today's Schedule",
-                            style: TextStyle(
+                          Text(
+                            AppLocalizations.of(context)!.todaysSchedule,
+                            style: const TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.w600,
                               color: AppColors.black,
@@ -205,9 +206,9 @@ class _HomeBodyViewState extends State<HomeBodyView> {
                           ),
                           GestureDetector(
                             onTap: () => context.push('/schedule'),
-                            child: const Text(
-                              'View all',
-                              style: TextStyle(
+                            child: Text(
+                              AppLocalizations.of(context)!.viewAll,
+                              style: const TextStyle(
                                 fontSize: 13,
                                 fontWeight: FontWeight.w600,
                                 color: AppColors.primary,
@@ -295,9 +296,9 @@ class _HomeBodyViewState extends State<HomeBodyView> {
                     onPressed: () => context.read<HomeBloc>().add(
                       HomeFetchSchedulesRequested(),
                     ),
-                    child: const Text(
-                      'Coba Lagi',
-                      style: TextStyle(color: Colors.white),
+                    child: Text(
+                      AppLocalizations.of(context)!.tryAgain,
+                      style: const TextStyle(color: Colors.white),
                     ),
                   ),
                 ],
