@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lung_care_mobile/src/core/theme/app_colors.dart';
+import 'package:lung_care_mobile/src/presentation/bloc/history/history_bloc.dart';
 import 'package:lung_care_mobile/src/presentation/pages/hamburger/hamburger_menu.dart';
 import 'package:lung_care_mobile/src/presentation/pages/history/activity_summary_sheet.dart';
 
@@ -8,29 +10,22 @@ import 'package:lung_care_mobile/src/presentation/pages/history/activity_summary
 class HistoryPage extends StatelessWidget {
   const HistoryPage({super.key});
 
-  static const _bulanIndo = [
-    '', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
-    'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember',
-  ];
-
-  static String _formatDateIndo(DateTime dt) =>
-      '${dt.day} ${_bulanIndo[dt.month]} ${dt.year}';
-
-  static String _formatDateEn(DateTime dt) {
-    const months = [
-      '', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
-    ];
-    return '${dt.day.toString().padLeft(2, '0')} ${months[dt.month]} ${dt.year}';
-  }
-
   @override
   Widget build(BuildContext context) {
     final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
-    final yesterday = today.subtract(const Duration(days: 1));
-    final weekAgo = today.subtract(const Duration(days: 7));
+    return BlocProvider(
+      create: (_) => HistoryBloc()
+        ..add(HistoryFetchRequested(year: now.year, month: now.month)),
+      child: const _HistoryBody(),
+    );
+  }
+}
 
+class _HistoryBody extends StatelessWidget {
+  const _HistoryBody();
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.bodyColor,
       drawer: const HamburgerMenu(selectedIndex: 1),
@@ -53,136 +48,229 @@ class HistoryPage extends StatelessWidget {
           ),
         ),
       ),
-      body: ListView(
-        padding: const EdgeInsets.fromLTRB(20, 20, 20, 28),
-        children: [
-          const Text(
-            'History',
-            style: TextStyle(
-              fontSize: 28,
-              fontWeight: FontWeight.w800,
-              color: AppColors.black,
-            ),
-          ),
-          const SizedBox(height: 4),
-          const Text(
-            'Review your daily medication adherence.',
-            style: TextStyle(fontSize: 14, color: AppColors.nautral),
-          ),
-          const SizedBox(height: 18),
-          const _CalendarCard(),
-          const SizedBox(height: 24),
-          const Text(
-            'Log Details',
-            style: TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.w800,
-              color: AppColors.black,
-            ),
-          ),
-          const SizedBox(height: 14),
-          _LogCard(
-            date: _formatDateEn(today),
-            time: '09:05 AM',
-            status: _LogStatus.verified,
-            onTap: () => ActivitySummarySheet.show(context, date: _formatDateIndo(today)),
-          ),
-          const SizedBox(height: 12),
-          _LogCard(
-            date: _formatDateEn(weekAgo),
-            time: '09:00 AM',
-            status: _LogStatus.missed,
-            onTap: () => ActivitySummarySheet.show(context, date: _formatDateIndo(weekAgo)),
-          ),
-          const SizedBox(height: 12),
-          _LogCard(
-            date: _formatDateEn(yesterday),
-            time: '09:05 AM',
-            status: _LogStatus.verified,
-            onTap: () => ActivitySummarySheet.show(context, date: _formatDateIndo(yesterday)),
-          ),
-          const SizedBox(height: 22),
-          SizedBox(
-            height: 54,
-            child: ElevatedButton(
-              onPressed: () => context.push('/history/full'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF5B9BE8),
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(14),
+      body: BlocBuilder<HistoryBloc, HistoryState>(
+        builder: (context, state) {
+          if (state is HistoryLoading) {
+            return const Center(
+              child: CircularProgressIndicator(color: AppColors.primary),
+            );
+          }
+          if (state is HistoryError) {
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Text(
+                  state.message,
+                  style: const TextStyle(color: AppColors.nautral, fontSize: 15),
+                  textAlign: TextAlign.center,
                 ),
               ),
-              child: const Text(
-                'Lihat semua riwayat',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-              ),
-            ),
-          ),
-        ],
+            );
+          }
+          if (state is HistoryLoaded) {
+            return _LoadedContent(state: state);
+          }
+          return const SizedBox.shrink();
+        },
       ),
     );
   }
 }
 
-class _CalendarCard extends StatefulWidget {
-  const _CalendarCard();
+class _LoadedContent extends StatelessWidget {
+  const _LoadedContent({required this.state});
 
-  @override
-  State<_CalendarCard> createState() => _CalendarCardState();
-}
+  final HistoryLoaded state;
 
-class _CalendarCardState extends State<_CalendarCard> {
-  static const _months = [
-    'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
-    'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember',
-  ];
+  void _showDaySummary(BuildContext context, CalendarDayData day) {
+    final dateStr =
+        '${state.displayYear}-${state.displayMonth.toString().padLeft(2, '0')}-${day.day.toString().padLeft(2, '0')}';
+    final dateLabel = '${day.day} ${state.monthLabel.split(' ')[0]} ${state.displayYear}';
 
-  late DateTime _now;
-  late int _today;
-  late int _daysInMonth;
-  late int _firstWeekday; // 0=Sun, 1=Mon ... 6=Sat
-  late Set<int> _taken;
-  late Set<int> _missed;
-  late int _selectedDay;
+    final dayDoseCheckIns =
+        state.doseCheckIns.where((d) => d['date'] == dateStr).toList();
+    final dayHealth =
+        state.healthTrackings.where((h) => h['date'] == dateStr).toList();
+    final healthData = dayHealth.isNotEmpty ? dayHealth.first : null;
 
-  @override
-  void initState() {
-    super.initState();
-    _now = DateTime.now();
-    _today = _now.day;
-    _daysInMonth = DateTime(_now.year, _now.month + 1, 0).day;
-    // DateTime.weekday: 1=Mon ... 7=Sun → convert ke 0=Sun grid
-    final firstOfMonth = DateTime(_now.year, _now.month, 1);
-    _firstWeekday = firstOfMonth.weekday % 7; // 0=Sun
+    final scheduleMap = {for (final s in state.schedules) s.id ?? '': s};
 
-    // Demo: semua hari sampai kemarin = taken, kecuali 7 hari lalu = missed
-    final missedDay = _today - 7;
-    _taken = {};
-    _missed = {};
-    for (var d = 1; d < _today; d++) {
-      if (d == missedDay) {
-        _missed.add(d);
-      } else {
-        _taken.add(d);
+    final medStatuses = dayDoseCheckIns.map((d) {
+      final scheduleId = d['schedule_id'] as String? ?? '';
+      final schedule = scheduleMap[scheduleId];
+      final timeIdx = d['time_index'] as int? ?? 0;
+      final minutes = schedule != null &&
+              timeIdx < schedule.times.length
+          ? () {
+              final t = schedule.times[timeIdx];
+              final h = t.hour;
+              final m = t.minute;
+              final ampm = h >= 12 ? 'PM' : 'AM';
+              final dh = h == 0 ? 12 : h > 12 ? h - 12 : h;
+              return '$dh:${m.toString().padLeft(2, '0')} $ampm';
+            }()
+          : '--:--';
+      return MedStatus(
+        name: schedule?.name ?? 'Obat tidak dikenal',
+        time: minutes,
+        taken: true,
+      );
+    }).toList();
+
+    if (day.status == CalendarDayStatus.missed && medStatuses.isEmpty) {
+      for (final s in state.schedules) {
+        for (final t in s.times) {
+          final h = t.hour;
+          final m = t.minute;
+          final ampm = h >= 12 ? 'PM' : 'AM';
+          final dh = h == 0 ? 12 : h > 12 ? h - 12 : h;
+          medStatuses.add(MedStatus(
+            name: s.name,
+            time: '$dh:${m.toString().padLeft(2, '0')} $ampm',
+            taken: false,
+          ));
+        }
       }
     }
-    _selectedDay = _today;
-  }
 
-  void _onDayTap(int day) {
-    setState(() => _selectedDay = day);
     ActivitySummarySheet.show(
       context,
-      date: '$day ${_months[_now.month - 1]} ${_now.year}',
+      date: dateLabel,
+      medStatuses: medStatuses,
+      symptoms: healthData?['symptoms'] is Map
+          ? Map<String, int>.from(healthData!['symptoms'] as Map)
+          : null,
+      notes: healthData?['additional_notes'] as String?,
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final monthLabel = '${_months[_now.month - 1]} ${_now.year}';
-    final totalCells = _firstWeekday + _daysInMonth;
-    final rows = ((totalCells + 6) ~/ 7) * 7; // round up to full weeks
+    return ListView(
+      padding: const EdgeInsets.fromLTRB(20, 20, 20, 28),
+      children: [
+        const Text(
+          'History',
+          style: TextStyle(
+            fontSize: 28,
+            fontWeight: FontWeight.w800,
+            color: AppColors.black,
+          ),
+        ),
+        const SizedBox(height: 4),
+        const Text(
+          'Review your daily medication adherence.',
+          style: TextStyle(fontSize: 14, color: AppColors.nautral),
+        ),
+        const SizedBox(height: 18),
+        _CalendarCard(
+          monthLabel: state.monthLabel,
+          days: state.calendarDays,
+          firstWeekday: state.firstWeekday,
+          displayYear: state.displayYear,
+          displayMonth: state.displayMonth,
+          onMonthChange: (offset) {
+            context.read<HistoryBloc>().add(HistoryChangeMonth(offset));
+          },
+          onDayTap: (day) => _showDaySummary(context, day),
+        ),
+        const SizedBox(height: 24),
+        const Text(
+          'Log Details',
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.w800,
+            color: AppColors.black,
+          ),
+        ),
+        const SizedBox(height: 14),
+        if (state.recentLogs.isEmpty)
+          Container(
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              color: AppColors.white,
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: const Center(
+              child: Text(
+                'Belum ada riwayat aktivitas.',
+                style: TextStyle(color: AppColors.nautral, fontSize: 14),
+              ),
+            ),
+          )
+        else
+          ...state.recentLogs.map((log) => Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: _LogCard(
+                  date: log.date,
+                  time: log.time,
+                  status: log.taken ? _LogStatus.verified : _LogStatus.missed,
+                  isHealthCheckIn: log.isHealthCheckIn,
+                  title: log.title,
+                  subtitle: log.subtitle,
+                  onTap: () {
+                    final dateStr = '${log.date.split(' ')[0]} ${log.date.split(' ')[1]} ${log.date.split(' ')[2]}';
+                    final dayParts = log.date.split(' ');
+                    if (dayParts.isNotEmpty) {
+                      ActivitySummarySheet.show(
+                        context,
+                        date: dateStr,
+                        medStatuses: [],
+                        notes: null,
+                      );
+                    }
+                  },
+                ),
+              )),
+        const SizedBox(height: 22),
+        SizedBox(
+          height: 54,
+          child: ElevatedButton(
+            onPressed: () => context.push('/history/full'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF5B9BE8),
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(14),
+              ),
+            ),
+            child: const Text(
+              'Lihat semua riwayat',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _CalendarCard extends StatelessWidget {
+  const _CalendarCard({
+    required this.monthLabel,
+    required this.days,
+    required this.firstWeekday,
+    required this.displayYear,
+    required this.displayMonth,
+    required this.onMonthChange,
+    required this.onDayTap,
+  });
+
+  final String monthLabel;
+  final List<CalendarDayData> days;
+  final int firstWeekday;
+  final int displayYear;
+  final int displayMonth;
+  final ValueChanged<int> onMonthChange;
+  final ValueChanged<CalendarDayData> onDayTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final today = DateTime.now();
+    final isCurrentMonth =
+        displayYear == today.year && displayMonth == today.month;
+    final totalCells = firstWeekday + days.length;
+    final rows = ((totalCells + 6) ~/ 7) * 7;
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -195,7 +283,10 @@ class _CalendarCardState extends State<_CalendarCard> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Icon(Icons.chevron_left, color: AppColors.nautral),
+              GestureDetector(
+                onTap: () => onMonthChange(-1),
+                child: const Icon(Icons.chevron_left, color: AppColors.nautral),
+              ),
               Text(
                 monthLabel,
                 style: const TextStyle(
@@ -204,7 +295,15 @@ class _CalendarCardState extends State<_CalendarCard> {
                   color: AppColors.black,
                 ),
               ),
-              const Icon(Icons.chevron_right, color: AppColors.nautral),
+              GestureDetector(
+                onTap: isCurrentMonth ? null : () => onMonthChange(1),
+                child: Icon(
+                  Icons.chevron_right,
+                  color: isCurrentMonth
+                      ? const Color(0xFFC2CCDA)
+                      : AppColors.nautral,
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 14),
@@ -233,16 +332,20 @@ class _CalendarCardState extends State<_CalendarCard> {
             physics: const NeverScrollableScrollPhysics(),
             childAspectRatio: 0.9,
             children: List.generate(rows, (i) {
-              final day = i - _firstWeekday + 1;
-              if (day < 1 || day > _daysInMonth) return const SizedBox.shrink();
-              final disabled = day > _today;
+              final index = i - firstWeekday;
+              if (index < 0 || index >= days.length) {
+                return const SizedBox.shrink();
+              }
+              final day = days[index];
+              final isToday = isCurrentMonth &&
+                  day.day == DateTime.now().day;
               return _DayCell(
-                day: day,
-                taken: _taken.contains(day),
-                missed: _missed.contains(day),
-                selected: day == _selectedDay,
-                disabled: disabled,
-                onTap: disabled ? null : () => _onDayTap(day),
+                day: day.day,
+                status: day.status,
+                isToday: isToday,
+                onTap: day.status == CalendarDayStatus.future
+                    ? null
+                    : () => onDayTap(day),
               );
             }),
           ),
@@ -264,22 +367,24 @@ class _CalendarCardState extends State<_CalendarCard> {
 class _DayCell extends StatelessWidget {
   const _DayCell({
     required this.day,
-    required this.taken,
-    required this.missed,
-    required this.selected,
-    required this.disabled,
+    required this.status,
+    required this.isToday,
     required this.onTap,
   });
 
   final int day;
-  final bool taken;
-  final bool missed;
-  final bool selected;
-  final bool disabled;
+  final CalendarDayStatus status;
+  final bool isToday;
   final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
+    final isFuture = status == CalendarDayStatus.future;
+    final isTaken = status == CalendarDayStatus.taken;
+    final isMissed = status == CalendarDayStatus.missed;
+    final isPending = status == CalendarDayStatus.pending;
+    final isSelected = isToday || isPending;
+
     return GestureDetector(
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
@@ -290,35 +395,38 @@ class _DayCell extends StatelessWidget {
             width: 30,
             height: 30,
             decoration: BoxDecoration(
-              color: selected ? AppColors.primary : Colors.transparent,
+              color: isSelected ? AppColors.primary : Colors.transparent,
               shape: BoxShape.circle,
+              border: isToday && !isPending
+                  ? Border.all(color: AppColors.primary, width: 1.5)
+                  : null,
             ),
             alignment: Alignment.center,
             child: Text(
               '$day',
-            style: TextStyle(
-              fontSize: 13,
-              fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
-              color: selected
-                  ? Colors.white
-                  : disabled
-                  ? const Color(0xFFC2CCDA)
-                  : AppColors.black,
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                color: isSelected
+                    ? Colors.white
+                    : isFuture
+                        ? const Color(0xFFC2CCDA)
+                        : AppColors.black,
+              ),
             ),
           ),
-        ),
-        const SizedBox(height: 2),
-        if (!selected && (taken || missed))
-          Container(
-            width: 5,
-            height: 5,
-            decoration: BoxDecoration(
-              color: missed ? const Color(0xFFD32F2F) : AppColors.primary,
-              shape: BoxShape.circle,
-            ),
-          )
-        else
-          const SizedBox(height: 5),
+          const SizedBox(height: 2),
+          if (isTaken || isMissed)
+            Container(
+              width: 5,
+              height: 5,
+              decoration: BoxDecoration(
+                color: isMissed ? const Color(0xFFD32F2F) : AppColors.primary,
+                shape: BoxShape.circle,
+              ),
+            )
+          else
+            const SizedBox(height: 5),
         ],
       ),
     );
@@ -357,12 +465,18 @@ class _LogCard extends StatelessWidget {
     required this.date,
     required this.time,
     required this.status,
+    required this.isHealthCheckIn,
+    required this.title,
+    required this.subtitle,
     required this.onTap,
   });
 
   final String date;
   final String time;
   final _LogStatus status;
+  final bool isHealthCheckIn;
+  final String title;
+  final String subtitle;
   final VoidCallback onTap;
 
   @override
@@ -388,12 +502,22 @@ class _LogCard extends StatelessWidget {
               decoration: BoxDecoration(
                 color: isMissed
                     ? const Color(0xFFF8D7D7)
-                    : AppColors.primary.withValues(alpha: 0.12),
+                    : isHealthCheckIn
+                        ? const Color(0xFFD1FAE5)
+                        : AppColors.primary.withValues(alpha: 0.12),
                 shape: BoxShape.circle,
               ),
               child: Icon(
-                isMissed ? Icons.close : Icons.check,
-                color: isMissed ? const Color(0xFFD32F2F) : AppColors.primary,
+                isMissed
+                    ? Icons.close
+                    : isHealthCheckIn
+                        ? Icons.favorite
+                        : Icons.check,
+                color: isMissed
+                    ? const Color(0xFFD32F2F)
+                    : isHealthCheckIn
+                        ? const Color(0xFF16A34A)
+                        : AppColors.primary,
                 size: 22,
               ),
             ),
@@ -404,21 +528,28 @@ class _LogCard extends StatelessWidget {
                 children: [
                   Text(
                     date,
-                    style: const TextStyle(
-                      fontSize: 13,
-                      color: AppColors.nautral,
-                    ),
+                    style: const TextStyle(fontSize: 13, color: AppColors.nautral),
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    time,
+                    title,
                     style: TextStyle(
-                      fontSize: 20,
+                      fontSize: 18,
                       fontWeight: FontWeight.w700,
                       color: isMissed ? AppColors.nautral : AppColors.black,
                       decoration: isMissed ? TextDecoration.lineThrough : null,
                     ),
                   ),
+                  if (subtitle.isNotEmpty) ...[
+                    const SizedBox(height: 1),
+                    Text(
+                      time.isNotEmpty ? '$time  $subtitle' : subtitle,
+                      style: const TextStyle(
+                        fontSize: 13,
+                        color: AppColors.nautral,
+                      ),
+                    ),
+                  ],
                 ],
               ),
             ),
@@ -427,15 +558,25 @@ class _LogCard extends StatelessWidget {
               decoration: BoxDecoration(
                 color: isMissed
                     ? const Color(0xFFFADCDC)
-                    : AppColors.ternary,
+                    : isHealthCheckIn
+                        ? const Color(0xFFD1FAE5)
+                        : AppColors.ternary,
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Text(
-                isMissed ? 'Missed' : 'Terverifikasi',
+                isMissed
+                    ? 'Missed'
+                    : isHealthCheckIn
+                        ? 'Selesai'
+                        : 'Terverifikasi',
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
-                  color: isMissed ? const Color(0xFFD32F2F) : AppColors.primary,
+                  color: isMissed
+                      ? const Color(0xFFD32F2F)
+                      : isHealthCheckIn
+                          ? const Color(0xFF16A34A)
+                          : AppColors.primary,
                 ),
               ),
             ),

@@ -70,4 +70,17 @@ class CheckInRemoteDataSource {
         .get();
     return snapshot.docs.length;
   }
+
+  /// Returns all health_tracking documents for the current user, newest first.
+  Future<List<Map<String, dynamic>>> getAllHealthTracking() async {
+    final snapshot = await _firestore
+        .collection('health_tracking')
+        .where('patient_id', isEqualTo: _uid)
+        .get();
+    final list = snapshot.docs.map((doc) => doc.data()).toList();
+    list.sort(
+      (a, b) => (b['date'] as String).compareTo(a['date'] as String),
+    );
+    return list;
+  }
 }
