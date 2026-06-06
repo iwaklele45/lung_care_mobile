@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -5,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:lung_care_mobile/gen/assets.gen.dart';
 import 'package:lung_care_mobile/src/core/theme/app_colors.dart';
 import 'package:lung_care_mobile/src/presentation/bloc/auth/auth_bloc.dart';
+import 'package:lung_care_mobile/src/presentation/widgets/profile_picture_picker.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -21,6 +24,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final _passwordController = TextEditingController();
   final _addressController = TextEditingController();
   bool _obscurePassword = true;
+  File? _profilePicture;
 
   @override
   void dispose() {
@@ -45,6 +49,7 @@ class _RegisterPageState extends State<RegisterPage> {
         email: _emailController.text.trim(),
         password: _passwordController.text,
         address: _addressController.text.trim(),
+        profilePicturePath: _profilePicture?.path,
       ),
     );
   }
@@ -101,6 +106,14 @@ class _RegisterPageState extends State<RegisterPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const _PageHero(),
+                  const SizedBox(height: 20),
+                  Center(
+                    child: ProfilePicturePicker(
+                      onChanged: (file) {
+                        setState(() => _profilePicture = file);
+                      },
+                    ),
+                  ),
                   const SizedBox(height: 28),
                   const _SectionTitle(text: 'INFORMASI PRIBADI'),
                   const SizedBox(height: 14),

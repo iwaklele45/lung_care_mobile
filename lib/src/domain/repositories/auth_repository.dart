@@ -13,6 +13,7 @@ abstract class AuthRepository {
     required String email,
     required String password,
     required String address,
+    String? profilePicturePath,
   });
   Future<void> sendPasswordResetEmail({required String email});
   Future<UserCredential> signInWithGoogle();
@@ -23,6 +24,7 @@ abstract class AuthRepository {
     required String phoneNumber,
     required String address,
     required String email,
+    String? profilePicturePath,
   });
   Future<void> signOut();
 }

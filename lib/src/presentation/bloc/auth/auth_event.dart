@@ -25,6 +25,7 @@ final class AuthSignUpRequested extends AuthEvent {
     required this.email,
     required this.password,
     required this.address,
+    this.profilePicturePath,
   });
 
   final String fullName;
@@ -32,6 +33,7 @@ final class AuthSignUpRequested extends AuthEvent {
   final String email;
   final String password;
   final String address;
+  final String? profilePicturePath;
 }
 
 final class AuthPasswordResetRequested extends AuthEvent {
@@ -49,9 +51,11 @@ final class AuthSaveProfileRequested extends AuthEvent {
     required this.name,
     required this.phoneNumber,
     required this.address,
+    this.profilePicturePath,
   });
 
   final String name;
   final String phoneNumber;
   final String address;
+  final String? profilePicturePath;
 }

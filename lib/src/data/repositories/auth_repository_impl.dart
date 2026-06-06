@@ -32,6 +32,7 @@ class AuthRepositoryImpl implements AuthRepository {
     required String email,
     required String password,
     required String address,
+    String? profilePicturePath,
   }) {
     return _remoteDataSource.createUserWithEmailAndPassword(
       fullName: fullName,
@@ -39,6 +40,7 @@ class AuthRepositoryImpl implements AuthRepository {
       email: email,
       password: password,
       address: address,
+      profilePicturePath: profilePicturePath,
     );
   }
 
@@ -64,6 +66,7 @@ class AuthRepositoryImpl implements AuthRepository {
     required String phoneNumber,
     required String address,
     required String email,
+    String? profilePicturePath,
   }) {
     return _remoteDataSource.saveUserProfile(
       uid: uid,
@@ -71,6 +74,7 @@ class AuthRepositoryImpl implements AuthRepository {
       phoneNumber: phoneNumber,
       address: address,
       email: email,
+      profilePicturePath: profilePicturePath,
     );
   }
 
