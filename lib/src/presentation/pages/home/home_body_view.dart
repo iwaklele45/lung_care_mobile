@@ -12,7 +12,6 @@ import 'package:lung_care_mobile/src/presentation/pages/meds/add_medication_page
 import 'package:lung_care_mobile/src/presentation/pages/home/widgets/header.dart';
 import 'package:lung_care_mobile/src/presentation/pages/home/widgets/home_app_bar.dart';
 import 'package:lung_care_mobile/src/presentation/pages/home/widgets/home_bottom_nav_bar.dart';
-import 'package:lung_care_mobile/src/presentation/pages/home/widgets/medication_reminder_modal.dart';
 import 'package:lung_care_mobile/src/presentation/pages/home/widgets/motivation_banner.dart';
 import 'package:lung_care_mobile/src/presentation/pages/home/widgets/next_dose_card.dart';
 import 'package:lung_care_mobile/src/presentation/pages/home/widgets/schedule_list_item.dart';
@@ -58,37 +57,16 @@ class _HomeBodyViewState extends State<HomeBodyView> {
         if (!isPM && h == 12) h = 0;
         if (h == now.hour && m == now.minute) {
           _lastReminderMinute = minuteKey;
-          _showReminder(pending);
+          // Direct check-in without modal
+          if (mounted) {
+            context.read<HomeBloc>().add(
+              HomeCheckInDoseRequested(item: pending.first),
+            );
+          }
           break;
         }
       }
     });
-  }
-
-  void _showReminder(List<MedicationScheduleItem> pending) {
-    MedicationReminderModal.show(
-      context,
-      items: pending,
-      onConfirm: () {
-        final item = pending.first;
-        if (mounted) {
-          context.read<HomeBloc>().add(HomeCheckInDoseRequested(item: item));
-        }
-      },
-      onSnooze: () {
-        _lastReminderMinute = null;
-        Future.delayed(const Duration(minutes: 10), () {
-          if (mounted) {
-            final state = context.read<HomeBloc>().state;
-            if (state is HomeLoaded) {
-              _showReminder(
-                state.schedules.where((s) => s.status == 'pending').toList(),
-              );
-            }
-          }
-        });
-      },
-    );
   }
 
   @override

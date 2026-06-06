@@ -162,5 +162,16 @@
   "red": "Red",
   "blue": "Blue",
   "yellow": "Yellow",
-  "green": "Green"
+  "green": "Green",
+
+  "nextDose": "NEXT DOSE",
+  "checkInDose": "Check-in Dose",
+  "checkingIn": "Checking in...",
+  "notYetTime": "Not yet time",
+  "treatmentProgress": "Treatment Progress",
+  "percentComplete": "{percent}% Complete",
+  "dayOfTotal": "Day {day} of {total}",
+  "statusTaken": "Taken",
+  "statusMissed": "Missed",
+  "statusPending": "Pending"
 }

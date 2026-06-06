@@ -477,4 +477,38 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get green => 'Green';
+
+  @override
+  String get nextDose => 'NEXT DOSE';
+
+  @override
+  String get checkInDose => 'Check-in Dose';
+
+  @override
+  String get checkingIn => 'Checking in...';
+
+  @override
+  String get notYetTime => 'Not yet time';
+
+  @override
+  String get treatmentProgress => 'Treatment Progress';
+
+  @override
+  String percentComplete(int percent) {
+    return '$percent% Complete';
+  }
+
+  @override
+  String dayOfTotal(int day, int total) {
+    return 'Day $day of $total';
+  }
+
+  @override
+  String get statusTaken => 'Taken';
+
+  @override
+  String get statusMissed => 'Missed';
+
+  @override
+  String get statusPending => 'Pending';
 }

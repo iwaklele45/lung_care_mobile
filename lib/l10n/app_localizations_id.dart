@@ -478,4 +478,38 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get green => 'Hijau';
+
+  @override
+  String get nextDose => 'DOSIS BERIKUTNYA';
+
+  @override
+  String get checkInDose => 'Check-in Dosis';
+
+  @override
+  String get checkingIn => 'Memproses...';
+
+  @override
+  String get notYetTime => 'Belum waktunya';
+
+  @override
+  String get treatmentProgress => 'Progres Pengobatan';
+
+  @override
+  String percentComplete(int percent) {
+    return '$percent% Selesai';
+  }
+
+  @override
+  String dayOfTotal(int day, int total) {
+    return 'Hari $day dari $total';
+  }
+
+  @override
+  String get statusTaken => 'Diminum';
+
+  @override
+  String get statusMissed => 'Terlewat';
+
+  @override
+  String get statusPending => 'Menunggu';
 }

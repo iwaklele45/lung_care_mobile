@@ -973,6 +973,66 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Hijau'**
   String get green;
+
+  /// No description provided for @nextDose.
+  ///
+  /// In id, this message translates to:
+  /// **'DOSIS BERIKUTNYA'**
+  String get nextDose;
+
+  /// No description provided for @checkInDose.
+  ///
+  /// In id, this message translates to:
+  /// **'Check-in Dosis'**
+  String get checkInDose;
+
+  /// No description provided for @checkingIn.
+  ///
+  /// In id, this message translates to:
+  /// **'Memproses...'**
+  String get checkingIn;
+
+  /// No description provided for @notYetTime.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum waktunya'**
+  String get notYetTime;
+
+  /// No description provided for @treatmentProgress.
+  ///
+  /// In id, this message translates to:
+  /// **'Progres Pengobatan'**
+  String get treatmentProgress;
+
+  /// No description provided for @percentComplete.
+  ///
+  /// In id, this message translates to:
+  /// **'{percent}% Selesai'**
+  String percentComplete(int percent);
+
+  /// No description provided for @dayOfTotal.
+  ///
+  /// In id, this message translates to:
+  /// **'Hari {day} dari {total}'**
+  String dayOfTotal(int day, int total);
+
+  /// No description provided for @statusTaken.
+  ///
+  /// In id, this message translates to:
+  /// **'Diminum'**
+  String get statusTaken;
+
+  /// No description provided for @statusMissed.
+  ///
+  /// In id, this message translates to:
+  /// **'Terlewat'**
+  String get statusMissed;
+
+  /// No description provided for @statusPending.
+  ///
+  /// In id, this message translates to:
+  /// **'Menunggu'**
+  String get statusPending;
 }
 
 class _AppLocalizationsDelegate

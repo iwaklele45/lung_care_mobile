@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lung_care_mobile/l10n/app_localizations.dart';
 import 'package:lung_care_mobile/src/core/theme/app_colors.dart';
 import 'package:lung_care_mobile/src/presentation/bloc/home/home_bloc.dart';
 
@@ -97,6 +98,7 @@ class _StatusBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final Color bgColor;
     final Color textColor;
     final String label;
@@ -105,15 +107,15 @@ class _StatusBadge extends StatelessWidget {
       case 'taken':
         bgColor = AppColors.ternary;
         textColor = AppColors.nautral;
-        label = 'Taken';
+        label = l.statusTaken;
       case 'missed':
         bgColor = const Color(0xFFFFEDED);
         textColor = const Color(0xFFD32F2F);
-        label = 'Missed';
+        label = l.statusMissed;
       default:
         bgColor = const Color(0xFFFFF8E1);
         textColor = const Color(0xFFF57C00);
-        label = 'Pending';
+        label = l.statusPending;
     }
 
     return Container(

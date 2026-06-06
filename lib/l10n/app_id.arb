@@ -175,5 +175,18 @@
   "red": "Merah",
   "blue": "Biru",
   "yellow": "Kuning",
-  "green": "Hijau"
+  "green": "Hijau",
+
+  "nextDose": "DOSIS BERIKUTNYA",
+  "checkInDose": "Check-in Dosis",
+  "checkingIn": "Memproses...",
+  "notYetTime": "Belum waktunya",
+  "treatmentProgress": "Progres Pengobatan",
+  "percentComplete": "{percent}% Selesai",
+  "@percentComplete": { "placeholders": { "percent": { "type": "int" } } },
+  "dayOfTotal": "Hari {day} dari {total}",
+  "@dayOfTotal": { "placeholders": { "day": { "type": "int" }, "total": { "type": "int" } } },
+  "statusTaken": "Diminum",
+  "statusMissed": "Terlewat",
+  "statusPending": "Menunggu"
 }
