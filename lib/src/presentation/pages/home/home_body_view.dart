@@ -12,7 +12,6 @@ import 'package:lung_care_mobile/src/presentation/pages/meds/add_medication_page
 import 'package:lung_care_mobile/src/presentation/pages/home/widgets/header.dart';
 import 'package:lung_care_mobile/src/presentation/pages/home/widgets/home_app_bar.dart';
 import 'package:lung_care_mobile/src/presentation/pages/home/widgets/home_bottom_nav_bar.dart';
-import 'package:lung_care_mobile/src/presentation/pages/home/widgets/medication_reminder_modal.dart';
 import 'package:lung_care_mobile/src/presentation/pages/home/widgets/motivation_banner.dart';
 import 'package:lung_care_mobile/src/presentation/pages/home/widgets/next_dose_card.dart';
 import 'package:lung_care_mobile/src/presentation/pages/home/widgets/schedule_list_item.dart';
@@ -46,49 +45,20 @@ class _HomeBodyViewState extends State<HomeBodyView> {
 
       final pending = schedules.where((s) => s.status == 'pending').toList();
       for (final item in pending) {
-        final parts = item.time.split(' ');
-        if (parts.length != 2) continue;
-        final timeDigits = parts[0].split(':');
-        if (timeDigits.length != 2) continue;
-        int? h = int.tryParse(timeDigits[0]);
-        int? m = int.tryParse(timeDigits[1]);
-        if (h == null || m == null) continue;
-        final isPM = parts[1].toUpperCase() == 'PM';
-        if (isPM && h != 12) h += 12;
-        if (!isPM && h == 12) h = 0;
-        if (h == now.hour && m == now.minute) {
+        final tod = item.timeOfDay;
+        if (tod == null) continue;
+        if (tod.hour == now.hour && tod.minute == now.minute) {
           _lastReminderMinute = minuteKey;
-          _showReminder(pending);
+          // Direct check-in without modal
+          if (mounted) {
+            context.read<HomeBloc>().add(
+              HomeCheckInDoseRequested(item: pending.first),
+            );
+          }
           break;
         }
       }
     });
-  }
-
-  void _showReminder(List<MedicationScheduleItem> pending) {
-    MedicationReminderModal.show(
-      context,
-      items: pending,
-      onConfirm: () {
-        final item = pending.first;
-        if (mounted) {
-          context.read<HomeBloc>().add(HomeCheckInDoseRequested(item: item));
-        }
-      },
-      onSnooze: () {
-        _lastReminderMinute = null;
-        Future.delayed(const Duration(minutes: 10), () {
-          if (mounted) {
-            final state = context.read<HomeBloc>().state;
-            if (state is HomeLoaded) {
-              _showReminder(
-                state.schedules.where((s) => s.status == 'pending').toList(),
-              );
-            }
-          }
-        });
-      },
-    );
   }
 
   @override
@@ -222,16 +192,27 @@ class _HomeBodyViewState extends State<HomeBodyView> {
                     const SizedBox(height: 12),
 
                     // ── Next Dose hero card ───────────────────────────
-                    NextDoseCard(
-                      time: loaded.nextDoseTime,
-                      medicineName: loaded.nextDoseName,
-                      isLoading: isCheckingIn,
-                      onCheckIn: () {
-                        context.read<HomeBloc>().add(
-                          HomeCheckInDoseRequested(
-                            item: loaded.schedules
-                                .firstWhere((s) => s.status == 'pending'),
-                          ),
+                    Builder(
+                      builder: (context) {
+                        final nextPending = loaded.schedules
+                            .where((s) => s.status == 'pending')
+                            .toList();
+                        final pendingItem = nextPending.isNotEmpty
+                            ? nextPending.first
+                            : null;
+                        final displayTime = pendingItem?.timeOfDay?.format(context)
+                            ?? loaded.nextDoseTime;
+                        return NextDoseCard(
+                          time: displayTime,
+                          medicineName: loaded.nextDoseName,
+                          isLoading: isCheckingIn,
+                          onCheckIn: () {
+                            if (pendingItem != null) {
+                              context.read<HomeBloc>().add(
+                                HomeCheckInDoseRequested(item: pendingItem),
+                              );
+                            }
+                          },
                         );
                       },
                     ),

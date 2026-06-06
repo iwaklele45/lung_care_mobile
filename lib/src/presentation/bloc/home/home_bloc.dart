@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lung_care_mobile/src/core/notifications/notification_service.dart';
 import 'package:lung_care_mobile/src/data/datasource/check_in_remote_data_source.dart';
@@ -27,6 +28,7 @@ class MedicationScheduleItem {
     required this.time,
     required this.dosage,
     required this.status,
+    this.timeOfDay,
   });
 
   final String id;
@@ -36,6 +38,8 @@ class MedicationScheduleItem {
   final String time;
   final String dosage;
   final String status;
+  /// Raw TimeOfDay for locale-aware formatting in the UI.
+  final TimeOfDay? timeOfDay;
 }
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
@@ -116,7 +120,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
               ? hours - 12
               : hours;
           final timeStr =
-              '$displayHour:${minutes.toString().padLeft(2, '0')} $ampm';
+              '${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}';
           return MedicationScheduleItem(
             id: key,
             scheduleId: med.id ?? '',
@@ -125,6 +129,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             time: timeStr,
             dosage: med.dose,
             status: checkedInKeys.contains(key) ? 'taken' : 'pending',
+            timeOfDay: timeOfDay,
           );
         });
       }).toList();

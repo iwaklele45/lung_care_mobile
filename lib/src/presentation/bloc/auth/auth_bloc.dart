@@ -220,6 +220,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         phoneNumber: event.phoneNumber,
         address: event.address,
         email: user.email ?? '',
+        profilePicturePath: event.profilePicturePath,
       );
 
       emit(AuthProfileSaved());
@@ -243,6 +244,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         email: event.email,
         password: event.password,
         address: event.address,
+        profilePicturePath: event.profilePicturePath,
       );
       await _signOut();
       emit(AuthRegistrationSuccess());

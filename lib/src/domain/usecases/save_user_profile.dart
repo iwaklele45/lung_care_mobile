@@ -12,6 +12,7 @@ class SaveUserProfile {
     required String phoneNumber,
     required String address,
     required String email,
+    String? profilePicturePath,
   }) {
     return _repository.saveUserProfile(
       uid: uid,
@@ -19,6 +20,7 @@ class SaveUserProfile {
       phoneNumber: phoneNumber,
       address: address,
       email: email,
+      profilePicturePath: profilePicturePath,
     );
   }
 }

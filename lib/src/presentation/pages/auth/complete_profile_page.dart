@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -5,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lung_care_mobile/src/core/theme/app_colors.dart';
 import 'package:lung_care_mobile/src/presentation/bloc/auth/auth_bloc.dart';
+import 'package:lung_care_mobile/src/presentation/widgets/profile_picture_picker.dart';
 
 class CompleteProfilePage extends StatefulWidget {
   const CompleteProfilePage({super.key});
@@ -21,6 +24,7 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
 
   // AutovalidateMode: only validate after first submit attempt
   AutovalidateMode _autovalidateMode = AutovalidateMode.disabled;
+  File? _profilePicture;
 
   @override
   void initState() {
@@ -59,6 +63,7 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
         name: _fullNameController.text.trim(),
         phoneNumber: _phoneNumberController.text.trim(),
         address: _addressController.text.trim(),
+        profilePicturePath: _profilePicture?.path,
       ),
     );
   }
@@ -116,6 +121,15 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
                   const SizedBox(height: 28),
                   // Page hero
                   const _PageHero(),
+                  const SizedBox(height: 20),
+                  Center(
+                    child: ProfilePicturePicker(
+                      imageUrl: user?.photoURL,
+                      onChanged: (file) {
+                        setState(() => _profilePicture = file);
+                      },
+                    ),
+                  ),
                   const SizedBox(height: 28),
                   const _SectionTitle(text: 'INFORMASI PRIBADI'),
                   const SizedBox(height: 14),

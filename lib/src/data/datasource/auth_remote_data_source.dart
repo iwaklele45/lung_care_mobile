@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:lung_care_mobile/src/domain/entities/password_reset_result.dart';
+import 'package:lung_care_mobile/src/data/services/profile_storage_service.dart';
 
 class AuthRemoteDataSource {
   AuthRemoteDataSource({
@@ -10,15 +13,19 @@ class AuthRemoteDataSource {
     FirebaseFirestore? firestore,
     FirebaseFunctions? functions,
     GoogleSignIn? googleSignIn,
+    ProfileStorageService? profileStorage,
   }) : _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance,
        _firestore = firestore ?? FirebaseFirestore.instance,
        _functions = functions ?? FirebaseFunctions.instance,
        _googleSignIn = googleSignIn ?? GoogleSignIn();
+       _googleSignIn = googleSignIn ?? GoogleSignIn(),
+       _profileStorage = profileStorage ?? ProfileStorageService();
 
   final FirebaseAuth _firebaseAuth;
   final FirebaseFirestore _firestore;
   final FirebaseFunctions _functions;
   final GoogleSignIn _googleSignIn;
+  final ProfileStorageService _profileStorage;
 
   Stream<User?> authStateChanges() => _firebaseAuth.authStateChanges();
 
@@ -63,7 +70,19 @@ class AuthRemoteDataSource {
     required String phoneNumber,
     required String address,
     required String email,
+    String? profilePicturePath,
   }) async {
+    String? profilePictureUrl;
+    if (profilePicturePath != null) {
+      final file = File(profilePicturePath);
+      if (await file.exists()) {
+        profilePictureUrl = await _profileStorage.upload(
+          uid: uid,
+          imageFile: file,
+        );
+      }
+    }
+
     await _firestore.collection('users').doc(uid).set({
       'uid': uid,
       'name': name.trim(),
@@ -72,6 +91,7 @@ class AuthRemoteDataSource {
       'email': email.trim(),
       'createdAt': FieldValue.serverTimestamp(),
       'updatedAt': FieldValue.serverTimestamp(),
+      if (profilePictureUrl != null) 'profilePictureUrl': profilePictureUrl,
     });
   }
 
@@ -81,6 +101,7 @@ class AuthRemoteDataSource {
     required String email,
     required String password,
     required String address,
+    String? profilePicturePath,
   }) async {
     final normalizedFullName = fullName.trim();
     final normalizedPhoneNumber = phoneNumber.trim();
@@ -113,6 +134,17 @@ class AuthRemoteDataSource {
       await user.updateDisplayName(normalizedFullName);
       await user.reload();
 
+      String? profilePictureUrl;
+      if (profilePicturePath != null) {
+        final file = File(profilePicturePath);
+        if (await file.exists()) {
+          profilePictureUrl = await _profileStorage.upload(
+            uid: user.uid,
+            imageFile: file,
+          );
+        }
+      }
+
       await _firestore.collection('users').doc(user.uid).set({
         'uid': user.uid,
         'name': normalizedFullName,
@@ -121,6 +153,7 @@ class AuthRemoteDataSource {
         'email': normalizedEmail,
         'createdAt': FieldValue.serverTimestamp(),
         'updatedAt': FieldValue.serverTimestamp(),
+        if (profilePictureUrl != null) 'profilePictureUrl': profilePictureUrl,
       });
     } on FirebaseException {
       try {

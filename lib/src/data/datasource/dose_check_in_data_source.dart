@@ -62,4 +62,17 @@ class DoseCheckInDataSource {
       'created_at': FieldValue.serverTimestamp(),
     });
   }
+
+  /// Returns all dose check-in documents for the current user, newest first.
+  Future<List<Map<String, dynamic>>> getAllCheckIns() async {
+    final snapshot = await _firestore
+        .collection('dose_check_ins')
+        .where('patient_id', isEqualTo: _uid)
+        .get();
+    final list = snapshot.docs.map((doc) => doc.data()).toList();
+    list.sort(
+      (a, b) => (b['date'] as String).compareTo(a['date'] as String),
+    );
+    return list;
+  }
 }

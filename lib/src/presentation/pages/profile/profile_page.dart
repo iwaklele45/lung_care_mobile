@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -5,7 +7,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lung_care_mobile/l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lung_care_mobile/src/core/theme/app_colors.dart';
+import 'package:lung_care_mobile/src/data/services/profile_storage_service.dart';
 import 'package:lung_care_mobile/src/presentation/bloc/auth/auth_bloc.dart';
+import 'package:lung_care_mobile/src/presentation/widgets/profile_picture_picker.dart';
 
 /// Body-only view rendered inside the Home shell's "Profile" tab.
 class ProfilePage extends StatefulWidget {
@@ -56,31 +60,11 @@ class _ProfilePageState extends State<ProfilePage> {
 
           return Column(
             children: [
-              Stack(
-                alignment: Alignment.bottomRight,
-                children: [
-                  CircleAvatar(
-                    radius: 52,
-                    backgroundColor: AppColors.ternary,
-                    child: const Icon(
-                      Icons.person,
-                      size: 56,
-                      color: AppColors.primary,
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: const BoxDecoration(
-                      color: AppColors.primary,
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(
-                      Icons.camera_alt,
-                      size: 16,
-                      color: Colors.white,
-                    ),
-                  ),
-                ],
+              ProfilePicturePicker(
+                imageUrl: (data['profilePictureUrl'] as String?)?.isNotEmpty == true
+                    ? data['profilePictureUrl'] as String
+                    : currentUser?.photoURL,
+                onChanged: (file) => _onProfilePicChanged(file, data),
               ),
               const SizedBox(height: 14),
               Text(
@@ -162,6 +146,44 @@ class _ProfilePageState extends State<ProfilePage> {
     );
     if (saved == true && mounted) {
       setState(() => _cachedFuture = _doc.get());
+    }
+  }
+
+  /// Called when the user picks or removes a profile picture.
+  ///
+  /// Uploads to Firebase Storage, updates Firestore, and refreshes the view.
+  Future<void> _onProfilePicChanged(File? file, Map<String, dynamic> data) async {
+    if (_doc == null || !mounted) return;
+
+    try {
+      final uid = _user!.uid;
+      final storage = ProfileStorageService();
+
+      if (file != null) {
+        // Upload new picture
+        final url = await storage.upload(uid: uid, imageFile: file);
+        await _doc!.update({
+          'profilePictureUrl': url,
+          'updatedAt': FieldValue.serverTimestamp(),
+        });
+      } else {
+        // Remove picture
+        await storage.delete(uid);
+        await _doc!.update({
+          'profilePictureUrl': FieldValue.delete(),
+          'updatedAt': FieldValue.serverTimestamp(),
+        });
+      }
+
+      if (mounted) {
+        setState(() => _cachedFuture = _doc!.get());
+      }
+    } catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Gagal memperbarui foto profil.')),
+        );
+      }
     }
   }
 }
