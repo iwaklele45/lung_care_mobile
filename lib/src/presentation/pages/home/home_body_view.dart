@@ -45,17 +45,9 @@ class _HomeBodyViewState extends State<HomeBodyView> {
 
       final pending = schedules.where((s) => s.status == 'pending').toList();
       for (final item in pending) {
-        final parts = item.time.split(' ');
-        if (parts.length != 2) continue;
-        final timeDigits = parts[0].split(':');
-        if (timeDigits.length != 2) continue;
-        int? h = int.tryParse(timeDigits[0]);
-        int? m = int.tryParse(timeDigits[1]);
-        if (h == null || m == null) continue;
-        final isPM = parts[1].toUpperCase() == 'PM';
-        if (isPM && h != 12) h += 12;
-        if (!isPM && h == 12) h = 0;
-        if (h == now.hour && m == now.minute) {
+        final tod = item.timeOfDay;
+        if (tod == null) continue;
+        if (tod.hour == now.hour && tod.minute == now.minute) {
           _lastReminderMinute = minuteKey;
           // Direct check-in without modal
           if (mounted) {
@@ -200,16 +192,27 @@ class _HomeBodyViewState extends State<HomeBodyView> {
                     const SizedBox(height: 12),
 
                     // ── Next Dose hero card ───────────────────────────
-                    NextDoseCard(
-                      time: loaded.nextDoseTime,
-                      medicineName: loaded.nextDoseName,
-                      isLoading: isCheckingIn,
-                      onCheckIn: () {
-                        context.read<HomeBloc>().add(
-                          HomeCheckInDoseRequested(
-                            item: loaded.schedules
-                                .firstWhere((s) => s.status == 'pending'),
-                          ),
+                    Builder(
+                      builder: (context) {
+                        final nextPending = loaded.schedules
+                            .where((s) => s.status == 'pending')
+                            .toList();
+                        final pendingItem = nextPending.isNotEmpty
+                            ? nextPending.first
+                            : null;
+                        final displayTime = pendingItem?.timeOfDay?.format(context)
+                            ?? loaded.nextDoseTime;
+                        return NextDoseCard(
+                          time: displayTime,
+                          medicineName: loaded.nextDoseName,
+                          isLoading: isCheckingIn,
+                          onCheckIn: () {
+                            if (pendingItem != null) {
+                              context.read<HomeBloc>().add(
+                                HomeCheckInDoseRequested(item: pendingItem),
+                              );
+                            }
+                          },
                         );
                       },
                     ),

@@ -72,7 +72,7 @@ class ScheduleListItem extends StatelessWidget {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    '${item.time} · ${item.dosage}',
+                    '${item.timeOfDay?.format(context) ?? item.time} · ${item.dosage}',
                     style: const TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w400,

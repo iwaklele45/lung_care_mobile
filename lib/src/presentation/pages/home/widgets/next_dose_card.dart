@@ -19,19 +19,40 @@ class NextDoseCard extends StatelessWidget {
   final VoidCallback onCheckIn;
   final bool isLoading;
 
-  /// Returns `true` if [time] (e.g. "7:00 AM") is within ±15 minutes of now.
+  /// Returns `true` if [time] is within ±15 minutes of now.
+  /// Supports formats: "HH:mm", "H:mm AM/PM", or locale format.
   bool _isNearScheduledTime() {
     try {
-      final parts = time.split(' ');
-      if (parts.length != 2) return false;
-      final digits = parts[0].split(':');
-      if (digits.length != 2) return false;
-      int? h = int.tryParse(digits[0]);
-      int? m = int.tryParse(digits[1]);
+      int? h;
+      int? m;
+
+      // Try "HH:mm" (24-hour) or "H:mm" format first
+      final parts24 = time.split(':');
+      if (parts24.length == 2) {
+        // Could be "07:00" or "7:00 AM"
+        final hourStr = parts24[0].trim();
+        final minutePart = parts24[1].trim();
+
+        // Check if minute part has AM/PM
+        final ampmMatch = RegExp(r'(\d+)\s*(AM|PM)', caseSensitive: false)
+            .firstMatch(minutePart);
+        if (ampmMatch != null) {
+          // 12-hour format with AM/PM
+          h = int.tryParse(hourStr);
+          m = int.tryParse(ampmMatch.group(1)!);
+          final isPM = ampmMatch.group(2)!.toUpperCase() == 'PM';
+          if (h != null) {
+            if (isPM && h != 12) h += 12;
+            if (!isPM && h == 12) h = 0;
+          }
+        } else {
+          // Pure 24-hour format
+          h = int.tryParse(hourStr);
+          m = int.tryParse(minutePart);
+        }
+      }
+
       if (h == null || m == null) return false;
-      final isPM = parts[1].toUpperCase() == 'PM';
-      if (isPM && h != 12) h += 12;
-      if (!isPM && h == 12) h = 0;
 
       final now = TimeOfDay.now();
       final scheduledMin = h * 60 + m;
