@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:lung_care_mobile/l10n/app_localizations.dart';
 import 'package:lung_care_mobile/src/core/theme/app_colors.dart';
 import 'package:lung_care_mobile/src/data/datasource/schedule_remote_data_source.dart';
 import 'package:lung_care_mobile/src/presentation/pages/meds/medication_form.dart';
@@ -12,6 +13,7 @@ class MedicationSchedulePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: AppColors.bodyColor,
       appBar: AppBar(
@@ -22,9 +24,9 @@ class MedicationSchedulePage extends StatelessWidget {
           icon: const Icon(Icons.arrow_back_rounded, color: AppColors.primary),
           onPressed: () => context.pop(),
         ),
-        title: const Text(
-          'Jadwal Obat',
-          style: TextStyle(
+        title: Text(
+          l.medicationSchedule,
+          style: const TextStyle(
             color: AppColors.primary,
             fontWeight: FontWeight.bold,
             fontSize: 20,
@@ -36,20 +38,20 @@ class MedicationSchedulePage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Jadwal Minum Obat',
-              style: TextStyle(
+            Text(
+              l.medicationScheduleTitle,
+              style: const TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.w700,
                 color: AppColors.black,
               ),
             ),
             const SizedBox(height: 16),
-            const _PhaseCard(),
+            _PhaseCard(l: l),
             const SizedBox(height: 26),
-            const Text(
-              'Atur Pengingat Anda',
-              style: TextStyle(
+            Text(
+              l.setYourReminder,
+              style: const TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.w700,
                 color: AppColors.black,
@@ -63,43 +65,68 @@ class MedicationSchedulePage extends StatelessWidget {
                   return const Padding(
                     padding: EdgeInsets.symmetric(vertical: 24),
                     child: Center(
-                      child: CircularProgressIndicator(color: AppColors.primary),
+                      child: CircularProgressIndicator(
+                        color: AppColors.primary,
+                      ),
                     ),
                   );
                 }
                 final meds = snapshot.data ?? const [];
                 if (meds.isEmpty) {
-                  return const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 24),
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 24),
                     child: Text(
-                      'Belum ada pengingat obat.',
-                      style: TextStyle(color: AppColors.nautral),
+                      l.noRemindersYet,
+                      style: const TextStyle(color: AppColors.nautral),
                     ),
                   );
                 }
+
+                // ── Compute stock from Firestore data ────────────────
+                int totalStock = 0;
+                int dailyConsumption = 0;
+                for (final med in meds) {
+                  final amount = int.tryParse(med.amount) ?? 0;
+                  totalStock += amount;
+                  dailyConsumption += med.times.length;
+                }
+                final daysLeft = dailyConsumption > 0
+                    ? (totalStock / dailyConsumption).floor()
+                    : 0;
+                // total = sum of all original amounts we can infer
+                // (we just use remaining as "remaining" and compute a rough total)
+                final total = totalStock + dailyConsumption * 30;
+                // ─────────────────────────────────────────────────────
+
                 return Column(
-                  children: meds
-                      .map(
-                        (med) => Padding(
-                          padding: const EdgeInsets.only(bottom: 16),
-                          child: _ReminderCard(
-                            name: med.name,
-                            dosage: '${med.amount} ${med.type ?? ''} • ${med.dose}',
-                            tag: med.capsuleColor,
-                            time: med.times
-                                .map((t) => t.format(context))
-                                .join(', '),
-                          ),
+                  children: [
+                    ...meds.map(
+                      (med) => Padding(
+                        padding: const EdgeInsets.only(bottom: 16),
+                        child: _ReminderCard(
+                          name: med.name,
+                          dosage:
+                              '${med.amount} ${med.type ?? ''} • ${med.dose}',
+                          tag: med.capsuleColor,
+                          time: med.times
+                              .map((t) => t.format(context))
+                              .join(', '),
                         ),
-                      )
-                      .toList(),
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    GestureDetector(
+                      onTap: () => context.push('/medication-tracker'),
+                      child: _StockCard(
+                        remaining: totalStock,
+                        total: total,
+                        daysLeft: daysLeft,
+                        l: l,
+                      ),
+                    ),
+                  ],
                 );
               },
-            ),
-            const SizedBox(height: 4),
-            GestureDetector(
-              onTap: () => context.push('/medication-tracker'),
-              child: const _StockCard(remaining: 60, total: 180, daysLeft: 15),
             ),
           ],
         ),
@@ -109,7 +136,9 @@ class MedicationSchedulePage extends StatelessWidget {
 }
 
 class _PhaseCard extends StatelessWidget {
-  const _PhaseCard();
+  const _PhaseCard({required this.l});
+
+  final AppLocalizations l;
 
   @override
   Widget build(BuildContext context) {
@@ -139,22 +168,25 @@ class _PhaseCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 12),
-              const Expanded(
+              Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Tahap Intensif (Bulan 1-2)',
-                      style: TextStyle(
+                      l.intensivePhase,
+                      style: const TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w700,
                         color: AppColors.black,
                       ),
                     ),
-                    SizedBox(height: 4),
+                    const SizedBox(height: 4),
                     Text(
-                      'Fase pengobatan awal yang membutuhkan kedisiplinan tinggi.',
-                      style: TextStyle(fontSize: 13, color: AppColors.nautral),
+                      l.intensivePhaseDesc,
+                      style: const TextStyle(
+                        fontSize: 13,
+                        color: AppColors.nautral,
+                      ),
                     ),
                   ],
                 ),
@@ -177,22 +209,22 @@ class _PhaseCard extends StatelessWidget {
                   size: 22,
                 ),
                 const SizedBox(width: 12),
-                const Expanded(
+                Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Pagi Hari (Setelah Sarapan)',
-                        style: TextStyle(
+                        l.morningAfterBreakfast,
+                        style: const TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
                           color: AppColors.black,
                         ),
                       ),
-                      SizedBox(height: 4),
+                      const SizedBox(height: 4),
                       Text(
-                        'Direkomendasikan pukul 07:00 - 09:00',
-                        style: TextStyle(
+                        l.recommendedTime,
+                        style: const TextStyle(
                           fontSize: 13,
                           color: AppColors.nautral,
                         ),
@@ -328,11 +360,13 @@ class _StockCard extends StatelessWidget {
     required this.remaining,
     required this.total,
     required this.daysLeft,
+    required this.l,
   });
 
   final int remaining;
   final int total;
   final int daysLeft;
+  final AppLocalizations l;
 
   @override
   Widget build(BuildContext context) {
@@ -345,13 +379,17 @@ class _StockCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Row(
+          Row(
             children: [
-              Icon(Icons.inventory_2_outlined, color: Colors.white, size: 22),
-              SizedBox(width: 10),
+              const Icon(
+                Icons.inventory_2_outlined,
+                color: Colors.white,
+                size: 22,
+              ),
+              const SizedBox(width: 10),
               Text(
-                'Konfirmasi Stok Obat',
-                style: TextStyle(
+                l.confirmStock,
+                style: const TextStyle(
                   fontSize: 17,
                   fontWeight: FontWeight.w700,
                   color: Colors.white,
@@ -363,12 +401,12 @@ class _StockCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
-                'Sisa Stok Bulan Ini',
-                style: TextStyle(fontSize: 13, color: Colors.white70),
+              Text(
+                l.remainingStock,
+                style: const TextStyle(fontSize: 13, color: Colors.white70),
               ),
               Text(
-                '$remaining / $total Pil',
+                l.pillCount(remaining, total),
                 style: const TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w700,
@@ -389,7 +427,7 @@ class _StockCard extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            'Cukup untuk $daysLeft hari ke depan',
+            l.daysLeftSuffix(daysLeft),
             style: const TextStyle(fontSize: 12, color: Colors.white70),
           ),
         ],

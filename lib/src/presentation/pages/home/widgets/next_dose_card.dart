@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:lung_care_mobile/l10n/app_localizations.dart';
 import 'package:lung_care_mobile/src/core/theme/app_colors.dart';
 
 /// Hero card showing the next upcoming dose with a "Check-in" CTA.
+/// The button is only enabled when the current time is within ±15 minutes
+/// of the scheduled dose time.
 class NextDoseCard extends StatelessWidget {
   const NextDoseCard({
     super.key,
@@ -16,8 +19,55 @@ class NextDoseCard extends StatelessWidget {
   final VoidCallback onCheckIn;
   final bool isLoading;
 
+  /// Returns `true` if [time] is within ±15 minutes of now.
+  /// Supports formats: "HH:mm", "H:mm AM/PM", or locale format.
+  bool _isNearScheduledTime() {
+    try {
+      int? h;
+      int? m;
+
+      // Try "HH:mm" (24-hour) or "H:mm" format first
+      final parts24 = time.split(':');
+      if (parts24.length == 2) {
+        // Could be "07:00" or "7:00 AM"
+        final hourStr = parts24[0].trim();
+        final minutePart = parts24[1].trim();
+
+        // Check if minute part has AM/PM
+        final ampmMatch = RegExp(r'(\d+)\s*(AM|PM)', caseSensitive: false)
+            .firstMatch(minutePart);
+        if (ampmMatch != null) {
+          // 12-hour format with AM/PM
+          h = int.tryParse(hourStr);
+          m = int.tryParse(ampmMatch.group(1)!);
+          final isPM = ampmMatch.group(2)!.toUpperCase() == 'PM';
+          if (h != null) {
+            if (isPM && h != 12) h += 12;
+            if (!isPM && h == 12) h = 0;
+          }
+        } else {
+          // Pure 24-hour format
+          h = int.tryParse(hourStr);
+          m = int.tryParse(minutePart);
+        }
+      }
+
+      if (h == null || m == null) return false;
+
+      final now = TimeOfDay.now();
+      final scheduledMin = h * 60 + m;
+      final nowMin = now.hour * 60 + now.minute;
+      return (nowMin - scheduledMin).abs() <= 15;
+    } catch (_) {
+      return false;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
+    final canCheckIn = _isNearScheduledTime();
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20),
       padding: const EdgeInsets.fromLTRB(20, 20, 20, 24),
@@ -45,9 +95,9 @@ class NextDoseCard extends StatelessWidget {
               color: Colors.white.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(20),
             ),
-            child: const Text(
-              'NEXT DOSE',
-              style: TextStyle(
+            child: Text(
+              l.nextDose,
+              style: const TextStyle(
                 color: Colors.white,
                 fontSize: 11,
                 fontWeight: FontWeight.w600,
@@ -77,15 +127,17 @@ class NextDoseCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 20),
-          // Check-in button
+          // Check-in button — disabled when not near scheduled time
           SizedBox(
             width: double.infinity,
             height: 48,
             child: ElevatedButton.icon(
-              onPressed: isLoading ? null : onCheckIn,
+              onPressed: (isLoading || !canCheckIn) ? null : onCheckIn,
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.white,
                 foregroundColor: AppColors.primary,
+                disabledBackgroundColor: Colors.white.withValues(alpha: 0.5),
+                disabledForegroundColor: Colors.white70,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(14),
                 ),
@@ -100,9 +152,18 @@ class NextDoseCard extends StatelessWidget {
                         color: AppColors.primary,
                       ),
                     )
-                  : const Icon(Icons.check_circle_outline_rounded, size: 20),
+                  : Icon(
+                      canCheckIn
+                          ? Icons.check_circle_outline_rounded
+                          : Icons.lock_clock_rounded,
+                      size: 20,
+                    ),
               label: Text(
-                isLoading ? 'Checking in...' : 'Check-in Dose',
+                isLoading
+                    ? l.checkingIn
+                    : canCheckIn
+                        ? l.checkInDose
+                        : l.notYetTime,
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.normal,

@@ -28,8 +28,12 @@ class Medication {
 
   factory Medication.fromMap(String id, Map<String, dynamic> map) {
     final rawTimes = (map['times'] as List?)?.cast<int>();
-    final minutes = rawTimes ??
-        [((map['timeHour'] as int? ?? 0) * 60) + (map['timeMinute'] as int? ?? 0)];
+    final minutes =
+        rawTimes ??
+        [
+          ((map['timeHour'] as int? ?? 0) * 60) +
+              (map['timeMinute'] as int? ?? 0),
+        ];
     return Medication(
       id: id,
       name: map['name'] as String? ?? '',
@@ -143,21 +147,23 @@ class _MedicationFormState extends State<MedicationForm> {
       );
       return;
     }
-    widget.onSubmit(
-      Medication(
-        id: widget.initial?.id,
-        name: _nameController.text.trim(),
-        amount: _amountController.text.trim(),
-        type: _type,
-        dose: _doseController.text.trim(),
-        frequency: _frequency,
-        capsuleColor: _capsuleColor,
-        times: _times.cast<TimeOfDay>(),
-        reminder: _reminder,
-      ),
-    ).then((shouldReset) {
-      if (shouldReset && mounted) _reset();
-    });
+    widget
+        .onSubmit(
+          Medication(
+            id: widget.initial?.id,
+            name: _nameController.text.trim(),
+            amount: _amountController.text.trim(),
+            type: _type,
+            dose: _doseController.text.trim(),
+            frequency: _frequency,
+            capsuleColor: _capsuleColor,
+            times: _times.cast<TimeOfDay>(),
+            reminder: _reminder,
+          ),
+        )
+        .then((shouldReset) {
+          if (shouldReset && mounted) _reset();
+        });
   }
 
   void _reset() {
@@ -228,7 +234,7 @@ class _MedicationFormState extends State<MedicationForm> {
               ),
             ),
             _Field(
-              label: 'Warna Kapsul',
+              label: 'Warna Obat',
               child: _dropdown(
                 value: _capsuleColor,
                 items: _colors,
