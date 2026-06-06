@@ -224,6 +224,162 @@ abstract class AppLocalizations {
   /// **'English'**
   String get english;
 
+  /// No description provided for @englishBeta.
+  ///
+  /// In id, this message translates to:
+  /// **'(Beta)'**
+  String get englishBeta;
+
+  /// No description provided for @soundReminder.
+  ///
+  /// In id, this message translates to:
+  /// **'Suara Pengingat'**
+  String get soundReminder;
+
+  /// No description provided for @soundReminderDesc.
+  ///
+  /// In id, this message translates to:
+  /// **'Mainkan suara saat pengingat muncul.'**
+  String get soundReminderDesc;
+
+  /// No description provided for @vibration.
+  ///
+  /// In id, this message translates to:
+  /// **'Getar'**
+  String get vibration;
+
+  /// No description provided for @vibrationDesc.
+  ///
+  /// In id, this message translates to:
+  /// **'Getarkan perangkat saat pengingat muncul.'**
+  String get vibrationDesc;
+
+  /// No description provided for @snoozeDuration.
+  ///
+  /// In id, this message translates to:
+  /// **'Durasi Tunda'**
+  String get snoozeDuration;
+
+  /// No description provided for @snoozeDurationDesc.
+  ///
+  /// In id, this message translates to:
+  /// **'Waktu tambahan setelah tombol tunda ditekan.'**
+  String get snoozeDurationDesc;
+
+  /// No description provided for @exactAlarm.
+  ///
+  /// In id, this message translates to:
+  /// **'Alarm Presisi'**
+  String get exactAlarm;
+
+  /// No description provided for @exactAlarmActiveDesc.
+  ///
+  /// In id, this message translates to:
+  /// **'Aktif untuk jadwal obat yang lebih tepat waktu.'**
+  String get exactAlarmActiveDesc;
+
+  /// No description provided for @exactAlarmInactiveDesc.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum aktif. Pengingat bisa sedikit terlambat.'**
+  String get exactAlarmInactiveDesc;
+
+  /// No description provided for @activate.
+  ///
+  /// In id, this message translates to:
+  /// **'Aktifkan'**
+  String get activate;
+
+  /// No description provided for @fullScreenPopup.
+  ///
+  /// In id, this message translates to:
+  /// **'Popup Layar Penuh'**
+  String get fullScreenPopup;
+
+  /// No description provided for @fullScreenPopupDesc.
+  ///
+  /// In id, this message translates to:
+  /// **'Buka aplikasi otomatis saat pengingat obat berbunyi.'**
+  String get fullScreenPopupDesc;
+
+  /// No description provided for @testNotification.
+  ///
+  /// In id, this message translates to:
+  /// **'Tes Notifikasi'**
+  String get testNotification;
+
+  /// No description provided for @testNotificationDesc.
+  ///
+  /// In id, this message translates to:
+  /// **'Kirim notifikasi percobaan ke perangkat ini.'**
+  String get testNotificationDesc;
+
+  /// No description provided for @send.
+  ///
+  /// In id, this message translates to:
+  /// **'Kirim'**
+  String get send;
+
+  /// No description provided for @testFullScreenPopup.
+  ///
+  /// In id, this message translates to:
+  /// **'Tes Popup Layar Penuh'**
+  String get testFullScreenPopup;
+
+  /// No description provided for @testFullScreenPopupDesc.
+  ///
+  /// In id, this message translates to:
+  /// **'Jadwalkan popup obat 8 detik lagi. Kunci layar setelah menekan.'**
+  String get testFullScreenPopupDesc;
+
+  /// No description provided for @test.
+  ///
+  /// In id, this message translates to:
+  /// **'Tes'**
+  String get test;
+
+  /// No description provided for @saveNotifFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal menyimpan pengaturan notifikasi.'**
+  String get saveNotifFailed;
+
+  /// No description provided for @exactAlarmGranted.
+  ///
+  /// In id, this message translates to:
+  /// **'Izin alarm presisi aktif.'**
+  String get exactAlarmGranted;
+
+  /// No description provided for @exactAlarmDenied.
+  ///
+  /// In id, this message translates to:
+  /// **'Izin alarm presisi belum aktif.'**
+  String get exactAlarmDenied;
+
+  /// No description provided for @fullScreenGranted.
+  ///
+  /// In id, this message translates to:
+  /// **'Izin popup layar penuh aktif.'**
+  String get fullScreenGranted;
+
+  /// No description provided for @fullScreenDenied.
+  ///
+  /// In id, this message translates to:
+  /// **'Aktifkan popup layar penuh dari pengaturan sistem.'**
+  String get fullScreenDenied;
+
+  /// No description provided for @testNotifSent.
+  ///
+  /// In id, this message translates to:
+  /// **'Notifikasi percobaan dikirim.'**
+  String get testNotifSent;
+
+  /// No description provided for @testFullScreenScheduled.
+  ///
+  /// In id, this message translates to:
+  /// **'Tes popup dijadwalkan 8 detik lagi. Kunci layar HP.'**
+  String get testFullScreenScheduled;
+
   /// No description provided for @helpTitle.
   ///
   /// In id, this message translates to:

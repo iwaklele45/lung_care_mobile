@@ -21,6 +21,9 @@ class $AssetsIconsGen {
   AssetGenImage get addMemberIcon =>
       const AssetGenImage('assets/icons/add_member_icon.png');
 
+  /// File path: assets/icons/app_icon.png
+  AssetGenImage get appIcon => const AssetGenImage('assets/icons/app_icon.png');
+
   /// File path: assets/icons/arrow_left_icon.png
   AssetGenImage get arrowLeftIcon =>
       const AssetGenImage('assets/icons/arrow_left_icon.png');
@@ -100,6 +103,7 @@ class $AssetsIconsGen {
   /// List of all assets
   List<dynamic> get values => [
     addMemberIcon,
+    appIcon,
     arrowLeftIcon,
     checkInIcon,
     checkRoundedIconPng,

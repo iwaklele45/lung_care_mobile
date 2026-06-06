@@ -78,6 +78,92 @@ class AppLocalizationsId extends AppLocalizations {
   String get english => 'English';
 
   @override
+  String get englishBeta => '(Beta)';
+
+  @override
+  String get soundReminder => 'Suara Pengingat';
+
+  @override
+  String get soundReminderDesc => 'Mainkan suara saat pengingat muncul.';
+
+  @override
+  String get vibration => 'Getar';
+
+  @override
+  String get vibrationDesc => 'Getarkan perangkat saat pengingat muncul.';
+
+  @override
+  String get snoozeDuration => 'Durasi Tunda';
+
+  @override
+  String get snoozeDurationDesc =>
+      'Waktu tambahan setelah tombol tunda ditekan.';
+
+  @override
+  String get exactAlarm => 'Alarm Presisi';
+
+  @override
+  String get exactAlarmActiveDesc =>
+      'Aktif untuk jadwal obat yang lebih tepat waktu.';
+
+  @override
+  String get exactAlarmInactiveDesc =>
+      'Belum aktif. Pengingat bisa sedikit terlambat.';
+
+  @override
+  String get activate => 'Aktifkan';
+
+  @override
+  String get fullScreenPopup => 'Popup Layar Penuh';
+
+  @override
+  String get fullScreenPopupDesc =>
+      'Buka aplikasi otomatis saat pengingat obat berbunyi.';
+
+  @override
+  String get testNotification => 'Tes Notifikasi';
+
+  @override
+  String get testNotificationDesc =>
+      'Kirim notifikasi percobaan ke perangkat ini.';
+
+  @override
+  String get send => 'Kirim';
+
+  @override
+  String get testFullScreenPopup => 'Tes Popup Layar Penuh';
+
+  @override
+  String get testFullScreenPopupDesc =>
+      'Jadwalkan popup obat 8 detik lagi. Kunci layar setelah menekan.';
+
+  @override
+  String get test => 'Tes';
+
+  @override
+  String get saveNotifFailed => 'Gagal menyimpan pengaturan notifikasi.';
+
+  @override
+  String get exactAlarmGranted => 'Izin alarm presisi aktif.';
+
+  @override
+  String get exactAlarmDenied => 'Izin alarm presisi belum aktif.';
+
+  @override
+  String get fullScreenGranted => 'Izin popup layar penuh aktif.';
+
+  @override
+  String get fullScreenDenied =>
+      'Aktifkan popup layar penuh dari pengaturan sistem.';
+
+  @override
+  String get testNotifSent => 'Notifikasi percobaan dikirim.';
+
+  @override
+  String get testFullScreenScheduled =>
+      'Tes popup dijadwalkan 8 detik lagi. Kunci layar HP.';
+
+  @override
   String get helpTitle => 'Bantuan & Dukungan';
 
   @override

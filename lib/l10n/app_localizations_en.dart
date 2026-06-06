@@ -78,6 +78,91 @@ class AppLocalizationsEn extends AppLocalizations {
   String get english => 'English';
 
   @override
+  String get englishBeta => '(Beta)';
+
+  @override
+  String get soundReminder => 'Reminder Sound';
+
+  @override
+  String get soundReminderDesc => 'Play sound when reminder appears.';
+
+  @override
+  String get vibration => 'Vibration';
+
+  @override
+  String get vibrationDesc => 'Vibrate device when reminder appears.';
+
+  @override
+  String get snoozeDuration => 'Snooze Duration';
+
+  @override
+  String get snoozeDurationDesc =>
+      'Extra time after pressing the snooze button.';
+
+  @override
+  String get exactAlarm => 'Exact Alarm';
+
+  @override
+  String get exactAlarmActiveDesc =>
+      'Active for more precise medication schedules.';
+
+  @override
+  String get exactAlarmInactiveDesc =>
+      'Inactive. Reminders may be slightly delayed.';
+
+  @override
+  String get activate => 'Activate';
+
+  @override
+  String get fullScreenPopup => 'Full Screen Popup';
+
+  @override
+  String get fullScreenPopupDesc =>
+      'Open app automatically when medication reminder sounds.';
+
+  @override
+  String get testNotification => 'Test Notification';
+
+  @override
+  String get testNotificationDesc => 'Send a test notification to this device.';
+
+  @override
+  String get send => 'Send';
+
+  @override
+  String get testFullScreenPopup => 'Test Full Screen Popup';
+
+  @override
+  String get testFullScreenPopupDesc =>
+      'Schedule a popup in 8 seconds. Lock the screen after pressing.';
+
+  @override
+  String get test => 'Test';
+
+  @override
+  String get saveNotifFailed => 'Failed to save notification settings.';
+
+  @override
+  String get exactAlarmGranted => 'Exact alarm permission granted.';
+
+  @override
+  String get exactAlarmDenied => 'Exact alarm permission not yet active.';
+
+  @override
+  String get fullScreenGranted => 'Full screen popup permission granted.';
+
+  @override
+  String get fullScreenDenied =>
+      'Enable full screen popup from system settings.';
+
+  @override
+  String get testNotifSent => 'Test notification sent.';
+
+  @override
+  String get testFullScreenScheduled =>
+      'Popup test scheduled in 8 seconds. Lock the screen.';
+
+  @override
   String get helpTitle => 'Help & Support';
 
   @override

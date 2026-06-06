@@ -50,9 +50,10 @@ class _SettingsPageState extends State<SettingsPage> {
       await _syncMedicationReminders();
     } catch (_) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Gagal menyimpan pengaturan notifikasi.')),
-      );
+      final l = AppLocalizations.of(context)!;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l.saveNotifFailed)));
     } finally {
       if (mounted) setState(() => _saving = false);
     }
@@ -68,12 +69,11 @@ class _SettingsPageState extends State<SettingsPage> {
         .requestExactAlarmPermission();
     if (!mounted) return;
     setState(() => _canScheduleExact = granted);
+    final l = AppLocalizations.of(context)!;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          granted == true
-              ? 'Izin alarm presisi aktif.'
-              : 'Izin alarm presisi belum aktif.',
+          granted == true ? l.exactAlarmGranted : l.exactAlarmDenied,
         ),
       ),
     );
@@ -83,12 +83,11 @@ class _SettingsPageState extends State<SettingsPage> {
     final granted = await NotificationService.instance
         .requestFullScreenIntentPermission();
     if (!mounted) return;
+    final l = AppLocalizations.of(context)!;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          granted == true
-              ? 'Izin popup layar penuh aktif.'
-              : 'Aktifkan popup layar penuh dari pengaturan sistem.',
+          granted == true ? l.fullScreenGranted : l.fullScreenDenied,
         ),
       ),
     );
@@ -97,19 +96,19 @@ class _SettingsPageState extends State<SettingsPage> {
   Future<void> _sendTestNotification() async {
     await NotificationService.instance.showTestNotification();
     if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Notifikasi percobaan dikirim.')),
-    );
+    final l = AppLocalizations.of(context)!;
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(l.testNotifSent)));
   }
 
   Future<void> _sendFullScreenTestReminder() async {
     await NotificationService.instance.scheduleFullScreenTestReminder();
     if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Tes popup dijadwalkan 8 detik lagi. Kunci layar HP.'),
-      ),
-    );
+    final l = AppLocalizations.of(context)!;
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(l.testFullScreenScheduled)));
   }
 
   @override
@@ -187,8 +186,8 @@ class _SettingsPageState extends State<SettingsPage> {
                   const SizedBox(height: 10),
                   _SwitchTile(
                     icon: Icons.volume_up_outlined,
-                    label: 'Suara Pengingat',
-                    subtitle: 'Mainkan suara saat pengingat muncul.',
+                    label: l.soundReminder,
+                    subtitle: l.soundReminderDesc,
                     value: _preferences.sound,
                     onChanged: _saving
                         ? null
@@ -198,8 +197,8 @@ class _SettingsPageState extends State<SettingsPage> {
                   const SizedBox(height: 10),
                   _SwitchTile(
                     icon: Icons.vibration_rounded,
-                    label: 'Getar',
-                    subtitle: 'Getarkan perangkat saat pengingat muncul.',
+                    label: l.vibration,
+                    subtitle: l.vibrationDesc,
                     value: _preferences.vibration,
                     onChanged: _saving
                         ? null
@@ -209,6 +208,8 @@ class _SettingsPageState extends State<SettingsPage> {
                   ),
                   const SizedBox(height: 10),
                   _SnoozeTile(
+                    label: l.snoozeDuration,
+                    subtitle: l.snoozeDurationDesc,
                     value: _preferences.snoozeMinutes,
                     onChanged: _saving
                         ? null
@@ -219,11 +220,11 @@ class _SettingsPageState extends State<SettingsPage> {
                   const SizedBox(height: 10),
                   _ActionTile(
                     icon: Icons.alarm_on_rounded,
-                    label: 'Alarm Presisi',
+                    label: l.exactAlarm,
                     subtitle: _canScheduleExact == false
-                        ? 'Belum aktif. Pengingat bisa sedikit terlambat.'
-                        : 'Aktif untuk jadwal obat yang lebih tepat waktu.',
-                    actionLabel: _canScheduleExact == false ? 'Aktifkan' : null,
+                        ? l.exactAlarmInactiveDesc
+                        : l.exactAlarmActiveDesc,
+                    actionLabel: _canScheduleExact == false ? l.activate : null,
                     onTap: _canScheduleExact == false
                         ? _requestExactPermission
                         : null,
@@ -231,27 +232,25 @@ class _SettingsPageState extends State<SettingsPage> {
                   const SizedBox(height: 10),
                   _ActionTile(
                     icon: Icons.open_in_full_rounded,
-                    label: 'Popup Layar Penuh',
-                    subtitle:
-                        'Buka aplikasi otomatis saat pengingat obat berbunyi.',
-                    actionLabel: 'Aktifkan',
+                    label: l.fullScreenPopup,
+                    subtitle: l.fullScreenPopupDesc,
+                    actionLabel: l.activate,
                     onTap: _requestFullScreenPermission,
                   ),
                   const SizedBox(height: 10),
                   _ActionTile(
                     icon: Icons.notification_add_outlined,
-                    label: 'Tes Notifikasi',
-                    subtitle: 'Kirim notifikasi percobaan ke perangkat ini.',
-                    actionLabel: 'Kirim',
+                    label: l.testNotification,
+                    subtitle: l.testNotificationDesc,
+                    actionLabel: l.send,
                     onTap: _sendTestNotification,
                   ),
                   const SizedBox(height: 10),
                   _ActionTile(
                     icon: Icons.fullscreen_rounded,
-                    label: 'Tes Popup Layar Penuh',
-                    subtitle:
-                        'Jadwalkan popup obat 8 detik lagi. Kunci layar setelah menekan.',
-                    actionLabel: 'Tes',
+                    label: l.testFullScreenPopup,
+                    subtitle: l.testFullScreenPopupDesc,
+                    actionLabel: l.test,
                     onTap: _sendFullScreenTestReminder,
                   ),
 
@@ -270,6 +269,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   _LanguageTile(
                     flag: '🇬🇧',
                     label: l.english,
+                    badge: l.englishBeta,
                     isSelected: currentLang == 'en',
                     onTap: () => localeProvider.setLocale(const Locale('en')),
                   ),
@@ -374,8 +374,15 @@ class _SwitchTile extends StatelessWidget {
 }
 
 class _SnoozeTile extends StatelessWidget {
-  const _SnoozeTile({required this.value, required this.onChanged});
+  const _SnoozeTile({
+    required this.label,
+    required this.subtitle,
+    required this.value,
+    required this.onChanged,
+  });
 
+  final String label;
+  final String subtitle;
   final int value;
   final ValueChanged<int>? onChanged;
 
@@ -404,22 +411,25 @@ class _SnoozeTile extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 14),
-          const Expanded(
+          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Durasi Tunda',
-                  style: TextStyle(
+                  label,
+                  style: const TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
                     color: AppColors.black,
                   ),
                 ),
-                SizedBox(height: 2),
+                const SizedBox(height: 2),
                 Text(
-                  'Waktu tambahan setelah tombol tunda ditekan.',
-                  style: TextStyle(fontSize: 12, color: AppColors.nautral),
+                  subtitle,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: AppColors.nautral,
+                  ),
                 ),
               ],
             ),
@@ -525,12 +535,14 @@ class _LanguageTile extends StatelessWidget {
   const _LanguageTile({
     required this.flag,
     required this.label,
+    this.badge,
     required this.isSelected,
     required this.onTap,
   });
 
   final String flag;
   final String label;
+  final String? badge;
   final bool isSelected;
   final VoidCallback onTap;
 
@@ -542,7 +554,7 @@ class _LanguageTile extends StatelessWidget {
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.secondary : AppColors.white,
+          color: isSelected ? AppColors.ternary : AppColors.white,
           borderRadius: BorderRadius.circular(14),
           border: Border.all(
             color: isSelected ? AppColors.primary : Colors.transparent,
@@ -554,13 +566,40 @@ class _LanguageTile extends StatelessWidget {
             Text(flag, style: const TextStyle(fontSize: 26)),
             const SizedBox(width: 14),
             Expanded(
-              child: Text(
-                label,
-                style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-                  color: isSelected ? AppColors.primary : AppColors.black,
-                ),
+              child: Row(
+                children: [
+                  Text(
+                    label,
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: isSelected
+                          ? FontWeight.w600
+                          : FontWeight.w500,
+                      color: isSelected ? AppColors.primary : AppColors.black,
+                    ),
+                  ),
+                  if (badge != null) ...[
+                    const SizedBox(width: 6),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 6,
+                        vertical: 2,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.orange.withValues(alpha: 0.15),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: Text(
+                        badge!,
+                        style: const TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.orange,
+                        ),
+                      ),
+                    ),
+                  ],
+                ],
               ),
             ),
             if (isSelected)
