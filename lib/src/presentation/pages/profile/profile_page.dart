@@ -97,7 +97,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 _Tile(
                   icon: Icons.help_outline_rounded,
                   label: 'Help & Support',
-                  onTap: () {},
+                  onTap: () => context.push('/help-support'),
                 ),
                 const SizedBox(height: 24),
                 SizedBox(

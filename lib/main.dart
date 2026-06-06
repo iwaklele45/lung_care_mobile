@@ -29,6 +29,7 @@ import 'package:lung_care_mobile/src/presentation/pages/home_page.dart';
 import 'package:lung_care_mobile/src/presentation/pages/meds/medication_tracker_page.dart';
 import 'package:lung_care_mobile/src/presentation/pages/schedule/medication_schedule_page.dart';
 import 'package:lung_care_mobile/src/presentation/pages/splash_page.dart';
+import 'package:lung_care_mobile/src/presentation/pages/profile/help_support_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -93,6 +94,10 @@ class MyApp extends StatelessWidget {
       GoRoute(
         path: '/complete-profile',
         builder: (context, state) => const CompleteProfilePage(),
+      ),
+      GoRoute(
+        path: '/help-support',
+        builder: (context, state) => const HelpSupportPage(),
       ),
     ],
   );
