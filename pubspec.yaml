@@ -44,12 +44,16 @@ dependencies:
   firebase_auth: ^6.0.1
   cloud_firestore: ^6.0.3
   firebase_ai: ^3.12.1
-  firebase_app_check: ^0.4.4+1
   google_sign_in: ^6.3.0
   flutter_launcher_icons: ^0.14.4
   url_launcher: ^6.3.2
   shared_preferences: ^2.5.5
   provider: ^6.1.5+1
+  firebase_messaging: ^16.3.0
+  cloud_functions: ^6.3.2
+  flutter_local_notifications: ^21.0.0
+  timezone: ^0.11.0
+  flutter_timezone: ^5.1.0
   image_picker: ^1.1.2
   firebase_storage: ^13.4.1
 

@@ -179,24 +179,3 @@ class _OverlappingBadges extends StatelessWidget {
     );
   }
 }
-
-class _CheckCircle extends StatelessWidget {
-  const _CheckCircle({required this.size, required this.color});
-
-  final double size;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: size,
-      height: size,
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.18),
-        shape: BoxShape.circle,
-        border: Border.all(color: AppColors.white, width: 2),
-      ),
-      child: Icon(Icons.check_rounded, size: 16, color: color),
-    );
-  }
-}

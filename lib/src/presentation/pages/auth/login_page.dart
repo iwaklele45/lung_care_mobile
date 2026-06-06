@@ -38,8 +38,6 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.sizeOf(context);
-
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state is AuthAuthenticated) {
@@ -307,7 +305,7 @@ class _PrimaryButton extends StatelessWidget {
                 borderRadius: BorderRadius.circular(16),
               ),
               elevation: 6,
-              shadowColor: const Color(0xFF4A90E2).withOpacity(0.35),
+              shadowColor: const Color(0xFF4A90E2).withValues(alpha: 0.35),
             ),
             child: isLoading
                 ? const SizedBox(
@@ -442,25 +440,6 @@ class _Dot extends StatelessWidget {
       decoration: BoxDecoration(
         color: isActive ? const Color(0xFF4A90E2) : const Color(0xFFDDE6F4),
         shape: BoxShape.circle,
-      ),
-    );
-  }
-}
-
-class _GradientBlob extends StatelessWidget {
-  const _GradientBlob({required this.size, required this.colors});
-
-  final double size;
-  final List<Color> colors;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: size,
-      height: size,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        gradient: RadialGradient(colors: colors, radius: 0.9),
       ),
     );
   }

@@ -28,3 +28,17 @@ final class AuthLoggedOut extends AuthState {
 
   final String message;
 }
+
+final class AuthPasswordResetOtpSent extends AuthState {
+  AuthPasswordResetOtpSent(this.result);
+
+  final PasswordResetRequestResult result;
+}
+
+final class AuthPasswordResetOtpVerificationSuccess extends AuthState {
+  AuthPasswordResetOtpVerificationSuccess(this.result);
+
+  final PasswordResetVerificationResult result;
+}
+
+final class AuthPasswordResetCompleted extends AuthState {}

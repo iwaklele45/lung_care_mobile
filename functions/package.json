@@ -1,0 +1,17 @@
+{
+  "name": "lung-care-functions",
+  "description": "Firebase Cloud Functions for LungCare+",
+  "private": true,
+  "main": "index.js",
+  "engines": {
+    "node": "20"
+  },
+  "scripts": {
+    "lint": "node --check index.js",
+    "test": "npm run lint"
+  },
+  "dependencies": {
+    "firebase-admin": "^13.10.0",
+    "firebase-functions": "^4.9.0"
+  }
+}

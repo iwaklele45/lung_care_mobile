@@ -121,7 +121,9 @@ class _SplashPageState extends State<SplashPage>
                           return Stack(
                             fit: StackFit.expand,
                             children: [
-                              Container(color: Colors.white.withOpacity(0.65)),
+                              Container(
+                                color: Colors.white.withValues(alpha: 0.65),
+                              ),
                               Align(
                                 alignment: Alignment.centerLeft,
                                 child: FractionallySizedBox(
@@ -144,4 +146,3 @@ class _SplashPageState extends State<SplashPage>
     );
   }
 }
-
