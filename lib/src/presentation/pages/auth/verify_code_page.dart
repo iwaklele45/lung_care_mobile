@@ -40,7 +40,6 @@ class _VerifyCodePageState extends State<VerifyCodePage> {
     _timer = Timer.periodic(const Duration(seconds: 1), (_) {
       if (mounted) setState(() {});
     });
-    WidgetsBinding.instance.addPostFrameCallback((_) => _showDemoCode());
   }
 
   @override
@@ -83,13 +82,7 @@ class _VerifyCodePageState extends State<VerifyCodePage> {
     );
   }
 
-  void _showDemoCode() {
-    final code = _demoCode;
-    if (!mounted || code == null || code.isEmpty) return;
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text('Kode OTP Firebase: $code')));
-  }
+
 
   Widget _buildOtpField(int index) {
     return SizedBox(
@@ -155,7 +148,6 @@ class _VerifyCodePageState extends State<VerifyCodePage> {
             _demoCode = state.result.demoCode;
             _resendAvailableAt = state.result.resendAvailableAt;
           });
-          _showDemoCode();
           return;
         }
         if (state is AuthError) {
