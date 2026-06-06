@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lung_care_mobile/l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lung_care_mobile/src/core/theme/app_colors.dart';
 import 'package:lung_care_mobile/src/presentation/bloc/auth/auth_bloc.dart';
@@ -31,104 +32,117 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(20, 24, 20, 24),
-        child: FutureBuilder<DocumentSnapshot<Map<String, dynamic>>?>(
-          future: _cachedFuture,
-          builder: (context, snapshot) {
-            final data = snapshot.data?.data() ?? const {};
-            final name = (data['name'] as String?) ?? 'User';
-            final email = (data['email'] as String?) ?? _user?.email ?? '';
+    final l = AppLocalizations.of(context)!;
+    // Instant fallback from FirebaseAuth (no loading needed).
+    final currentUser = FirebaseAuth.instance.currentUser;
+    final fallbackName = currentUser?.displayName?.isNotEmpty == true
+        ? currentUser!.displayName!
+        : currentUser?.email?.split('@').first ?? 'User';
+    final fallbackEmail = currentUser?.email ?? '';
 
-            return Column(
-              children: [
-                Stack(
-                  alignment: Alignment.bottomRight,
-                  children: [
-                    CircleAvatar(
-                      radius: 52,
-                      backgroundColor: AppColors.ternary,
-                      child: const Icon(
-                        Icons.person,
-                        size: 56,
-                        color: AppColors.primary,
-                      ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: const BoxDecoration(
-                        color: AppColors.primary,
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Icon(
-                        Icons.camera_alt,
-                        size: 16,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 14),
-                Text(
-                  name,
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.black,
-                  ),
-                ),
-                Text(
-                  email,
-                  style: const TextStyle(fontSize: 14, color: AppColors.nautral),
-                ),
-                const SizedBox(height: 24),
-                _Tile(
-                  icon: Icons.edit_outlined,
-                  label: 'Edit Profil',
-                  onTap: () => _openEditForm(context, data),
-                ),
-                const SizedBox(height: 12),
-                _Tile(
-                  icon: Icons.notifications_none_rounded,
-                  label: 'Notification Settings',
-                  onTap: () {},
-                ),
-                const SizedBox(height: 12),
-                _Tile(
-                  icon: Icons.help_outline_rounded,
-                  label: 'Help & Support',
-                  onTap: () {},
-                ),
-                const SizedBox(height: 24),
-                SizedBox(
-                  height: 54,
-                  width: double.infinity,
-                  child: OutlinedButton.icon(
-                    onPressed: () {
-                      context.read<AuthBloc>().add(AuthSignOutRequested());
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Berhasil logout.')),
-                      );
-                      context.go('/login');
-                    },
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: Colors.red,
-                      side: const BorderSide(color: Colors.red),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                    ),
-                    icon: const Icon(Icons.logout_rounded, size: 20),
-                    label: const Text(
-                      'Logout',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+    return SingleChildScrollView(
+      padding: const EdgeInsets.fromLTRB(20, 24, 20, 24),
+      child: FutureBuilder<DocumentSnapshot<Map<String, dynamic>>?>(
+        future: _cachedFuture,
+        builder: (context, snapshot) {
+          // Use Firestore data if available, otherwise instant fallback.
+          final data = snapshot.data?.data() ?? const {};
+          final name = (data['name'] as String?)?.isNotEmpty == true
+              ? data['name'] as String
+              : fallbackName;
+          final email = (data['email'] as String?)?.isNotEmpty == true
+              ? data['email'] as String
+              : fallbackEmail;
+
+          return Column(
+            children: [
+              Stack(
+                alignment: Alignment.bottomRight,
+                children: [
+                  CircleAvatar(
+                    radius: 52,
+                    backgroundColor: AppColors.ternary,
+                    child: const Icon(
+                      Icons.person,
+                      size: 56,
+                      color: AppColors.primary,
                     ),
                   ),
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: const BoxDecoration(
+                      color: AppColors.primary,
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.camera_alt,
+                      size: 16,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 14),
+              Text(
+                name,
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.black,
                 ),
-              ],
-            );
-          },
-        ),
+              ),
+              Text(
+                email,
+                style: const TextStyle(fontSize: 14, color: AppColors.nautral),
+              ),
+              const SizedBox(height: 24),
+              _Tile(
+                icon: Icons.edit_outlined,
+                label: l.editProfile,
+                onTap: () => _openEditForm(context, data),
+              ),
+              const SizedBox(height: 12),
+              _Tile(
+                icon: Icons.settings_sharp,
+                label: l.settings,
+                onTap: () => context.push('/settings'),
+              ),
+              const SizedBox(height: 12),
+              _Tile(
+                icon: Icons.help_outline_rounded,
+                label: l.helpAndSupport,
+                onTap: () => context.push('/help-support'),
+              ),
+              const SizedBox(height: 24),
+              SizedBox(
+                height: 54,
+                width: double.infinity,
+                child: OutlinedButton.icon(
+                  onPressed: () {
+                    context.read<AuthBloc>().add(AuthSignOutRequested());
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Berhasil logout.')),
+                    );
+                    context.go('/login');
+                  },
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: Colors.red,
+                    side: const BorderSide(color: Colors.red),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                  ),
+                  icon: const Icon(Icons.logout_rounded, size: 20),
+                  label: Text(
+                    l.logout,
+                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
+      ),
     );
   }
 
@@ -183,10 +197,7 @@ class _Tile extends StatelessWidget {
                   ),
                 ),
               ),
-              const Icon(
-                Icons.chevron_right_rounded,
-                color: AppColors.nautral,
-              ),
+              const Icon(Icons.chevron_right_rounded, color: AppColors.nautral),
             ],
           ),
         ),
@@ -298,8 +309,9 @@ class _EditProfileFormState extends State<_EditProfileForm> {
                         height: 22,
                         child: CircularProgressIndicator(
                           strokeWidth: 2.2,
-                          valueColor:
-                              AlwaysStoppedAnimation<Color>(Colors.white),
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            Colors.white,
+                          ),
                         ),
                       )
                     : const Text(
@@ -342,8 +354,7 @@ class _EditProfileFormState extends State<_EditProfileForm> {
           borderSide: const BorderSide(color: AppColors.primary),
         ),
       ),
-      validator: (v) =>
-          (v == null || v.trim().isEmpty) ? 'Wajib diisi.' : null,
+      validator: (v) => (v == null || v.trim().isEmpty) ? 'Wajib diisi.' : null,
     );
   }
 }
