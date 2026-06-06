@@ -285,9 +285,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       );
       emit(AuthPasswordResetOtpSent(result));
     } on FirebaseFunctionsException catch (error) {
+      debugPrint('[AuthBloc] FirebaseFunctionsException: code=${error.code}, message=${error.message}, details=${error.details}');
       emit(AuthError(_passwordResetMessage(error)));
-    } catch (_) {
-      emit(AuthError('Gagal mengirim kode reset.'));
+    } catch (error, stackTrace) {
+      debugPrint('[AuthBloc] Unknown error: $error');
+      debugPrint('[AuthBloc] StackTrace: $stackTrace');
+      emit(AuthError('Gagal mengirim kode reset: $error'));
     }
   }
 

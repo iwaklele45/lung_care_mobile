@@ -3,6 +3,7 @@
 const crypto = require("crypto");
 const admin = require("firebase-admin");
 const functions = require("firebase-functions/v1");
+const nodemailer = require("nodemailer");
 const {HttpsError} = functions.https;
 const logger = functions.logger;
 
@@ -97,6 +98,50 @@ function maskPhone(phone) {
   return `${phone.substring(0, 5)}****${phone.substring(phone.length - 3)}`;
 }
 
+function getMailTransport() {
+  const email = process.env.GMAIL_EMAIL;
+  const password = process.env.GMAIL_PASSWORD;
+  if (!email || !password) return null;
+  return nodemailer.createTransport({
+    service: "gmail",
+    auth: {user: email, pass: password},
+  });
+}
+
+async function sendOtpEmail({destination, otp, channel}) {
+  if (channel !== "email") return;
+  const transport = getMailTransport();
+  if (!transport) {
+    logger.warn("Gmail SMTP not configured. OTP not sent via email.");
+    return;
+  }
+  const gmailEmail = process.env.GMAIL_EMAIL;
+  try {
+    await transport.sendMail({
+      from: `"LungCare+" <${gmailEmail}>`,
+      to: destination,
+      subject: "Kode Reset Password LungCare+",
+      html: [
+        "<div style='font-family:sans-serif;max-width:480px;margin:0 auto;padding:24px'>",
+        "<h2 style='color:#1565C0'>LungCare+</h2>",
+        "<p>Halo,</p>",
+        "<p>Berikut kode OTP untuk mereset password Anda:</p>",
+        `<div style='background:#f5f5f5;padding:16px;text-align:center;border-radius:8px;margin:16px 0'>`,
+        `<span style='font-size:32px;font-weight:bold;letter-spacing:8px;color:#1565C0'>${otp}</span>`,
+        "</div>",
+        "<p>Kode ini berlaku selama <strong>10 menit</strong>.</p>",
+        "<p>Jika Anda tidak meminta reset password, abaikan email ini.</p>",
+        "<hr style='border:none;border-top:1px solid #eee;margin:24px 0'>",
+        "<p style='color:#999;font-size:12px'>Email ini dikirim otomatis oleh LungCare+.</p>",
+        "</div>",
+      ].join(""),
+    });
+    logger.info("OTP email sent", {to: destination});
+  } catch (error) {
+    logger.error("Failed to send OTP email", error);
+  }
+}
+
 async function findAccount(identifier) {
   if (identifier.type === "email") {
     try {
@@ -162,6 +207,7 @@ exports.requestPasswordReset = functions.https.onCall(async (payload) => {
     uid: account.uid,
     identifierHash: hashValue(identifier.normalized),
     channel,
+    destination,
     maskedDestination,
     otpHash: hashValue(otp),
     attemptCount: 0,
@@ -174,11 +220,13 @@ exports.requestPasswordReset = functions.https.onCall(async (payload) => {
     updatedAt: admin.firestore.FieldValue.serverTimestamp(),
   });
 
-  logger.info("Password reset OTP created with Firebase-only demo delivery", {
+  logger.info("Password reset OTP created", {
     requestId: doc.id,
     channel,
     accountFound: Boolean(account),
   });
+
+  await sendOtpEmail({destination, otp, channel});
 
   return responseFromDoc(doc, (await doc.get()).data(), otp);
 });
@@ -210,6 +258,13 @@ exports.resendPasswordResetCode = functions.https.onCall(async (payload) => {
   });
 
   const updated = (await doc.get()).data();
+
+  await sendOtpEmail({
+    destination: updated.destination || updated.maskedDestination,
+    otp,
+    channel: updated.channel,
+  });
+
   return responseFromDoc(doc, updated, otp);
 });
 
