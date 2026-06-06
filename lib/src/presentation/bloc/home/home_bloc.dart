@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lung_care_mobile/src/data/datasource/check_in_remote_data_source.dart';
 import 'package:lung_care_mobile/src/data/datasource/dose_check_in_data_source.dart';
@@ -26,6 +27,7 @@ class MedicationScheduleItem {
     required this.time,
     required this.dosage,
     required this.status,
+    this.timeOfDay,
   });
 
   final String id;
@@ -35,6 +37,8 @@ class MedicationScheduleItem {
   final String time;
   final String dosage;
   final String status;
+  /// Raw TimeOfDay for locale-aware formatting in the UI.
+  final TimeOfDay? timeOfDay;
 }
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
@@ -96,14 +100,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           final timeOfDay = entry.value;
           final hours = timeOfDay.hour;
           final minutes = timeOfDay.minute;
-          final ampm = hours >= 12 ? 'PM' : 'AM';
-          final displayHour = hours == 0
-              ? 12
-              : hours > 12
-                  ? hours - 12
-                  : hours;
           final timeStr =
-              '$displayHour:${minutes.toString().padLeft(2, '0')} $ampm';
+              '${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}';
           return MedicationScheduleItem(
             id: key,
             scheduleId: med.id ?? '',
@@ -112,6 +110,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             time: timeStr,
             dosage: med.dose,
             status: checkedInKeys.contains(key) ? 'taken' : 'pending',
+            timeOfDay: timeOfDay,
           );
         });
       }).toList();

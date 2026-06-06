@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lung_care_mobile/l10n/app_localizations.dart';
 import 'package:lung_care_mobile/gen/assets.gen.dart';
 import 'package:lung_care_mobile/src/core/theme/app_colors.dart';
 
@@ -20,6 +21,7 @@ class TreatmentProgressCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final remaining = totalDays - treatmentDay;
 
     return Container(
@@ -43,16 +45,16 @@ class TreatmentProgressCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
-                'Treatment Progress',
-                style: TextStyle(
+              Text(
+                l.treatmentProgress,
+                style: const TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w700,
                   color: AppColors.primary,
                 ),
               ),
               Text(
-                '${(progressPercent * 100).round()}% Complete',
+                l.percentComplete((progressPercent * 100).round()),
                 style: const TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
@@ -111,7 +113,7 @@ class TreatmentProgressCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
-                'Day $treatmentDay of $totalDays',
+                l.dayOfTotal(treatmentDay, totalDays),
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
