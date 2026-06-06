@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lung_care_mobile/l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lung_care_mobile/gen/assets.gen.dart';
 import 'package:lung_care_mobile/src/core/theme/app_colors.dart';
@@ -18,11 +19,11 @@ class HamburgerMenu extends StatefulWidget {
 class _HamburgerMenuState extends State<HamburgerMenu> {
   late int _selectedIndex = widget.selectedIndex;
 
-  static const _menuItems = [
-    _MenuItem(label: 'Dashboard', icon: Icons.dashboard_rounded),
-    _MenuItem(label: 'Riwayat Pengobatan', icon: Icons.calendar_today_rounded),
-    _MenuItem(label: 'Chatbot Edukasi TBC', icon: Icons.smart_toy_outlined),
-    _MenuItem(label: 'Fasilitas Kesehatan', icon: Icons.location_on_outlined),
+  List<_MenuItem> _menuItems(AppLocalizations l) => [
+    _MenuItem(label: l.dashboard, icon: Icons.dashboard_rounded),
+    _MenuItem(label: l.medicationHistory, icon: Icons.calendar_today_rounded),
+    _MenuItem(label: l.tbEducationChatbot, icon: Icons.smart_toy_outlined),
+    _MenuItem(label: l.healthFacilities, icon: Icons.location_on_outlined),
   ];
 
   void _onItemTap(int index) {
@@ -44,6 +45,9 @@ class _HamburgerMenuState extends State<HamburgerMenu> {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
+    final items = _menuItems(l);
+
     // Ambil nama user dari Firebase Auth (fallback ke 'User')
     final currentUser = FirebaseAuth.instance.currentUser;
     final displayName = currentUser?.displayName?.isNotEmpty == true
@@ -113,9 +117,9 @@ class _HamburgerMenuState extends State<HamburgerMenu> {
             Expanded(
               child: ListView.builder(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
-                itemCount: _menuItems.length,
+                itemCount: items.length,
                 itemBuilder: (context, index) {
-                  final item = _menuItems[index];
+                  final item = items[index];
                   final isSelected = _selectedIndex == index;
 
                   return _DrawerTile(
@@ -131,8 +135,8 @@ class _HamburgerMenuState extends State<HamburgerMenu> {
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 8, 16, 20),
               child: _DrawerTile(
-                item: const _MenuItem(
-                  label: 'Keluar',
+                item: _MenuItem(
+                  label: l.logout,
                   icon: Icons.logout_rounded,
                 ),
                 isSelected: false,

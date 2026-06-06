@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lung_care_mobile/l10n/app_localizations.dart';
 import 'package:lung_care_mobile/src/core/theme/app_colors.dart';
 import 'package:lung_care_mobile/src/data/datasource/check_in_remote_data_source.dart';
 
@@ -31,6 +32,11 @@ class _CheckInPageState extends State<CheckInPage> {
   bool _loading = true;
   int _streakDays = 0;
 
+  // Static cache so re-opening the tab doesn't re-fetch from Firestore.
+  static Map<String, dynamic>? _cachedTodayData;
+  static int? _cachedCount;
+  static bool _hasFetched = false;
+
   @override
   void initState() {
     super.initState();
@@ -38,26 +44,41 @@ class _CheckInPageState extends State<CheckInPage> {
   }
 
   Future<void> _checkToday() async {
+    // If we already fetched this session, restore from cache instantly.
+    if (_hasFetched) {
+      _restoreFromCache();
+      setState(() => _loading = false);
+      return;
+    }
+
     try {
       final data = await _dataSource.getTodayCheckIn();
       final count = await _dataSource.getCheckInCount();
+      // Persist in static cache.
+      _cachedTodayData = data;
+      _cachedCount = count;
+      _hasFetched = true;
       if (mounted) {
-        setState(() {
-          _streakDays = count;
-          if (data != null) {
-            final symptoms = (data['symptoms'] as Map?) ?? const {};
-            _done = true;
-            for (final label in _symptoms.keys) {
-              final value = symptoms[label.toLowerCase()];
-              if (value is int) _ratings[label] = value;
-            }
-            _notesController.text = (data['additional_notes'] as String?) ?? '';
-          }
-        });
+        _restoreFromCache();
       }
     } catch (_) {
     } finally {
       if (mounted) setState(() => _loading = false);
+    }
+  }
+
+  /// Populate local widget state from the static cache.
+  void _restoreFromCache() {
+    _streakDays = _cachedCount ?? 0;
+    final data = _cachedTodayData;
+    if (data != null) {
+      final symptoms = (data['symptoms'] as Map?) ?? const {};
+      _done = true;
+      for (final label in _symptoms.keys) {
+        final value = symptoms[label.toLowerCase()];
+        if (value is int) _ratings[label] = value;
+      }
+      _notesController.text = (data['additional_notes'] as String?) ?? '';
     }
   }
 
@@ -87,6 +108,12 @@ class _CheckInPageState extends State<CheckInPage> {
       messenger.showSnackBar(
         const SnackBar(content: Text('Check-in tersimpan.')),
       );
+      // Update static cache so tab switches stay in sync.
+      _cachedCount = (_cachedCount ?? 0) + 1;
+      _cachedTodayData = {
+        'symptoms': _ratings.map((k, v) => MapEntry(k.toLowerCase(), v)),
+        'additional_notes': _notesController.text.trim(),
+      };
       setState(() {
         _done = true;
         _streakDays += 1;
@@ -109,13 +136,14 @@ class _CheckInPageState extends State<CheckInPage> {
         child: CircularProgressIndicator(color: AppColors.primary),
       );
     }
+    final l = AppLocalizations.of(context)!;
     return SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(20, 20, 20, 24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Good Morning, ${widget.userName}',
+            l.goodMorning(widget.userName),
             style: const TextStyle(
               fontSize: 26,
               fontWeight: FontWeight.w700,
@@ -124,7 +152,7 @@ class _CheckInPageState extends State<CheckInPage> {
           ),
           const SizedBox(height: 6),
           Text(
-            'How are you feeling at ${TimeOfDay.now().format(context)} today?',
+            l.howAreYouFeeling(TimeOfDay.now().format(context)),
             style: const TextStyle(fontSize: 15, color: AppColors.nautral),
           ),
           const SizedBox(height: 18),
@@ -133,18 +161,18 @@ class _CheckInPageState extends State<CheckInPage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
-                'SYMPTOMS CHECK',
-                style: TextStyle(
+              Text(
+                l.symptomsCheck,
+                style: const TextStyle(
                   fontSize: 13,
                   letterSpacing: 0.5,
                   fontWeight: FontWeight.w600,
                   color: AppColors.nautral,
                 ),
               ),
-              const Text(
-                'Tap to rate intensity',
-                style: TextStyle(
+              Text(
+                l.tapToRate,
+                style: const TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w500,
                   color: AppColors.primary,
@@ -166,9 +194,9 @@ class _CheckInPageState extends State<CheckInPage> {
             ),
           ),
           const SizedBox(height: 10),
-          const Text(
-            'ADDITIONAL NOTES',
-            style: TextStyle(
+          Text(
+            l.additionalNotes,
+            style: const TextStyle(
               fontSize: 13,
               letterSpacing: 0.5,
               fontWeight: FontWeight.w600,
@@ -181,7 +209,7 @@ class _CheckInPageState extends State<CheckInPage> {
             maxLines: 4,
             enabled: !_done,
             decoration: InputDecoration(
-              hintText: 'Other Symptoms',
+              hintText: l.otherSymptoms,
               filled: true,
               fillColor: AppColors.white,
               contentPadding: const EdgeInsets.all(16),
@@ -224,8 +252,8 @@ class _CheckInPageState extends State<CheckInPage> {
                     )
                   : Text(
                       _done
-                          ? 'Sudah Check-in Hari Ini'
-                          : 'Complete Check-in',
+                          ? l.alreadyCheckedIn
+                          : l.completeCheckIn,
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
@@ -234,11 +262,11 @@ class _CheckInPageState extends State<CheckInPage> {
             ),
           ),
           const SizedBox(height: 12),
-          const Center(
+          Center(
             child: Text(
-              'Your data is stored securely and only shared with your provider.',
+              l.dataSecureNote,
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 12, color: AppColors.nautral),
+              style: const TextStyle(fontSize: 12, color: AppColors.nautral),
             ),
           ),
         ],
