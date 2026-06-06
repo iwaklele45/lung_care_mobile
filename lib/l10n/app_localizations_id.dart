@@ -312,4 +312,170 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get navProfile => 'Profil';
+
+  @override
+  String get medicationSchedule => 'Jadwal Obat';
+
+  @override
+  String get medicationScheduleTitle => 'Jadwal Minum Obat';
+
+  @override
+  String get setYourReminder => 'Atur Pengingat Anda';
+
+  @override
+  String get noRemindersYet => 'Belum ada pengingat obat.';
+
+  @override
+  String get intensivePhase => 'Tahap Intensif (Bulan 1-2)';
+
+  @override
+  String get intensivePhaseDesc =>
+      'Fase pengobatan awal yang membutuhkan kedisiplinan tinggi.';
+
+  @override
+  String get morningAfterBreakfast => 'Pagi Hari (Setelah Sarapan)';
+
+  @override
+  String get recommendedTime => 'Direkomendasikan pukul 07:00 - 09:00';
+
+  @override
+  String get confirmStock => 'Konfirmasi Stok Obat';
+
+  @override
+  String get remainingStock => 'Sisa Stok Bulan Ini';
+
+  @override
+  String pillCount(int remaining, int total) {
+    return '$remaining / $total Pil';
+  }
+
+  @override
+  String daysLeftSuffix(int days) {
+    return 'Cukup untuk $days hari ke depan';
+  }
+
+  @override
+  String get medicationTracker => 'Pelacak Obat';
+
+  @override
+  String get scheduleManagement => 'Manajemen Jadwal Obat';
+
+  @override
+  String get scheduleManagementDesc =>
+      'Kelola daftar obat dan jadwal konsumsi Anda.';
+
+  @override
+  String get noScheduleYet => 'Belum ada jadwal obat.\nTekan + untuk menambah.';
+
+  @override
+  String get editMedicine => 'Edit Obat';
+
+  @override
+  String saveFailed(String error) {
+    return 'Gagal menyimpan jadwal: $error';
+  }
+
+  @override
+  String get deleteFailed => 'Gagal menghapus jadwal.';
+
+  @override
+  String get deleteScheduleTitle => 'Hapus jadwal ini?';
+
+  @override
+  String get deleteScheduleDesc =>
+      'Jadwal obat ini akan dihapus secara permanen dari daftar pengingat Anda.';
+
+  @override
+  String get cancel => 'Batal';
+
+  @override
+  String get delete => 'Hapus';
+
+  @override
+  String get medicineName => 'Nama Obat';
+
+  @override
+  String get medicineNameHint => 'Contoh: Paracetamol';
+
+  @override
+  String get medicineAmount => 'Jumlah Obat';
+
+  @override
+  String get medicineAmountHint => 'Contoh: 10';
+
+  @override
+  String get medicineType => 'Jenis Obat';
+
+  @override
+  String get medicineTypeHint => 'Pilih jenis';
+
+  @override
+  String get dosage => 'Dosis';
+
+  @override
+  String get dosageHint => 'Contoh: 500mg';
+
+  @override
+  String get frequency => 'Frekuensi';
+
+  @override
+  String get medicineColor => 'Warna Obat';
+
+  @override
+  String get intakeTime => 'Waktu Minum (Jam)';
+
+  @override
+  String intakeTimeMultiple(int count) {
+    return 'Waktu Minum (${count}x)';
+  }
+
+  @override
+  String timeLabel(int index) {
+    return 'Jam $index';
+  }
+
+  @override
+  String get enableReminder => 'Aktifkan Pengingat';
+
+  @override
+  String get saveMedicine => 'Simpan Obat';
+
+  @override
+  String get fillTypeAndTime => 'Lengkapi jenis obat dan waktu minum.';
+
+  @override
+  String get tablet => 'Tablet';
+
+  @override
+  String get capsule => 'Kapsul';
+
+  @override
+  String get syrup => 'Sirup';
+
+  @override
+  String get injection => 'Injeksi';
+
+  @override
+  String get onceDaily => '1x sehari';
+
+  @override
+  String get twiceDaily => '2x sehari';
+
+  @override
+  String get thriceDaily => '3x sehari';
+
+  @override
+  String get white => 'Putih';
+
+  @override
+  String get red => 'Merah';
+
+  @override
+  String get blue => 'Biru';
+
+  @override
+  String get yellow => 'Kuning';
+
+  @override
+  String get green => 'Hijau';
 }

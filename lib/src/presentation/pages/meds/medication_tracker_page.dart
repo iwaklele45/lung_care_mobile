@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:lung_care_mobile/l10n/app_localizations.dart';
 import 'package:lung_care_mobile/src/core/theme/app_colors.dart';
 import 'package:lung_care_mobile/src/data/datasource/schedule_remote_data_source.dart';
 import 'package:lung_care_mobile/src/presentation/pages/meds/medication_form.dart';
@@ -16,6 +17,7 @@ class _MedicationTrackerPageState extends State<MedicationTrackerPage> {
   final _dataSource = ScheduleRemoteDataSource();
 
   Future<void> _openForm({Medication? initial}) async {
+    final l = AppLocalizations.of(context)!;
     final result = await Navigator.of(context).push<Medication>(
       MaterialPageRoute(
         builder: (_) => Scaffold(
@@ -24,8 +26,15 @@ class _MedicationTrackerPageState extends State<MedicationTrackerPage> {
             backgroundColor: AppColors.appbarColor,
             elevation: 1,
             centerTitle: true,
+            leading: IconButton(
+              icon: const Icon(
+                Icons.arrow_back_rounded,
+                color: AppColors.primary,
+              ),
+              onPressed: () => context.pop(),
+            ),
             title: Text(
-              initial == null ? 'Tambah Obat' : 'Edit Obat',
+              initial == null ? l.addMedicine : l.editMedicine,
               style: const TextStyle(
                 color: AppColors.primary,
                 fontWeight: FontWeight.bold,
@@ -51,20 +60,20 @@ class _MedicationTrackerPageState extends State<MedicationTrackerPage> {
         await _dataSource.updateSchedule(result);
       }
     } catch (e) {
-      _showError('Gagal menyimpan jadwal: $e');
+      _showError(AppLocalizations.of(context)!.saveFailed(e.toString()));
     }
   }
 
   Future<void> _confirmDelete(Medication med) async {
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (_) => const _DeleteDialog(),
+      builder: (_) => _DeleteDialog(l: AppLocalizations.of(context)!),
     );
     if (confirmed != true || med.id == null) return;
     try {
       await _dataSource.deleteSchedule(med.id!);
     } catch (_) {
-      _showError('Gagal menghapus jadwal.');
+      _showError(AppLocalizations.of(context)!.deleteFailed);
     }
   }
 
@@ -77,6 +86,7 @@ class _MedicationTrackerPageState extends State<MedicationTrackerPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: AppColors.bodyColor,
       appBar: AppBar(
@@ -87,9 +97,9 @@ class _MedicationTrackerPageState extends State<MedicationTrackerPage> {
           icon: const Icon(Icons.arrow_back_rounded, color: AppColors.primary),
           onPressed: () => context.pop(),
         ),
-        title: const Text(
-          'Medication Tracker',
-          style: TextStyle(
+        title: Text(
+          l.medicationTracker,
+          style: const TextStyle(
             color: AppColors.primary,
             fontWeight: FontWeight.bold,
             fontSize: 20,
@@ -97,7 +107,7 @@ class _MedicationTrackerPageState extends State<MedicationTrackerPage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: const Color(0xFF0B5CAB),
+        backgroundColor: AppColors.primary,
         onPressed: () => _openForm(),
         child: const Icon(Icons.add, color: Colors.white),
       ),
@@ -113,9 +123,9 @@ class _MedicationTrackerPageState extends State<MedicationTrackerPage> {
           return ListView(
             padding: const EdgeInsets.fromLTRB(20, 20, 20, 90),
             children: [
-              const Text(
-                'Manajemen Jadwal Obat',
-                style: TextStyle(
+              Text(
+                l.scheduleManagement,
+                style: const TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.w800,
                   color: AppColors.black,
@@ -123,19 +133,19 @@ class _MedicationTrackerPageState extends State<MedicationTrackerPage> {
                 ),
               ),
               const SizedBox(height: 6),
-              const Text(
-                'Kelola daftar obat dan jadwal konsumsi Anda.',
-                style: TextStyle(fontSize: 14, color: AppColors.nautral),
+              Text(
+                l.scheduleManagementDesc,
+                style: const TextStyle(fontSize: 14, color: AppColors.nautral),
               ),
               const SizedBox(height: 18),
               if (meds.isEmpty)
-                const Padding(
-                  padding: EdgeInsets.only(top: 60),
+                Padding(
+                  padding: const EdgeInsets.only(top: 60),
                   child: Center(
                     child: Text(
-                      'Belum ada jadwal obat.\nTekan + untuk menambah.',
+                      l.noScheduleYet,
                       textAlign: TextAlign.center,
-                      style: TextStyle(color: AppColors.nautral),
+                      style: const TextStyle(color: AppColors.nautral),
                     ),
                   ),
                 ),
@@ -237,7 +247,11 @@ class _MedCard extends StatelessWidget {
                 style: const TextStyle(fontSize: 13, color: AppColors.black),
               ),
               const SizedBox(width: 16),
-              const Icon(Icons.sync_rounded, size: 18, color: AppColors.nautral),
+              const Icon(
+                Icons.sync_rounded,
+                size: 18,
+                color: AppColors.nautral,
+              ),
               const SizedBox(width: 6),
               Expanded(
                 child: Text(
@@ -282,7 +296,9 @@ class _RoundIcon extends StatelessWidget {
 }
 
 class _DeleteDialog extends StatelessWidget {
-  const _DeleteDialog();
+  const _DeleteDialog({required this.l});
+
+  final AppLocalizations l;
 
   @override
   Widget build(BuildContext context) {
@@ -308,19 +324,19 @@ class _DeleteDialog extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 16),
-            const Text(
-              'Hapus jadwal ini?',
-              style: TextStyle(
+            Text(
+              l.deleteScheduleTitle,
+              style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w700,
                 color: AppColors.black,
               ),
             ),
             const SizedBox(height: 8),
-            const Text(
-              'Jadwal obat ini akan dihapus secara permanen dari daftar pengingat Anda.',
+            Text(
+              l.deleteScheduleDesc,
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 13, color: AppColors.nautral),
+              style: const TextStyle(fontSize: 13, color: AppColors.nautral),
             ),
             const SizedBox(height: 22),
             Row(
@@ -336,7 +352,7 @@ class _DeleteDialog extends StatelessWidget {
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
-                    child: const Text('Batal'),
+                    child: Text(l.cancel),
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -351,7 +367,7 @@ class _DeleteDialog extends StatelessWidget {
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
-                    child: const Text('Hapus'),
+                    child: Text(l.delete),
                   ),
                 ),
               ],

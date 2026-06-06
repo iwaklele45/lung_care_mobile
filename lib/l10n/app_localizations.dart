@@ -667,6 +667,312 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Profil'**
   String get navProfile;
+
+  /// No description provided for @medicationSchedule.
+  ///
+  /// In id, this message translates to:
+  /// **'Jadwal Obat'**
+  String get medicationSchedule;
+
+  /// No description provided for @medicationScheduleTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Jadwal Minum Obat'**
+  String get medicationScheduleTitle;
+
+  /// No description provided for @setYourReminder.
+  ///
+  /// In id, this message translates to:
+  /// **'Atur Pengingat Anda'**
+  String get setYourReminder;
+
+  /// No description provided for @noRemindersYet.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada pengingat obat.'**
+  String get noRemindersYet;
+
+  /// No description provided for @intensivePhase.
+  ///
+  /// In id, this message translates to:
+  /// **'Tahap Intensif (Bulan 1-2)'**
+  String get intensivePhase;
+
+  /// No description provided for @intensivePhaseDesc.
+  ///
+  /// In id, this message translates to:
+  /// **'Fase pengobatan awal yang membutuhkan kedisiplinan tinggi.'**
+  String get intensivePhaseDesc;
+
+  /// No description provided for @morningAfterBreakfast.
+  ///
+  /// In id, this message translates to:
+  /// **'Pagi Hari (Setelah Sarapan)'**
+  String get morningAfterBreakfast;
+
+  /// No description provided for @recommendedTime.
+  ///
+  /// In id, this message translates to:
+  /// **'Direkomendasikan pukul 07:00 - 09:00'**
+  String get recommendedTime;
+
+  /// No description provided for @confirmStock.
+  ///
+  /// In id, this message translates to:
+  /// **'Konfirmasi Stok Obat'**
+  String get confirmStock;
+
+  /// No description provided for @remainingStock.
+  ///
+  /// In id, this message translates to:
+  /// **'Sisa Stok Bulan Ini'**
+  String get remainingStock;
+
+  /// No description provided for @pillCount.
+  ///
+  /// In id, this message translates to:
+  /// **'{remaining} / {total} Pil'**
+  String pillCount(int remaining, int total);
+
+  /// No description provided for @daysLeftSuffix.
+  ///
+  /// In id, this message translates to:
+  /// **'Cukup untuk {days} hari ke depan'**
+  String daysLeftSuffix(int days);
+
+  /// No description provided for @medicationTracker.
+  ///
+  /// In id, this message translates to:
+  /// **'Pelacak Obat'**
+  String get medicationTracker;
+
+  /// No description provided for @scheduleManagement.
+  ///
+  /// In id, this message translates to:
+  /// **'Manajemen Jadwal Obat'**
+  String get scheduleManagement;
+
+  /// No description provided for @scheduleManagementDesc.
+  ///
+  /// In id, this message translates to:
+  /// **'Kelola daftar obat dan jadwal konsumsi Anda.'**
+  String get scheduleManagementDesc;
+
+  /// No description provided for @noScheduleYet.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada jadwal obat.\nTekan + untuk menambah.'**
+  String get noScheduleYet;
+
+  /// No description provided for @editMedicine.
+  ///
+  /// In id, this message translates to:
+  /// **'Edit Obat'**
+  String get editMedicine;
+
+  /// No description provided for @saveFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal menyimpan jadwal: {error}'**
+  String saveFailed(String error);
+
+  /// No description provided for @deleteFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal menghapus jadwal.'**
+  String get deleteFailed;
+
+  /// No description provided for @deleteScheduleTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus jadwal ini?'**
+  String get deleteScheduleTitle;
+
+  /// No description provided for @deleteScheduleDesc.
+  ///
+  /// In id, this message translates to:
+  /// **'Jadwal obat ini akan dihapus secara permanen dari daftar pengingat Anda.'**
+  String get deleteScheduleDesc;
+
+  /// No description provided for @cancel.
+  ///
+  /// In id, this message translates to:
+  /// **'Batal'**
+  String get cancel;
+
+  /// No description provided for @delete.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus'**
+  String get delete;
+
+  /// No description provided for @medicineName.
+  ///
+  /// In id, this message translates to:
+  /// **'Nama Obat'**
+  String get medicineName;
+
+  /// No description provided for @medicineNameHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Contoh: Paracetamol'**
+  String get medicineNameHint;
+
+  /// No description provided for @medicineAmount.
+  ///
+  /// In id, this message translates to:
+  /// **'Jumlah Obat'**
+  String get medicineAmount;
+
+  /// No description provided for @medicineAmountHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Contoh: 10'**
+  String get medicineAmountHint;
+
+  /// No description provided for @medicineType.
+  ///
+  /// In id, this message translates to:
+  /// **'Jenis Obat'**
+  String get medicineType;
+
+  /// No description provided for @medicineTypeHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih jenis'**
+  String get medicineTypeHint;
+
+  /// No description provided for @dosage.
+  ///
+  /// In id, this message translates to:
+  /// **'Dosis'**
+  String get dosage;
+
+  /// No description provided for @dosageHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Contoh: 500mg'**
+  String get dosageHint;
+
+  /// No description provided for @frequency.
+  ///
+  /// In id, this message translates to:
+  /// **'Frekuensi'**
+  String get frequency;
+
+  /// No description provided for @medicineColor.
+  ///
+  /// In id, this message translates to:
+  /// **'Warna Obat'**
+  String get medicineColor;
+
+  /// No description provided for @intakeTime.
+  ///
+  /// In id, this message translates to:
+  /// **'Waktu Minum (Jam)'**
+  String get intakeTime;
+
+  /// No description provided for @intakeTimeMultiple.
+  ///
+  /// In id, this message translates to:
+  /// **'Waktu Minum ({count}x)'**
+  String intakeTimeMultiple(int count);
+
+  /// No description provided for @timeLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Jam {index}'**
+  String timeLabel(int index);
+
+  /// No description provided for @enableReminder.
+  ///
+  /// In id, this message translates to:
+  /// **'Aktifkan Pengingat'**
+  String get enableReminder;
+
+  /// No description provided for @saveMedicine.
+  ///
+  /// In id, this message translates to:
+  /// **'Simpan Obat'**
+  String get saveMedicine;
+
+  /// No description provided for @fillTypeAndTime.
+  ///
+  /// In id, this message translates to:
+  /// **'Lengkapi jenis obat dan waktu minum.'**
+  String get fillTypeAndTime;
+
+  /// No description provided for @tablet.
+  ///
+  /// In id, this message translates to:
+  /// **'Tablet'**
+  String get tablet;
+
+  /// No description provided for @capsule.
+  ///
+  /// In id, this message translates to:
+  /// **'Kapsul'**
+  String get capsule;
+
+  /// No description provided for @syrup.
+  ///
+  /// In id, this message translates to:
+  /// **'Sirup'**
+  String get syrup;
+
+  /// No description provided for @injection.
+  ///
+  /// In id, this message translates to:
+  /// **'Injeksi'**
+  String get injection;
+
+  /// No description provided for @onceDaily.
+  ///
+  /// In id, this message translates to:
+  /// **'1x sehari'**
+  String get onceDaily;
+
+  /// No description provided for @twiceDaily.
+  ///
+  /// In id, this message translates to:
+  /// **'2x sehari'**
+  String get twiceDaily;
+
+  /// No description provided for @thriceDaily.
+  ///
+  /// In id, this message translates to:
+  /// **'3x sehari'**
+  String get thriceDaily;
+
+  /// No description provided for @white.
+  ///
+  /// In id, this message translates to:
+  /// **'Putih'**
+  String get white;
+
+  /// No description provided for @red.
+  ///
+  /// In id, this message translates to:
+  /// **'Merah'**
+  String get red;
+
+  /// No description provided for @blue.
+  ///
+  /// In id, this message translates to:
+  /// **'Biru'**
+  String get blue;
+
+  /// No description provided for @yellow.
+  ///
+  /// In id, this message translates to:
+  /// **'Kuning'**
+  String get yellow;
+
+  /// No description provided for @green.
+  ///
+  /// In id, this message translates to:
+  /// **'Hijau'**
+  String get green;
 }
 
 class _AppLocalizationsDelegate

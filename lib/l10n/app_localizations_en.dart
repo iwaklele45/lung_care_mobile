@@ -311,4 +311,170 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get navProfile => 'Profile';
+
+  @override
+  String get medicationSchedule => 'Medication Schedule';
+
+  @override
+  String get medicationScheduleTitle => 'Medication Schedule';
+
+  @override
+  String get setYourReminder => 'Set Your Reminders';
+
+  @override
+  String get noRemindersYet => 'No medication reminders yet.';
+
+  @override
+  String get intensivePhase => 'Intensive Phase (Month 1-2)';
+
+  @override
+  String get intensivePhaseDesc =>
+      'The initial treatment phase that requires high discipline.';
+
+  @override
+  String get morningAfterBreakfast => 'Morning (After Breakfast)';
+
+  @override
+  String get recommendedTime => 'Recommended at 07:00 - 09:00';
+
+  @override
+  String get confirmStock => 'Confirm Medicine Stock';
+
+  @override
+  String get remainingStock => 'Remaining Stock This Month';
+
+  @override
+  String pillCount(int remaining, int total) {
+    return '$remaining / $total Pills';
+  }
+
+  @override
+  String daysLeftSuffix(int days) {
+    return 'Enough for $days days ahead';
+  }
+
+  @override
+  String get medicationTracker => 'Medication Tracker';
+
+  @override
+  String get scheduleManagement => 'Medication Schedule Management';
+
+  @override
+  String get scheduleManagementDesc =>
+      'Manage your medicine list and intake schedule.';
+
+  @override
+  String get noScheduleYet => 'No medication schedule yet.\nTap + to add one.';
+
+  @override
+  String get editMedicine => 'Edit Medicine';
+
+  @override
+  String saveFailed(String error) {
+    return 'Failed to save schedule: $error';
+  }
+
+  @override
+  String get deleteFailed => 'Failed to delete schedule.';
+
+  @override
+  String get deleteScheduleTitle => 'Delete this schedule?';
+
+  @override
+  String get deleteScheduleDesc =>
+      'This medication schedule will be permanently removed from your reminders.';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
+  String get delete => 'Delete';
+
+  @override
+  String get medicineName => 'Medicine Name';
+
+  @override
+  String get medicineNameHint => 'e.g. Paracetamol';
+
+  @override
+  String get medicineAmount => 'Amount';
+
+  @override
+  String get medicineAmountHint => 'e.g. 10';
+
+  @override
+  String get medicineType => 'Medicine Type';
+
+  @override
+  String get medicineTypeHint => 'Select type';
+
+  @override
+  String get dosage => 'Dosage';
+
+  @override
+  String get dosageHint => 'e.g. 500mg';
+
+  @override
+  String get frequency => 'Frequency';
+
+  @override
+  String get medicineColor => 'Medicine Color';
+
+  @override
+  String get intakeTime => 'Intake Time';
+
+  @override
+  String intakeTimeMultiple(int count) {
+    return 'Intake Time (${count}x)';
+  }
+
+  @override
+  String timeLabel(int index) {
+    return 'Time $index';
+  }
+
+  @override
+  String get enableReminder => 'Enable Reminder';
+
+  @override
+  String get saveMedicine => 'Save Medicine';
+
+  @override
+  String get fillTypeAndTime => 'Please fill medicine type and intake time.';
+
+  @override
+  String get tablet => 'Tablet';
+
+  @override
+  String get capsule => 'Capsule';
+
+  @override
+  String get syrup => 'Syrup';
+
+  @override
+  String get injection => 'Injection';
+
+  @override
+  String get onceDaily => 'Once daily';
+
+  @override
+  String get twiceDaily => 'Twice daily';
+
+  @override
+  String get thriceDaily => 'Three times daily';
+
+  @override
+  String get white => 'White';
+
+  @override
+  String get red => 'Red';
+
+  @override
+  String get blue => 'Blue';
+
+  @override
+  String get yellow => 'Yellow';
+
+  @override
+  String get green => 'Green';
 }
