@@ -4,18 +4,18 @@ Aplikasi mobile **monitoring pendampingan pengobatan TBC (Tuberkulosis)** berbas
 
 ## ✨ Fitur Utama
 
-| Fitur | Deskripsi |
-|-------|-----------|
-| 🔐 **Autentikasi** | Login/Register dengan Email & Google Sign-In, Reset Password via OTP Email |
-| 🏠 **Dashboard** | Ringkasan jadwal obat hari ini, progress pengobatan, next dose card |
-| 💊 **Jadwal Obat** | CRUD jadwal pengobatan, medication tracker, check-in dosis harian |
-| 📋 **Riwayat Pengobatan** | Histori lengkap pengobatan dan adherence tracking |
-| 🤖 **Chatbot Edukasi TBC** | Asisten AI (Gemini 2.5 Flash) untuk edukasi TBC via Firebase AI Logic |
-| 🏥 **Fasilitas Kesehatan** | Peta fasilitas kesehatan terdekat (Google Maps) |
-| 📝 **Daily Check-in** | Symptom tracker dan health check-in harian dengan streak |
-| 👤 **Profil & Pengaturan** | Manajemen profil, pengaturan notifikasi, bahasa |
-| 🔔 **Notifikasi** | Pengingat obat otomatis, pengaturan suara/getar/tunda |
-| 🌐 **Multi-bahasa** | Mendukung Bahasa Indonesia dan English |
+| Fitur                      | Deskripsi                                                                  |
+| -------------------------- | -------------------------------------------------------------------------- |
+| 🔐 **Autentikasi**         | Login/Register dengan Email & Google Sign-In, Reset Password via OTP Email |
+| 🏠 **Dashboard**           | Ringkasan jadwal obat hari ini, progress pengobatan, next dose card        |
+| 💊 **Jadwal Obat**         | CRUD jadwal pengobatan, medication tracker, check-in dosis harian          |
+| 📋 **Riwayat Pengobatan**  | Histori lengkap pengobatan dan adherence tracking                          |
+| 🤖 **Chatbot Edukasi TBC** | Asisten AI (Gemini 2.5 Flash) untuk edukasi TBC via Firebase AI Logic      |
+| 🏥 **Fasilitas Kesehatan** | Peta fasilitas kesehatan terdekat (Google Maps)                            |
+| 📝 **Daily Check-in**      | Symptom tracker dan health check-in harian dengan streak                   |
+| 👤 **Profil & Pengaturan** | Manajemen profil, pengaturan notifikasi, bahasa                            |
+| 🔔 **Notifikasi**          | Pengingat obat otomatis, pengaturan suara/getar/tunda                      |
+| 🌐 **Multi-bahasa**        | Mendukung Bahasa Indonesia dan English                                     |
 
 ## 🛠 Tech Stack
 
@@ -98,7 +98,8 @@ Cloud Functions memerlukan Gmail App Password untuk mengirim OTP:
 ```
 lung_care_mobile/
 ├── lib/
-│   ├── main.dart                       # Entry point, Firebase init, GoRouter routes
+│   ├── main.dart                       # Entry point, Firebase init, providers
+│   ├── route.dart                      # GoRouter route definitions
 │   ├── firebase_options.dart           # Firebase configuration (auto-generated)
 │   ├── gen/                            # FlutterGen output (typed assets)
 │   ├── l10n/                           # Internationalization (ID & EN)
@@ -150,24 +151,24 @@ lung_care_mobile/
 
 ## 🔥 Firebase Services
 
-| Service | Kegunaan |
-|---------|----------|
-| **Firebase Auth** | Autentikasi pengguna (Email + Google Sign-In) |
-| **Cloud Firestore** | Database (users, schedules, dose_check_ins, daily_check_ins, medication_logs) |
-| **Cloud Functions** | Password reset OTP (generate, verify, resend, confirm) |
-| **Firebase AI Logic** | Chatbot AI menggunakan Gemini 2.5 Flash |
-| **Cloud Messaging** | Push notification untuk pengingat obat |
+| Service               | Kegunaan                                                                      |
+| --------------------- | ----------------------------------------------------------------------------- |
+| **Firebase Auth**     | Autentikasi pengguna (Email + Google Sign-In)                                 |
+| **Cloud Firestore**   | Database (users, schedules, dose_check_ins, daily_check_ins, medication_logs) |
+| **Cloud Functions**   | Password reset OTP (generate, verify, resend, confirm)                        |
+| **Firebase AI Logic** | Chatbot AI menggunakan Gemini 2.5 Flash                                       |
+| **Cloud Messaging**   | Push notification untuk pengingat obat                                        |
 
 ### Cloud Functions — Password Reset
 
 4 Cloud Functions untuk alur reset password via OTP email:
 
-| Function | Deskripsi |
-|----------|-----------|
-| `requestPasswordReset` | Generate OTP 6 digit, simpan ke Firestore, kirim email via Gmail SMTP |
-| `resendPasswordResetCode` | Kirim ulang OTP baru (cooldown 60 detik) |
-| `verifyPasswordResetCode` | Verifikasi OTP, return reset token (max 5 percobaan) |
-| `confirmPasswordReset` | Reset password user menggunakan reset token |
+| Function                  | Deskripsi                                                             |
+| ------------------------- | --------------------------------------------------------------------- |
+| `requestPasswordReset`    | Generate OTP 6 digit, simpan ke Firestore, kirim email via Gmail SMTP |
+| `resendPasswordResetCode` | Kirim ulang OTP baru (cooldown 60 detik)                              |
+| `verifyPasswordResetCode` | Verifikasi OTP, return reset token (max 5 percobaan)                  |
+| `confirmPasswordReset`    | Reset password user menggunakan reset token                           |
 
 ### Chatbot (Firebase AI Logic)
 
@@ -187,18 +188,21 @@ Release mode → App Check di-skip (untuk distribusi APK via GitHub/sideload)
 ## 🏗 State Management
 
 ### BLoC (flutter_bloc)
+
 - `AuthBloc` — Autentikasi, login/register, password reset
 - `HomeBloc` — Dashboard, jadwal obat, next dose, check-in
 - `HistoryBloc` — Riwayat pengobatan
 
 ### Provider
+
 - `LocaleProvider` — Pengaturan bahasa (ID/EN) via `ChangeNotifierProvider`
 
 ## 🌐 Internationalization (i18n)
 
 Mendukung 2 bahasa:
+
 - 🇮🇩 **Bahasa Indonesia** (default)
-- 🇬🇧 **English**
+- 🇬🇧 **English** (Beta)
 
 ```dart
 // Penggunaan di widget
@@ -227,6 +231,7 @@ flutter pub run build_runner build --delete-conflicting-outputs
 ```
 
 Penggunaan:
+
 ```dart
 Assets.icons.lungCareLogo.image(width: 120, height: 120)
 Assets.icons.logoApp.svg(width: 120, height: 120)
