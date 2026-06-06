@@ -1,77 +1,61 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:lung_care_mobile/l10n/app_localizations.dart';
 import 'package:lung_care_mobile/src/core/theme/app_colors.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class HelpSupportPage extends StatelessWidget {
   const HelpSupportPage({super.key});
 
-  // ── FAQ data ──────────────────────────────────────────────────────────────
-  static const _faqs = <_FaqItem>[
-    _FaqItem(
-      question: 'Bagaimana cara menambahkan jadwal obat?',
-      answer:
-          'Buka halaman "Jadwal Obat" melalui menu utama, lalu tekan tombol + '
-          'di pojok kanan bawah. Isi nama obat, dosis, dan waktu minum, '
-          'kemudian tekan "Simpan".',
-    ),
-    _FaqItem(
-      question: 'Apakah data saya aman?',
-      answer:
-          'Ya. Data Anda disimpan secara terenkripsi di server Firebase dan '
-          'hanya dapat diakses oleh akun Anda sendiri. Kami tidak membagikan '
-          'data pribadi kepada pihak ketiga.',
-    ),
-    _FaqItem(
-      question: 'Bagaimana cara mengubah profil saya?',
-      answer:
-          'Buka tab "Profil" lalu tekan "Edit Profil". Anda dapat mengubah '
-          'nama, nomor WhatsApp, dan alamat.',
-    ),
-    _FaqItem(
-      question: 'Notifikasi tidak muncul, apa yang harus dilakukan?',
-      answer:
-          'Pastikan izin notifikasi untuk LungCare+ sudah diaktifkan di '
-          'pengaturan HP Anda. Jika masih bermasalah, coba logout lalu '
-          'login kembali.',
-    ),
-    _FaqItem(
-      question: 'Apakah layanan ini tersedia di luar Surabaya?',
-      answer:
-          'Saat ini LungCare+ hanya tersedia untuk wilayah Kota Surabaya. '
-          'Kami berencana memperluas cakupan di masa mendatang.',
-    ),
-  ];
-
   // ── Contact actions ───────────────────────────────────────────────────────
   Future<void> _openWhatsApp(BuildContext context) async {
-    // Replace with real support number
-    final uri = Uri.parse('https://wa.me/6281234567890?text=Halo%20LungCare%2B%2C%20saya%20butuh%20bantuan.');
-    if (await canLaunchUrl(uri)) {
+    final uri = Uri.parse(
+      'https://wa.me/6283834329247?text=Halo%20LungCare%2B%2C%20saya%20butuh%20bantuan.',
+    );
+    try {
       await launchUrl(uri, mode: LaunchMode.externalApplication);
-    } else if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Tidak dapat membuka WhatsApp.')),
-      );
+    } catch (_) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.cannotOpenWhatsApp),
+          ),
+        );
+      }
     }
   }
 
   Future<void> _openEmail(BuildContext context) async {
     final uri = Uri(
       scheme: 'mailto',
-      path: 'support@lungcareplus.id',
+      path: 'rafirara11195@gmail.com',
       queryParameters: {'subject': 'Bantuan LungCare+'},
     );
-    if (await canLaunchUrl(uri)) {
+    try {
       await launchUrl(uri);
-    } else if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Tidak dapat membuka email.')),
-      );
+    } catch (_) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.cannotOpenEmail),
+          ),
+        );
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
+
+    final faqs = <_FaqItem>[
+      _FaqItem(question: l.faq1Question, answer: l.faq1Answer),
+      _FaqItem(question: l.faq2Question, answer: l.faq2Answer),
+      _FaqItem(question: l.faq3Question, answer: l.faq3Answer),
+      _FaqItem(question: l.faq4Question, answer: l.faq4Answer),
+      _FaqItem(question: l.faq5Question, answer: l.faq5Answer),
+    ];
+
     return Scaffold(
       backgroundColor: AppColors.bodyColor,
       appBar: AppBar(
@@ -80,11 +64,11 @@ class HelpSupportPage extends StatelessWidget {
         centerTitle: true,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_rounded, color: AppColors.primary),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => context.pop(),
         ),
-        title: const Text(
-          'Help & Support',
-          style: TextStyle(
+        title: Text(
+          l.helpTitle,
+          style: const TextStyle(
             fontSize: 18,
             color: AppColors.black,
             fontWeight: FontWeight.w700,
@@ -115,23 +99,27 @@ class HelpSupportPage extends StatelessWidget {
                   ),
                 ],
               ),
-              child: const Column(
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(Icons.support_agent_rounded, size: 36, color: Colors.white),
-                  SizedBox(height: 12),
+                  const Icon(
+                    Icons.support_agent_rounded,
+                    size: 36,
+                    color: Colors.white,
+                  ),
+                  const SizedBox(height: 12),
                   Text(
-                    'Ada yang bisa kami bantu?',
-                    style: TextStyle(
+                    l.helpHeader,
+                    style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.w700,
                       color: Colors.white,
                     ),
                   ),
-                  SizedBox(height: 6),
+                  const SizedBox(height: 6),
                   Text(
-                    'Hubungi tim kami atau temukan jawaban\ndi pertanyaan yang sering ditanyakan.',
-                    style: TextStyle(
+                    l.helpSubheader,
+                    style: const TextStyle(
                       fontSize: 14,
                       color: Colors.white70,
                       height: 1.4,
@@ -144,15 +132,15 @@ class HelpSupportPage extends StatelessWidget {
             const SizedBox(height: 28),
 
             // ── Contact options ───────────────────────────────────────────
-            const _SectionTitle(text: 'HUBUNGI KAMI'),
+            _SectionTitle(text: l.contactUs),
             const SizedBox(height: 12),
             Row(
               children: [
                 Expanded(
                   child: _ContactCard(
                     icon: Icons.chat_rounded,
-                    label: 'WhatsApp',
-                    subtitle: 'Chat langsung',
+                    label: l.whatsapp,
+                    subtitle: l.chatDirectly,
                     color: const Color(0xFF25D366),
                     onTap: () => _openWhatsApp(context),
                   ),
@@ -161,8 +149,8 @@ class HelpSupportPage extends StatelessWidget {
                 Expanded(
                   child: _ContactCard(
                     icon: Icons.email_outlined,
-                    label: 'Email',
-                    subtitle: 'Kirim pesan',
+                    label: l.email,
+                    subtitle: l.sendMessage,
                     color: AppColors.primary,
                     onTap: () => _openEmail(context),
                   ),
@@ -173,7 +161,7 @@ class HelpSupportPage extends StatelessWidget {
             const SizedBox(height: 28),
 
             // ── FAQ section ──────────────────────────────────────────────
-            const _SectionTitle(text: 'PERTANYAAN UMUM (FAQ)'),
+            _SectionTitle(text: l.faq),
             const SizedBox(height: 12),
             Container(
               decoration: BoxDecoration(
@@ -187,7 +175,7 @@ class HelpSupportPage extends StatelessWidget {
                   elevation: 0,
                   expandedHeaderPadding: EdgeInsets.zero,
                   dividerColor: const Color(0xFFEDF2F7),
-                  children: _faqs
+                  children: faqs
                       .asMap()
                       .entries
                       .map(
@@ -257,7 +245,7 @@ class HelpSupportPage extends StatelessWidget {
             const SizedBox(height: 28),
 
             // ── App info ─────────────────────────────────────────────────
-            const _SectionTitle(text: 'TENTANG APLIKASI'),
+            _SectionTitle(text: l.aboutApp),
             const SizedBox(height: 12),
             Container(
               width: double.infinity,
@@ -267,13 +255,13 @@ class HelpSupportPage extends StatelessWidget {
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(color: const Color(0xFFDDE6F4)),
               ),
-              child: const Column(
+              child: Column(
                 children: [
-                  _InfoRow(label: 'Versi Aplikasi', value: '1.0.0'),
-                  Divider(color: Color(0xFFEDF2F7), height: 20),
-                  _InfoRow(label: 'Pengembang', value: 'Tim LungCare+'),
-                  Divider(color: Color(0xFFEDF2F7), height: 20),
-                  _InfoRow(label: 'Wilayah Layanan', value: 'Surabaya'),
+                  _InfoRow(label: l.appVersion, value: '1.0.0'),
+                  const Divider(color: Color(0xFFEDF2F7), height: 20),
+                  _InfoRow(label: l.developer, value: l.developerName),
+                  const Divider(color: Color(0xFFEDF2F7), height: 20),
+                  _InfoRow(label: l.serviceArea, value: l.serviceAreaValue),
                 ],
               ),
             ),
@@ -362,10 +350,7 @@ class _ContactCard extends StatelessWidget {
               const SizedBox(height: 2),
               Text(
                 subtitle,
-                style: const TextStyle(
-                  fontSize: 12,
-                  color: AppColors.nautral,
-                ),
+                style: const TextStyle(fontSize: 12, color: AppColors.nautral),
               ),
             ],
           ),
@@ -387,10 +372,7 @@ class _InfoRow extends StatelessWidget {
       children: [
         Text(
           label,
-          style: const TextStyle(
-            fontSize: 14,
-            color: AppColors.nautral,
-          ),
+          style: const TextStyle(fontSize: 14, color: AppColors.nautral),
         ),
         Text(
           value,
