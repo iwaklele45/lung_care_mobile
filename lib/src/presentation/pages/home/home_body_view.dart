@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -10,6 +11,7 @@ import 'package:lung_care_mobile/src/presentation/pages/meds/add_medication_page
 import 'package:lung_care_mobile/src/presentation/pages/home/widgets/header.dart';
 import 'package:lung_care_mobile/src/presentation/pages/home/widgets/home_app_bar.dart';
 import 'package:lung_care_mobile/src/presentation/pages/home/widgets/home_bottom_nav_bar.dart';
+import 'package:lung_care_mobile/src/presentation/pages/home/widgets/medication_reminder_modal.dart';
 import 'package:lung_care_mobile/src/presentation/pages/home/widgets/motivation_banner.dart';
 import 'package:lung_care_mobile/src/presentation/pages/home/widgets/next_dose_card.dart';
 import 'package:lung_care_mobile/src/presentation/pages/home/widgets/schedule_list_item.dart';
@@ -24,6 +26,69 @@ class HomeBodyView extends StatefulWidget {
 
 class _HomeBodyViewState extends State<HomeBodyView> {
   int _navIndex = 0;
+  Timer? _reminderTimer;
+  DateTime? _lastReminderMinute;
+
+  @override
+  void dispose() {
+    _reminderTimer?.cancel();
+    super.dispose();
+  }
+
+  void _startReminderCheck(List<MedicationScheduleItem> schedules) {
+    _reminderTimer?.cancel();
+    _reminderTimer = Timer.periodic(const Duration(seconds: 15), (_) {
+      if (!mounted) return;
+      final now = TimeOfDay.now();
+      final minuteKey = DateTime(now.hour, now.minute);
+      if (_lastReminderMinute == minuteKey) return;
+
+      final pending = schedules.where((s) => s.status == 'pending').toList();
+      for (final item in pending) {
+        final parts = item.time.split(' ');
+        if (parts.length != 2) continue;
+        final timeDigits = parts[0].split(':');
+        if (timeDigits.length != 2) continue;
+        int? h = int.tryParse(timeDigits[0]);
+        int? m = int.tryParse(timeDigits[1]);
+        if (h == null || m == null) continue;
+        final isPM = parts[1].toUpperCase() == 'PM';
+        if (isPM && h != 12) h += 12;
+        if (!isPM && h == 12) h = 0;
+        if (h == now.hour && m == now.minute) {
+          _lastReminderMinute = minuteKey;
+          _showReminder(pending);
+          break;
+        }
+      }
+    });
+  }
+
+  void _showReminder(List<MedicationScheduleItem> pending) {
+    MedicationReminderModal.show(
+      context,
+      items: pending,
+      onConfirm: () {
+        final item = pending.first;
+        if (mounted) {
+          context.read<HomeBloc>().add(HomeCheckInDoseRequested(item: item));
+        }
+      },
+      onSnooze: () {
+        _lastReminderMinute = null;
+        Future.delayed(const Duration(minutes: 10), () {
+          if (mounted) {
+            final state = context.read<HomeBloc>().state;
+            if (state is HomeLoaded) {
+              _showReminder(
+                state.schedules.where((s) => s.status == 'pending').toList(),
+              );
+            }
+          }
+        });
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,11 +130,12 @@ class _HomeBodyViewState extends State<HomeBodyView> {
         }
 
         if (state is HomeLoaded || state is HomeCheckInSuccess) {
-          // Use last loaded state if check-in success is emitted before re-load.
           final loaded = state is HomeLoaded
               ? state
               : context.read<HomeBloc>().state as HomeLoaded;
-          final isCheckingIn = false; // driven by a future event if needed.
+          final isCheckingIn = false;
+
+          _startReminderCheck(loaded.schedules);
 
           return Scaffold(
             backgroundColor: AppColors.bodyColor,
