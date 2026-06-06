@@ -16,6 +16,13 @@ class CheckInPage extends StatefulWidget {
 class _CheckInPageState extends State<CheckInPage> {
   final _notesController = TextEditingController();
 
+  String _timeGreeting(AppLocalizations l, String name) {
+    final hour = DateTime.now().hour;
+    if (hour < 12) return '${l.greetingMorning}, $name';
+    if (hour < 17) return '${l.greetingAfternoon}, $name';
+    return '${l.greetingEvening}, $name';
+  }
+
   static const _symptoms = {
     'Nausea': Icons.medical_services_outlined,
     'Dizziness': Icons.blur_circular_outlined,
@@ -143,7 +150,7 @@ class _CheckInPageState extends State<CheckInPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            l.goodMorning(widget.userName),
+            _timeGreeting(l, widget.userName),
             style: const TextStyle(
               fontSize: 26,
               fontWeight: FontWeight.w700,
