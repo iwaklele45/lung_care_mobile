@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lung_care_mobile/l10n/app_localizations.dart';
 import 'package:lung_care_mobile/src/core/theme/app_colors.dart';
+import 'package:lung_care_mobile/src/data/datasource/dose_check_in_data_source.dart';
 import 'package:lung_care_mobile/src/data/datasource/schedule_remote_data_source.dart';
 import 'package:lung_care_mobile/src/presentation/pages/meds/medication_form.dart';
 
@@ -15,6 +16,8 @@ class MedicationTrackerPage extends StatefulWidget {
 
 class _MedicationTrackerPageState extends State<MedicationTrackerPage> {
   final _dataSource = ScheduleRemoteDataSource();
+  final _doseCheckInDataSource = DoseCheckInDataSource();
+  Set<String> _checkedInScheduleIds = {};
 
   Future<void> _openForm({Medication? initial}) async {
     final l = AppLocalizations.of(context)!;
@@ -120,43 +123,51 @@ class _MedicationTrackerPageState extends State<MedicationTrackerPage> {
             );
           }
           final meds = snapshot.data ?? const [];
-          return ListView(
-            padding: const EdgeInsets.fromLTRB(20, 20, 20, 90),
-            children: [
-              Text(
-                l.scheduleManagement,
-                style: const TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.w800,
-                  color: AppColors.black,
-                  height: 1.2,
-                ),
-              ),
-              const SizedBox(height: 6),
-              Text(
-                l.scheduleManagementDesc,
-                style: const TextStyle(fontSize: 14, color: AppColors.nautral),
-              ),
-              const SizedBox(height: 18),
-              if (meds.isEmpty)
-                Padding(
-                  padding: const EdgeInsets.only(top: 60),
-                  child: Center(
-                    child: Text(
-                      l.noScheduleYet,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(color: AppColors.nautral),
+          return FutureBuilder<Set<String>>(
+            future: _doseCheckInDataSource.getCheckedInScheduleIdsToday(),
+            builder: (context, checkedInSnapshot) {
+              final checkedIds = checkedInSnapshot.data ?? _checkedInScheduleIds;
+              _checkedInScheduleIds = checkedIds;
+              return ListView(
+                padding: const EdgeInsets.fromLTRB(20, 20, 20, 90),
+                children: [
+                  Text(
+                    l.scheduleManagement,
+                    style: const TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.w800,
+                      color: AppColors.black,
+                      height: 1.2,
                     ),
                   ),
-                ),
-              ...meds.map(
-                (med) => _MedCard(
-                  med: med,
-                  onEdit: () => _openForm(initial: med),
-                  onDelete: () => _confirmDelete(med),
-                ),
-              ),
-            ],
+                  const SizedBox(height: 6),
+                  Text(
+                    l.scheduleManagementDesc,
+                    style: const TextStyle(fontSize: 14, color: AppColors.nautral),
+                  ),
+                  const SizedBox(height: 18),
+                  if (meds.isEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 60),
+                      child: Center(
+                        child: Text(
+                          l.noScheduleYet,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(color: AppColors.nautral),
+                        ),
+                      ),
+                    ),
+                  ...meds.map(
+                    (med) => _MedCard(
+                      med: med,
+                      onEdit: () => _openForm(initial: med),
+                      onDelete: () => _confirmDelete(med),
+                      canDelete: !checkedIds.contains(med.id),
+                    ),
+                  ),
+                ],
+              );
+            },
           );
         },
       ),
@@ -169,11 +180,13 @@ class _MedCard extends StatelessWidget {
     required this.med,
     required this.onEdit,
     required this.onDelete,
+    this.canDelete = true,
   });
 
   final Medication med;
   final VoidCallback onEdit;
   final VoidCallback onDelete;
+  final bool canDelete;
 
   @override
   Widget build(BuildContext context) {
@@ -221,13 +234,15 @@ class _MedCard extends StatelessWidget {
                 color: AppColors.primary,
                 onTap: onEdit,
               ),
-              const SizedBox(width: 8),
-              _RoundIcon(
-                icon: Icons.delete_outline_rounded,
-                bg: const Color(0xFFFADCDC),
-                color: const Color(0xFFD32F2F),
-                onTap: onDelete,
-              ),
+              if (canDelete) ...[
+                const SizedBox(width: 8),
+                _RoundIcon(
+                  icon: Icons.delete_outline_rounded,
+                  bg: const Color(0xFFFADCDC),
+                  color: const Color(0xFFD32F2F),
+                  onTap: onDelete,
+                ),
+              ],
             ],
           ),
           const Padding(

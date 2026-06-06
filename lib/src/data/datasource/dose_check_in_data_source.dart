@@ -62,4 +62,16 @@ class DoseCheckInDataSource {
       'created_at': FieldValue.serverTimestamp(),
     });
   }
+
+  /// Returns a set of scheduleIds that have at least one dose checked-in today.
+  Future<Set<String>> getCheckedInScheduleIdsToday() async {
+    final snapshot = await _firestore
+        .collection('dose_check_ins')
+        .where('patient_id', isEqualTo: _uid)
+        .where('date', isEqualTo: _todayKey)
+        .get();
+    return snapshot.docs
+        .map((doc) => doc.data()['schedule_id'] as String)
+        .toSet();
+  }
 }
