@@ -238,17 +238,6 @@ class _Header extends StatelessWidget {
                   height: 1.1,
                 ),
               ),
-              const SizedBox(height: 6),
-              Row(
-                children: [
-                  const Icon(Icons.star, size: 16, color: Color(0xFFFBBF24)),
-                  const SizedBox(width: 4),
-                  Text(
-                    '${facility.rating} (${facility.reviewCount} Ulasan)',
-                    style: const TextStyle(fontSize: 14, color: Colors.white),
-                  ),
-                ],
-              ),
             ],
           ),
         ),
