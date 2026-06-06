@@ -1,11 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lung_care_mobile/src/core/theme/app_colors.dart';
+import 'package:lung_care_mobile/src/presentation/bloc/history/history_bloc.dart';
 import 'package:lung_care_mobile/src/presentation/pages/history/activity_summary_sheet.dart';
 
 /// "Riwayat Lengkap": full medication history grouped by month.
 class FullHistoryPage extends StatelessWidget {
   const FullHistoryPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) => HistoryBloc()..add(HistoryFetchAllRequested()),
+      child: const _FullHistoryBody(),
+    );
+  }
+}
+
+class _FullHistoryBody extends StatelessWidget {
+  const _FullHistoryBody();
 
   @override
   Widget build(BuildContext context) {
@@ -27,52 +41,79 @@ class FullHistoryPage extends StatelessWidget {
             fontSize: 20,
           ),
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.filter_list_rounded, color: AppColors.primary),
-            onPressed: () {},
-          ),
-        ],
       ),
-      body: ListView(
-        padding: const EdgeInsets.fromLTRB(20, 16, 20, 28),
-        children: [
-          const _MonthLabel('BULAN INI'),
-          const SizedBox(height: 12),
-          _HistoryCard(
-            dateTime: '22 April 2026, 08:00',
-            name: 'Amlodipine 5mg',
-            detail: '1 Tablet - Pagi Hari',
-            taken: true,
-            onTap: () => ActivitySummarySheet.show(context, date: '22 April 2026'),
-          ),
-          const SizedBox(height: 12),
-          _HistoryCard(
-            dateTime: '21 April 2026, 20:00',
-            name: 'Atorvastatin 20mg',
-            detail: '1 Tablet - Malam Hari',
-            taken: false,
-            onTap: () => ActivitySummarySheet.show(context, date: '21 April 2026'),
-          ),
-          const SizedBox(height: 12),
-          _HistoryCard(
-            dateTime: '21 April 2026, 08:00',
-            name: 'Amlodipine 5mg',
-            detail: '1 Tablet - Pagi Hari',
-            taken: true,
-            onTap: () => ActivitySummarySheet.show(context, date: '21 April 2026'),
-          ),
-          const SizedBox(height: 24),
-          const _MonthLabel('BULAN LALU'),
-          const SizedBox(height: 12),
-          _HistoryCard(
-            dateTime: '30 Maret 2026, 08:00',
-            name: 'Amlodipine 5mg',
-            detail: '1 Tablet - Pagi Hari',
-            taken: true,
-            onTap: () => ActivitySummarySheet.show(context, date: '30 Maret 2026'),
-          ),
-        ],
+      body: BlocBuilder<HistoryBloc, HistoryState>(
+        builder: (context, state) {
+          if (state is HistoryLoading) {
+            return const Center(
+              child: CircularProgressIndicator(color: AppColors.primary),
+            );
+          }
+          if (state is HistoryError) {
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Text(
+                  state.message,
+                  style: const TextStyle(
+                    color: AppColors.nautral,
+                    fontSize: 15,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            );
+          }
+          if (state is HistoryAllLoaded) {
+            if (state.sections.isEmpty) {
+              return Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: Text(
+                    'Belum ada riwayat pengobatan.\nMulai check-in dosis dan health tracking!',
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      color: AppColors.nautral,
+                      fontSize: 15,
+                    ),
+                  ),
+                ),
+              );
+            }
+            return ListView(
+              padding: const EdgeInsets.fromLTRB(20, 16, 20, 28),
+              children: [
+                for (final section in state.sections) ...[
+                  _MonthLabel(section.label),
+                  const SizedBox(height: 12),
+                  ...section.entries.map(
+                    (entry) => Padding(
+                      padding: const EdgeInsets.only(bottom: 12),
+                      child: _HistoryCard(
+                        date: entry.date,
+                        time: entry.time,
+                        name: entry.title,
+                        detail: entry.subtitle,
+                        taken: entry.taken,
+                        isHealthCheckIn: entry.isHealthCheckIn,
+                        onTap: () {
+                          ActivitySummarySheet.show(
+                            context,
+                            date: entry.date,
+                            medStatuses: [],
+                            notes: null,
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                ],
+              ],
+            );
+          }
+          return const SizedBox.shrink();
+        },
       ),
     );
   }
@@ -99,22 +140,31 @@ class _MonthLabel extends StatelessWidget {
 
 class _HistoryCard extends StatelessWidget {
   const _HistoryCard({
-    required this.dateTime,
+    required this.date,
+    required this.time,
     required this.name,
     required this.detail,
     required this.taken,
+    required this.isHealthCheckIn,
     required this.onTap,
   });
 
-  final String dateTime;
+  final String date;
+  final String time;
   final String name;
   final String detail;
   final bool taken;
+  final bool isHealthCheckIn;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    final accent = taken ? const Color(0xFF16A34A) : const Color(0xFFD32F2F);
+    final accent = taken
+        ? isHealthCheckIn
+            ? const Color(0xFF8B5CF6)
+            : const Color(0xFF16A34A)
+        : const Color(0xFFD32F2F);
+
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(14),
@@ -147,14 +197,32 @@ class _HistoryCard extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            dateTime,
-                            style: const TextStyle(
-                              fontSize: 13,
-                              color: AppColors.nautral,
-                            ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                date,
+                                style: const TextStyle(
+                                  fontSize: 13,
+                                  color: AppColors.nautral,
+                                ),
+                              ),
+                              if (time.isNotEmpty) ...[
+                                const SizedBox(height: 2),
+                                Text(
+                                  time,
+                                  style: const TextStyle(
+                                    fontSize: 13,
+                                    color: AppColors.nautral,
+                                  ),
+                                ),
+                              ],
+                            ],
                           ),
-                          _StatusChip(taken: taken),
+                          _StatusChip(
+                            taken: taken,
+                            isHealthCheckIn: isHealthCheckIn,
+                          ),
                         ],
                       ),
                       const SizedBox(height: 6),
@@ -166,14 +234,16 @@ class _HistoryCard extends StatelessWidget {
                           color: AppColors.black,
                         ),
                       ),
-                      const SizedBox(height: 2),
-                      Text(
-                        detail,
-                        style: const TextStyle(
-                          fontSize: 13,
-                          color: AppColors.nautral,
+                      if (detail.isNotEmpty) ...[
+                        const SizedBox(height: 2),
+                        Text(
+                          detail,
+                          style: const TextStyle(
+                            fontSize: 13,
+                            color: AppColors.nautral,
+                          ),
                         ),
-                      ),
+                      ],
                     ],
                   ),
                 ),
@@ -187,24 +257,37 @@ class _HistoryCard extends StatelessWidget {
 }
 
 class _StatusChip extends StatelessWidget {
-  const _StatusChip({required this.taken});
+  const _StatusChip({required this.taken, required this.isHealthCheckIn});
 
   final bool taken;
+  final bool isHealthCheckIn;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
-        color: taken ? const Color(0xFFD1FAE5) : const Color(0xFFFADCDC),
+        color: taken
+            ? isHealthCheckIn
+                ? const Color(0xFFEDE9FE)
+                : const Color(0xFFD1FAE5)
+            : const Color(0xFFFADCDC),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Text(
-        taken ? 'Sudah Diminum' : 'Terlewat',
+        taken
+            ? isHealthCheckIn
+                ? 'Check-in'
+                : 'Sudah Diminum'
+            : 'Terlewat',
         style: TextStyle(
           fontSize: 12,
           fontWeight: FontWeight.w600,
-          color: taken ? const Color(0xFF16A34A) : const Color(0xFFD32F2F),
+          color: taken
+              ? isHealthCheckIn
+                  ? const Color(0xFF8B5CF6)
+                  : const Color(0xFF16A34A)
+              : const Color(0xFFD32F2F),
         ),
       ),
     );

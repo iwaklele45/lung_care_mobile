@@ -1,13 +1,40 @@
 import 'package:flutter/material.dart';
 import 'package:lung_care_mobile/src/core/theme/app_colors.dart';
 
+class MedStatus {
+  const MedStatus({
+    required this.name,
+    required this.time,
+    required this.taken,
+  });
+
+  final String name;
+  final String time;
+  final bool taken;
+}
+
 /// Bottom sheet showing a day's medication status and check-in summary.
 class ActivitySummarySheet extends StatelessWidget {
-  const ActivitySummarySheet({super.key, this.date = '20 Mei 2024'});
+  const ActivitySummarySheet({
+    super.key,
+    required this.date,
+    required this.medStatuses,
+    this.symptoms,
+    this.notes,
+  });
 
   final String date;
+  final List<MedStatus> medStatuses;
+  final Map<String, int>? symptoms;
+  final String? notes;
 
-  static Future<void> show(BuildContext context, {String? date}) {
+  static Future<void> show(
+    BuildContext context, {
+    required String date,
+    required List<MedStatus> medStatuses,
+    Map<String, int>? symptoms,
+    String? notes,
+  }) {
     return showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -15,7 +42,12 @@ class ActivitySummarySheet extends StatelessWidget {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
-      builder: (_) => ActivitySummarySheet(date: date ?? '20 Mei 2024'),
+      builder: (_) => ActivitySummarySheet(
+        date: date,
+        medStatuses: medStatuses,
+        symptoms: symptoms,
+        notes: notes,
+      ),
     );
   }
 
@@ -81,63 +113,139 @@ class ActivitySummarySheet extends StatelessWidget {
           const SizedBox(height: 20),
           const _SectionLabel('STATUS OBAT'),
           const SizedBox(height: 10),
-          const _MedStatusCard(name: 'Rifampicin', time: '07:30 AM'),
-          const SizedBox(height: 10),
-          const _MedStatusCard(name: 'Isoniazid', time: '07:30 AM'),
-          const SizedBox(height: 20),
-          const _SectionLabel('HASIL CHECK-IN'),
-          const SizedBox(height: 10),
-          Container(
-            padding: const EdgeInsets.all(14),
-            decoration: BoxDecoration(
-              color: AppColors.bodyColor,
-              borderRadius: BorderRadius.circular(14),
-            ),
-            child: Column(
-              children: const [
-                Row(
-                  children: [
-                    Expanded(
-                      child: _SymptomResult(emoji: '🤢', label: 'Mual', level: 'Sedang', color: Color(0xFFF59E0B)),
-                    ),
-                    Expanded(
-                      child: _SymptomResult(emoji: '😵‍💫', label: 'Pusing', level: 'Ringan', color: Color(0xFFF59E0B)),
-                    ),
-                  ],
+          if (medStatuses.isEmpty)
+            Container(
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                color: AppColors.bodyColor,
+                borderRadius: BorderRadius.circular(14),
+              ),
+              child: const Center(
+                child: Text(
+                  'Tidak ada data obat untuk hari ini.',
+                  style: TextStyle(color: AppColors.nautral, fontSize: 13),
                 ),
-                SizedBox(height: 14),
-                Row(
-                  children: [
-                    Expanded(
-                      child: _SymptomResult(emoji: '😴', label: 'Lelah', level: 'Ringan', color: Color(0xFFF59E0B)),
-                    ),
-                    Expanded(
-                      child: _SymptomResult(emoji: '🌡️', label: 'Demam', level: 'Tidak', color: Color(0xFF16A34A)),
-                    ),
-                  ],
+              ),
+            )
+          else
+            ...medStatuses.map(
+              (m) => Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: _MedStatusCard(
+                  name: m.name,
+                  time: m.time,
+                  taken: m.taken,
                 ),
-              ],
+              ),
             ),
-          ),
-          const SizedBox(height: 20),
-          const _SectionLabel('CATATAN'),
-          const SizedBox(height: 10),
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: AppColors.white,
-              borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: const Color(0xFFD8E2F0)),
+          if (symptoms != null && symptoms!.isNotEmpty) ...[
+            const SizedBox(height: 10),
+            const _SectionLabel('HASIL CHECK-IN'),
+            const SizedBox(height: 10),
+            Container(
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                color: AppColors.bodyColor,
+                borderRadius: BorderRadius.circular(14),
+              ),
+              child: _buildSymptomsGrid(),
             ),
-            child: const Text(
-              '"Hari ini merasa agak mual setelah minum obat Rifampisin, '
-              'tapi pusing sudah berkurang dibanding kemarin."',
-              style: TextStyle(fontSize: 14, color: AppColors.black, height: 1.5),
+          ],
+          if (notes != null && notes!.isNotEmpty) ...[
+            const SizedBox(height: 10),
+            const _SectionLabel('CATATAN'),
+            const SizedBox(height: 10),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: AppColors.white,
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(color: const Color(0xFFD8E2F0)),
+              ),
+              child: Text(
+                '"$notes"',
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: AppColors.black,
+                  height: 1.5,
+                ),
+              ),
             ),
-          ),
+          ],
         ],
       ),
+    );
+  }
+
+  Widget _buildSymptomsGrid() {
+    final labels = {
+      'nausea': ('Mual', '🤢'),
+      'dizziness': ('Pusing', '😵'),
+      'fatigue': ('Lelah', '😴'),
+      'fever': ('Demam', '🌡️'),
+    };
+    const levelNames = ['Tidak', 'Ringan', 'Sedang', 'Berat', 'Sangat Berat'];
+    const levelColors = [
+      Color(0xFF16A34A),
+      Color(0xFFF59E0B),
+      Color(0xFFF59E0B),
+      Color(0xFFD32F2F),
+      Color(0xFFD32F2F),
+    ];
+
+    final entries = symptoms!.entries.where(
+      (e) => e.value > 0,
+    ).toList();
+
+    if (entries.isEmpty) {
+      return const Center(
+        child: Text(
+          'Tidak ada gejala.',
+          style: TextStyle(color: AppColors.nautral, fontSize: 13),
+        ),
+      );
+    }
+
+    return Wrap(
+      spacing: 12,
+      runSpacing: 12,
+      children: entries.map((e) {
+        final info = labels[e.key] ?? (e.key, '📋');
+        final level = e.value.clamp(0, 4);
+        return SizedBox(
+          width: 140,
+          child: Row(
+            children: [
+              Text(info.$2, style: const TextStyle(fontSize: 22)),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      info.$1,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.black,
+                      ),
+                    ),
+                    Text(
+                      levelNames[level],
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: levelColors[level],
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      }).toList(),
     );
   }
 }
@@ -162,10 +270,15 @@ class _SectionLabel extends StatelessWidget {
 }
 
 class _MedStatusCard extends StatelessWidget {
-  const _MedStatusCard({required this.name, required this.time});
+  const _MedStatusCard({
+    required this.name,
+    required this.time,
+    required this.taken,
+  });
 
   final String name;
   final String time;
+  final bool taken;
 
   @override
   Widget build(BuildContext context) {
@@ -181,10 +294,16 @@ class _MedStatusCard extends StatelessWidget {
             width: 44,
             height: 44,
             decoration: BoxDecoration(
-              color: AppColors.primary.withValues(alpha: 0.12),
+              color: taken
+                  ? AppColors.primary.withValues(alpha: 0.12)
+                  : const Color(0xFFFADCDC),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: const Icon(Icons.medication, color: AppColors.primary, size: 22),
+            child: Icon(
+              Icons.medication,
+              color: taken ? AppColors.primary : const Color(0xFFD32F2F),
+              size: 22,
+            ),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -193,10 +312,11 @@ class _MedStatusCard extends StatelessWidget {
               children: [
                 Text(
                   name,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 17,
                     fontWeight: FontWeight.w700,
-                    color: AppColors.black,
+                    color: taken ? AppColors.black : AppColors.nautral,
+                    decoration: taken ? null : TextDecoration.lineThrough,
                   ),
                 ),
                 const SizedBox(height: 2),
@@ -216,19 +336,23 @@ class _MedStatusCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
             decoration: BoxDecoration(
-              color: const Color(0xFFD1FAE5),
+              color: taken ? const Color(0xFFD1FAE5) : const Color(0xFFFADCDC),
               borderRadius: BorderRadius.circular(20),
             ),
-            child: const Row(
+            child: Row(
               children: [
-                Icon(Icons.check_circle, size: 14, color: Color(0xFF16A34A)),
-                SizedBox(width: 4),
+                Icon(
+                  taken ? Icons.check_circle : Icons.cancel,
+                  size: 14,
+                  color: taken ? const Color(0xFF16A34A) : const Color(0xFFD32F2F),
+                ),
+                const SizedBox(width: 4),
                 Text(
-                  'Diminum',
+                  taken ? 'Diminum' : 'Terlewat',
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
-                    color: Color(0xFF16A34A),
+                    color: taken ? const Color(0xFF16A34A) : const Color(0xFFD32F2F),
                   ),
                 ),
               ],
@@ -236,47 +360,6 @@ class _MedStatusCard extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-class _SymptomResult extends StatelessWidget {
-  const _SymptomResult({
-    required this.emoji,
-    required this.label,
-    required this.level,
-    required this.color,
-  });
-
-  final String emoji;
-  final String label;
-  final String level;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Text(emoji, style: const TextStyle(fontSize: 22)),
-        const SizedBox(width: 8),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              label,
-              style: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                color: AppColors.black,
-              ),
-            ),
-            Text(
-              level,
-              style: TextStyle(fontSize: 12, color: color, fontWeight: FontWeight.w500),
-            ),
-          ],
-        ),
-      ],
     );
   }
 }
