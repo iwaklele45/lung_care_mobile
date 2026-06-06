@@ -1,16 +1,22 @@
 import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lung_care_mobile/src/domain/entities/password_reset_result.dart';
+import 'package:lung_care_mobile/src/domain/usecases/confirm_password_reset.dart';
 import 'package:lung_care_mobile/src/domain/usecases/check_user_profile.dart';
 import 'package:lung_care_mobile/src/domain/usecases/create_user_with_email.dart';
 import 'package:lung_care_mobile/src/domain/usecases/observe_auth_state.dart';
+import 'package:lung_care_mobile/src/domain/usecases/request_password_reset_otp.dart';
+import 'package:lung_care_mobile/src/domain/usecases/resend_password_reset_otp.dart';
 import 'package:lung_care_mobile/src/domain/usecases/save_user_profile.dart';
 import 'package:lung_care_mobile/src/domain/usecases/send_password_reset.dart';
 import 'package:lung_care_mobile/src/domain/usecases/sign_in_with_email.dart';
 import 'package:lung_care_mobile/src/domain/usecases/sign_in_with_google.dart';
 import 'package:lung_care_mobile/src/domain/usecases/sign_out.dart';
+import 'package:lung_care_mobile/src/domain/usecases/verify_password_reset_otp.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';
@@ -21,6 +27,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     required SignInWithEmail signInWithEmail,
     required CreateUserWithEmail createUserWithEmail,
     required SendPasswordReset sendPasswordReset,
+    required RequestPasswordResetOtp requestPasswordResetOtp,
+    required VerifyPasswordResetOtp verifyPasswordResetOtp,
+    required ResendPasswordResetOtp resendPasswordResetOtp,
+    required ConfirmPasswordReset confirmPasswordReset,
     required SignOut signOut,
     required SignInWithGoogle signInWithGoogle,
     required CheckUserProfile checkUserProfile,
@@ -29,6 +39,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
        _signInWithEmail = signInWithEmail,
        _createUserWithEmail = createUserWithEmail,
        _sendPasswordReset = sendPasswordReset,
+       _requestPasswordResetOtp = requestPasswordResetOtp,
+       _verifyPasswordResetOtp = verifyPasswordResetOtp,
+       _resendPasswordResetOtp = resendPasswordResetOtp,
+       _confirmPasswordReset = confirmPasswordReset,
        _signOut = signOut,
        _signInWithGoogle = signInWithGoogle,
        _checkUserProfile = checkUserProfile,
@@ -39,6 +53,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthSignInRequested>(_onSignInRequested);
     on<AuthSignUpRequested>(_onSignUpRequested);
     on<AuthPasswordResetRequested>(_onPasswordResetRequested);
+    on<AuthPasswordResetOtpRequested>(_onPasswordResetOtpRequested);
+    on<AuthPasswordResetOtpVerified>(_onPasswordResetOtpVerified);
+    on<AuthPasswordResetOtpResent>(_onPasswordResetOtpResent);
+    on<AuthPasswordResetConfirmed>(_onPasswordResetConfirmed);
     on<AuthSignOutRequested>(_onSignOutRequested);
     on<AuthGoogleSignInRequested>(_onGoogleSignInRequested);
     on<AuthSaveProfileRequested>(_onSaveProfileRequested);
@@ -48,6 +66,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final SignInWithEmail _signInWithEmail;
   final CreateUserWithEmail _createUserWithEmail;
   final SendPasswordReset _sendPasswordReset;
+  final RequestPasswordResetOtp _requestPasswordResetOtp;
+  final VerifyPasswordResetOtp _verifyPasswordResetOtp;
+  final ResendPasswordResetOtp _resendPasswordResetOtp;
+  final ConfirmPasswordReset _confirmPasswordReset;
   final SignOut _signOut;
   final SignInWithGoogle _signInWithGoogle;
   final CheckUserProfile _checkUserProfile;
@@ -70,7 +92,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     AuthUserChanged event,
     Emitter<AuthState> emit,
   ) async {
-    if (_isRegistering || _isSigningIn || _isGoogleSigningIn || _isSigningOut) return;
+    if (_isRegistering || _isSigningIn || _isGoogleSigningIn || _isSigningOut) {
+      return;
+    }
     final user = event.user;
     if (user is User) {
       // Check if the user has completed their profile in Firestore
@@ -248,6 +272,74 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     }
   }
 
+  Future<void> _onPasswordResetOtpRequested(
+    AuthPasswordResetOtpRequested event,
+    Emitter<AuthState> emit,
+  ) async {
+    emit(AuthLoading());
+    try {
+      final result = await _requestPasswordResetOtp(
+        identifier: event.identifier,
+      );
+      emit(AuthPasswordResetOtpSent(result));
+    } on FirebaseFunctionsException catch (error) {
+      emit(AuthError(_passwordResetMessage(error)));
+    } catch (_) {
+      emit(AuthError('Gagal mengirim kode reset.'));
+    }
+  }
+
+  Future<void> _onPasswordResetOtpVerified(
+    AuthPasswordResetOtpVerified event,
+    Emitter<AuthState> emit,
+  ) async {
+    emit(AuthLoading());
+    try {
+      final result = await _verifyPasswordResetOtp(
+        requestId: event.requestId,
+        code: event.code,
+      );
+      emit(AuthPasswordResetOtpVerificationSuccess(result));
+    } on FirebaseFunctionsException catch (error) {
+      emit(AuthError(_passwordResetMessage(error)));
+    } catch (_) {
+      emit(AuthError('Gagal memverifikasi kode.'));
+    }
+  }
+
+  Future<void> _onPasswordResetOtpResent(
+    AuthPasswordResetOtpResent event,
+    Emitter<AuthState> emit,
+  ) async {
+    emit(AuthLoading());
+    try {
+      final result = await _resendPasswordResetOtp(requestId: event.requestId);
+      emit(AuthPasswordResetOtpSent(result));
+    } on FirebaseFunctionsException catch (error) {
+      emit(AuthError(_passwordResetMessage(error)));
+    } catch (_) {
+      emit(AuthError('Gagal mengirim ulang kode.'));
+    }
+  }
+
+  Future<void> _onPasswordResetConfirmed(
+    AuthPasswordResetConfirmed event,
+    Emitter<AuthState> emit,
+  ) async {
+    emit(AuthLoading());
+    try {
+      await _confirmPasswordReset(
+        resetToken: event.resetToken,
+        newPassword: event.newPassword,
+      );
+      emit(AuthPasswordResetCompleted());
+    } on FirebaseFunctionsException catch (error) {
+      emit(AuthError(_passwordResetMessage(error)));
+    } catch (_) {
+      emit(AuthError('Gagal menyimpan password baru.'));
+    }
+  }
+
   Future<void> _onSignOutRequested(
     AuthSignOutRequested event,
     Emitter<AuthState> emit,
@@ -270,5 +362,19 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   Future<void> close() {
     _authSubscription?.cancel();
     return super.close();
+  }
+
+  String _passwordResetMessage(FirebaseFunctionsException error) {
+    switch (error.code) {
+      case 'invalid-argument':
+      case 'permission-denied':
+      case 'not-found':
+      case 'deadline-exceeded':
+      case 'resource-exhausted':
+      case 'failed-precondition':
+        return error.message ?? 'Permintaan reset password tidak valid.';
+      default:
+        return error.message ?? 'Reset password gagal. Silakan coba lagi.';
+    }
   }
 }

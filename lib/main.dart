@@ -13,17 +13,22 @@ import 'package:lung_care_mobile/src/data/datasource/auth_remote_data_source.dar
 import 'package:lung_care_mobile/src/data/repositories/auth_repository_impl.dart';
 import 'package:lung_care_mobile/src/domain/repositories/auth_repository.dart';
 import 'package:lung_care_mobile/src/domain/usecases/check_user_profile.dart';
+import 'package:lung_care_mobile/src/domain/usecases/confirm_password_reset.dart';
 import 'package:lung_care_mobile/src/domain/usecases/create_user_with_email.dart';
 import 'package:lung_care_mobile/src/domain/usecases/observe_auth_state.dart';
+import 'package:lung_care_mobile/src/domain/usecases/request_password_reset_otp.dart';
+import 'package:lung_care_mobile/src/domain/usecases/resend_password_reset_otp.dart';
 import 'package:lung_care_mobile/src/domain/usecases/save_user_profile.dart';
 import 'package:lung_care_mobile/src/domain/usecases/send_password_reset.dart';
 import 'package:lung_care_mobile/src/domain/usecases/sign_in_with_email.dart';
 import 'package:lung_care_mobile/src/domain/usecases/sign_in_with_google.dart';
 import 'package:lung_care_mobile/src/domain/usecases/sign_out.dart';
+import 'package:lung_care_mobile/src/domain/usecases/verify_password_reset_otp.dart';
 import 'package:lung_care_mobile/src/presentation/bloc/auth/auth_bloc.dart';
 import 'package:lung_care_mobile/src/presentation/pages/auth/complete_profile_page.dart';
 import 'package:lung_care_mobile/src/presentation/pages/auth/forgot_password_page.dart';
 import 'package:lung_care_mobile/src/presentation/pages/auth/login_page.dart';
+import 'package:lung_care_mobile/src/presentation/pages/auth/password_reset_route_data.dart';
 import 'package:lung_care_mobile/src/presentation/pages/auth/register_page.dart';
 import 'package:lung_care_mobile/src/presentation/pages/auth/reset_password_page.dart';
 import 'package:lung_care_mobile/src/presentation/pages/auth/verify_code_page.dart';
@@ -117,11 +122,23 @@ class MyApp extends StatelessWidget {
       ),
       GoRoute(
         path: '/verify_code',
-        builder: (context, state) => const VerifyCodePage(),
+        builder: (context, state) {
+          final data = state.extra;
+          if (data is! VerifyCodeRouteData) {
+            return const ForgotPasswordPage();
+          }
+          return VerifyCodePage(data: data);
+        },
       ),
       GoRoute(
         path: '/reset_password',
-        builder: (context, state) => const ResetPasswordPage(),
+        builder: (context, state) {
+          final data = state.extra;
+          if (data is! ResetPasswordRouteData) {
+            return const ForgotPasswordPage();
+          }
+          return ResetPasswordPage(data: data);
+        },
       ),
       GoRoute(
         path: '/complete-profile',
@@ -157,6 +174,18 @@ class MyApp extends StatelessWidget {
               repository: context.read<AuthRepository>(),
             ),
             sendPasswordReset: SendPasswordReset(
+              repository: context.read<AuthRepository>(),
+            ),
+            requestPasswordResetOtp: RequestPasswordResetOtp(
+              repository: context.read<AuthRepository>(),
+            ),
+            verifyPasswordResetOtp: VerifyPasswordResetOtp(
+              repository: context.read<AuthRepository>(),
+            ),
+            resendPasswordResetOtp: ResendPasswordResetOtp(
+              repository: context.read<AuthRepository>(),
+            ),
+            confirmPasswordReset: ConfirmPasswordReset(
               repository: context.read<AuthRepository>(),
             ),
             signOut: SignOut(repository: context.read<AuthRepository>()),

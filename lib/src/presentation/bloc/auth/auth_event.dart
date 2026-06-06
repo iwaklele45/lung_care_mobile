@@ -40,6 +40,35 @@ final class AuthPasswordResetRequested extends AuthEvent {
   final String email;
 }
 
+final class AuthPasswordResetOtpRequested extends AuthEvent {
+  AuthPasswordResetOtpRequested({required this.identifier});
+
+  final String identifier;
+}
+
+final class AuthPasswordResetOtpVerified extends AuthEvent {
+  AuthPasswordResetOtpVerified({required this.requestId, required this.code});
+
+  final String requestId;
+  final String code;
+}
+
+final class AuthPasswordResetOtpResent extends AuthEvent {
+  AuthPasswordResetOtpResent({required this.requestId});
+
+  final String requestId;
+}
+
+final class AuthPasswordResetConfirmed extends AuthEvent {
+  AuthPasswordResetConfirmed({
+    required this.resetToken,
+    required this.newPassword,
+  });
+
+  final String resetToken;
+  final String newPassword;
+}
+
 final class AuthSignOutRequested extends AuthEvent {}
 
 final class AuthGoogleSignInRequested extends AuthEvent {}

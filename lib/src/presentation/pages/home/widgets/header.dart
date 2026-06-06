@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:lung_care_mobile/l10n/app_localizations.dart';
-import 'package:lung_care_mobile/gen/assets.gen.dart';
 import 'package:lung_care_mobile/src/core/theme/app_colors.dart';
 
 /// Greeting header shown at the top of the home body (below the AppBar).
@@ -59,4 +58,3 @@ class Header extends StatelessWidget {
     );
   }
 }
-

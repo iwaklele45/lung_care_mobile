@@ -1,18 +1,23 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:lung_care_mobile/src/domain/entities/password_reset_result.dart';
 
 class AuthRemoteDataSource {
   AuthRemoteDataSource({
     FirebaseAuth? firebaseAuth,
     FirebaseFirestore? firestore,
+    FirebaseFunctions? functions,
     GoogleSignIn? googleSignIn,
   }) : _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance,
        _firestore = firestore ?? FirebaseFirestore.instance,
+       _functions = functions ?? FirebaseFunctions.instance,
        _googleSignIn = googleSignIn ?? GoogleSignIn();
 
   final FirebaseAuth _firebaseAuth;
   final FirebaseFirestore _firestore;
+  final FirebaseFunctions _functions;
   final GoogleSignIn _googleSignIn;
 
   Stream<User?> authStateChanges() => _firebaseAuth.authStateChanges();
@@ -133,6 +138,47 @@ class AuthRemoteDataSource {
     return _firebaseAuth.sendPasswordResetEmail(email: email);
   }
 
+  Future<PasswordResetRequestResult> requestPasswordResetOtp({
+    required String identifier,
+  }) async {
+    final response = await _functions
+        .httpsCallable('requestPasswordReset')
+        .call({'identifier': identifier});
+    return _passwordResetRequestResultFrom(response.data);
+  }
+
+  Future<PasswordResetVerificationResult> verifyPasswordResetOtp({
+    required String requestId,
+    required String code,
+  }) async {
+    final response = await _functions
+        .httpsCallable('verifyPasswordResetCode')
+        .call({'requestId': requestId, 'code': code});
+    final data = Map<String, dynamic>.from(response.data as Map);
+    return PasswordResetVerificationResult(
+      resetToken: data['resetToken'] as String,
+    );
+  }
+
+  Future<PasswordResetRequestResult> resendPasswordResetOtp({
+    required String requestId,
+  }) async {
+    final response = await _functions
+        .httpsCallable('resendPasswordResetCode')
+        .call({'requestId': requestId});
+    return _passwordResetRequestResultFrom(response.data);
+  }
+
+  Future<void> confirmPasswordReset({
+    required String resetToken,
+    required String newPassword,
+  }) async {
+    await _functions.httpsCallable('confirmPasswordReset').call({
+      'resetToken': resetToken,
+      'newPassword': newPassword,
+    });
+  }
+
   Future<void> signOut() async {
     try {
       await _googleSignIn.disconnect();
@@ -141,5 +187,20 @@ class AuthRemoteDataSource {
     }
     await _firebaseAuth.signOut();
   }
-}
 
+  PasswordResetRequestResult _passwordResetRequestResultFrom(Object? value) {
+    final data = Map<String, dynamic>.from(value as Map);
+    final resendAvailableAt = data['resendAvailableAt'];
+    return PasswordResetRequestResult(
+      requestId: data['requestId'] as String,
+      maskedDestination: data['maskedDestination'] as String,
+      channel: data['channel'] as String,
+      demoCode: data['demoCode'] as String?,
+      resendAvailableAt: DateTime.fromMillisecondsSinceEpoch(
+        resendAvailableAt is int
+            ? resendAvailableAt
+            : (resendAvailableAt as num).toInt(),
+      ),
+    );
+  }
+}

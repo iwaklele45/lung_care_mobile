@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:lung_care_mobile/src/data/datasource/auth_remote_data_source.dart';
+import 'package:lung_care_mobile/src/domain/entities/password_reset_result.dart';
 import 'package:lung_care_mobile/src/domain/repositories/auth_repository.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
@@ -45,6 +46,42 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<void> sendPasswordResetEmail({required String email}) {
     return _remoteDataSource.sendPasswordResetEmail(email: email);
+  }
+
+  @override
+  Future<PasswordResetRequestResult> requestPasswordResetOtp({
+    required String identifier,
+  }) {
+    return _remoteDataSource.requestPasswordResetOtp(identifier: identifier);
+  }
+
+  @override
+  Future<PasswordResetVerificationResult> verifyPasswordResetOtp({
+    required String requestId,
+    required String code,
+  }) {
+    return _remoteDataSource.verifyPasswordResetOtp(
+      requestId: requestId,
+      code: code,
+    );
+  }
+
+  @override
+  Future<PasswordResetRequestResult> resendPasswordResetOtp({
+    required String requestId,
+  }) {
+    return _remoteDataSource.resendPasswordResetOtp(requestId: requestId);
+  }
+
+  @override
+  Future<void> confirmPasswordReset({
+    required String resetToken,
+    required String newPassword,
+  }) {
+    return _remoteDataSource.confirmPasswordReset(
+      resetToken: resetToken,
+      newPassword: newPassword,
+    );
   }
 
   @override
