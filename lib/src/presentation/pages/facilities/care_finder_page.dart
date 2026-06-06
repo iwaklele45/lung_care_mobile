@@ -534,15 +534,6 @@ class FacilityCard extends StatelessWidget {
                 ' (${facility.reviewCount} ulasan)',
                 style: const TextStyle(fontSize: 12, color: AppColors.nautral),
               ),
-              const Spacer(),
-              Text(
-                '${facility.distance.toStringAsFixed(1)} km',
-                style: const TextStyle(
-                  fontSize: 12,
-                  color: AppColors.nautral,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
             ],
           ),
           const Divider(height: 20, color: Color(0xFFE8EEF6)),

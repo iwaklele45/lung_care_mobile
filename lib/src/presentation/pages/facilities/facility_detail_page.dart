@@ -63,23 +63,6 @@ class FacilityDetailPage extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(height: 6),
-                          Row(
-                            children: [
-                              const Icon(
-                                Icons.directions_walk,
-                                size: 16,
-                                color: AppColors.primary,
-                              ),
-                              const SizedBox(width: 4),
-                              Text(
-                                '${facility.distance.toStringAsFixed(1)} km dari lokasi Anda',
-                                style: const TextStyle(
-                                  fontSize: 13,
-                                  color: AppColors.primary,
-                                ),
-                              ),
-                            ],
-                          ),
                         ],
                       ),
                     ),
