@@ -12,7 +12,20 @@
           "package_name": "com.example.lung_care_mobile"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "987638875582-pjmn60v8mf5n9utlof5sk1i54kvontrr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.lung_care_mobile",
+            "certificate_hash": "a1c37cc64638e1c5670c7c65c4406e1b61c706e6"
+          }
+        },
+        {
+          "client_id": "987638875582-vngg33m00bbhahvnpohohfnme748mdvq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAJEf1MityiRa5K22MoaYKj0IRFvd5UlGw"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "987638875582-vngg33m00bbhahvnpohohfnme748mdvq.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "987638875582-tdp24ga514bgcod2pgglmn1b7eq6jseo.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.lungCareMobile"
+              }
+            }
+          ]
         }
       }
     }

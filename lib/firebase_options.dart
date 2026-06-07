@@ -64,6 +64,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '987638875582',
     projectId: 'lung-care-plus-c04f5',
     storageBucket: 'lung-care-plus-c04f5.firebasestorage.app',
+    androidClientId: '987638875582-pjmn60v8mf5n9utlof5sk1i54kvontrr.apps.googleusercontent.com',
+    iosClientId: '987638875582-tdp24ga514bgcod2pgglmn1b7eq6jseo.apps.googleusercontent.com',
     iosBundleId: 'com.example.lungCareMobile',
   );
 
@@ -73,6 +75,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '987638875582',
     projectId: 'lung-care-plus-c04f5',
     storageBucket: 'lung-care-plus-c04f5.firebasestorage.app',
+    androidClientId: '987638875582-pjmn60v8mf5n9utlof5sk1i54kvontrr.apps.googleusercontent.com',
+    iosClientId: '987638875582-tdp24ga514bgcod2pgglmn1b7eq6jseo.apps.googleusercontent.com',
     iosBundleId: 'com.example.lungCareMobile',
   );
 
@@ -85,4 +89,5 @@ class DefaultFirebaseOptions {
     storageBucket: 'lung-care-plus-c04f5.firebasestorage.app',
     measurementId: 'G-BT4LHVHT5J',
   );
+
 }
