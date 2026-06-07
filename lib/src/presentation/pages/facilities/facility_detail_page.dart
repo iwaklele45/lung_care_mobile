@@ -45,7 +45,11 @@ class FacilityDetailPage extends StatelessWidget {
                 // Rating & reviews
                 Row(
                   children: [
-                    const Icon(Icons.star_rounded, size: 20, color: Color(0xFFF5C842)),
+                    const Icon(
+                      Icons.star_rounded,
+                      size: 20,
+                      color: Color(0xFFF5C842),
+                    ),
                     const SizedBox(width: 4),
                     Text(
                       '${facility.rating}',
@@ -58,7 +62,10 @@ class FacilityDetailPage extends StatelessWidget {
                     const SizedBox(width: 6),
                     Text(
                       '(${facility.reviewCount} ulasan)',
-                      style: const TextStyle(fontSize: 14, color: AppColors.nautral),
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: AppColors.nautral,
+                      ),
                     ),
                   ],
                 ),
@@ -100,7 +107,8 @@ class FacilityDetailPage extends StatelessWidget {
                 const _SectionLabel('KONTAK'),
                 const SizedBox(height: 10),
                 _ContactCard(phone: facility.phone),
-                if (facility.website != null && facility.website!.isNotEmpty) ...[
+                if (facility.website != null &&
+                    facility.website!.isNotEmpty) ...[
                   const SizedBox(height: 10),
                   _WebsiteCard(url: facility.website!),
                 ],
@@ -158,8 +166,8 @@ class _Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final hasCover = facility.coverImageUrl != null &&
-        facility.coverImageUrl!.isNotEmpty;
+    final hasCover =
+        facility.coverImageUrl != null && facility.coverImageUrl!.isNotEmpty;
 
     return Stack(
       children: [
@@ -412,7 +420,11 @@ class _ContactCard extends StatelessWidget {
                 color: AppColors.ternary,
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: const Icon(Icons.phone, color: AppColors.primary, size: 20),
+              child: const Icon(
+                Icons.phone,
+                color: AppColors.primary,
+                size: 20,
+              ),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -429,7 +441,10 @@ class _ContactCard extends StatelessWidget {
                   ),
                   Text(
                     phone,
-                    style: const TextStyle(fontSize: 13, color: AppColors.nautral),
+                    style: const TextStyle(
+                      fontSize: 13,
+                      color: AppColors.nautral,
+                    ),
                   ),
                 ],
               ),
@@ -452,7 +467,8 @@ class _WebsiteCard extends StatelessWidget {
         .replaceAll('https://', '')
         .replaceAll('http://', '')
         .replaceAll('www.', '');
-    if (display.endsWith('/')) display = display.substring(0, display.length - 1);
+    if (display.endsWith('/'))
+      display = display.substring(0, display.length - 1);
     // Truncate long URLs
     if (display.length > 35) display = '${display.substring(0, 35)}...';
     return display;
@@ -491,7 +507,11 @@ class _WebsiteCard extends StatelessWidget {
                 color: AppColors.ternary,
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: const Icon(Icons.language, color: AppColors.primary, size: 20),
+              child: const Icon(
+                Icons.language,
+                color: AppColors.primary,
+                size: 20,
+              ),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -508,7 +528,10 @@ class _WebsiteCard extends StatelessWidget {
                   ),
                   Text(
                     _displayUrl,
-                    style: const TextStyle(fontSize: 13, color: AppColors.nautral),
+                    style: const TextStyle(
+                      fontSize: 13,
+                      color: AppColors.nautral,
+                    ),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ],

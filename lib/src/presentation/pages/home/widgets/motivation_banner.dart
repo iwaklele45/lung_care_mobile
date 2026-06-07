@@ -13,14 +13,23 @@ class MotivationBanner extends StatelessWidget {
         margin: const EdgeInsets.symmetric(horizontal: 20),
         padding: const EdgeInsets.only(top: 48, bottom: 32),
         width: double.infinity,
-        // height: 296.0,
         decoration: BoxDecoration(
           color: AppColors.ternary,
           borderRadius: BorderRadius.circular(20),
         ),
         child: Column(
           children: [
-            const UserAvatar(radius: 40),
+            // Avatar dibungkus Container untuk memberikan efek border
+            Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: AppColors.primary, // Warna border (bisa disesuaikan)
+                  width: 3.0, // Ketebalan border
+                ),
+              ),
+              child: const UserAvatar(radius: 40),
+            ),
             const SizedBox(height: 12),
             const Text(
               'Keep it up!',
@@ -37,7 +46,8 @@ class MotivationBanner extends StatelessWidget {
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w400,
-                color: AppColors.nautral,
+                color: AppColors
+                    .nautral, // Pastikan ini tidak typo, mungkin 'neutral'?
                 height: 1.5,
               ),
             ),
