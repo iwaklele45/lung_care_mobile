@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:lung_care_mobile/gen/assets.gen.dart';
 import 'package:lung_care_mobile/src/core/theme/app_colors.dart';
+import 'package:lung_care_mobile/src/presentation/widgets/user_avatar.dart';
 
 /// Motivational banner at the bottom of the home page.
 class MotivationBanner extends StatelessWidget {
@@ -20,12 +20,7 @@ class MotivationBanner extends StatelessWidget {
         ),
         child: Column(
           children: [
-            // Assets.icons.mainIcon.image(
-            //   width: 64,
-            //   height: 64,
-            //   fit: BoxFit.contain,
-            // ),
-            Assets.icons.profileMotivationImg.image(),
+            const UserAvatar(radius: 40),
             const SizedBox(height: 12),
             const Text(
               'Keep it up!',

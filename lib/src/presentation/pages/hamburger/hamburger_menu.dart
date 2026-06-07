@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lung_care_mobile/l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lung_care_mobile/gen/assets.gen.dart';
+import 'package:lung_care_mobile/src/presentation/widgets/user_avatar.dart';
 import 'package:lung_care_mobile/src/core/theme/app_colors.dart';
 import 'package:lung_care_mobile/src/presentation/bloc/auth/auth_bloc.dart';
 
@@ -74,18 +74,15 @@ class _HamburgerMenuState extends State<HamburgerMenu> {
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: Row(
                 children: [
-                  // Avatar circle
+                  // Avatar circle — dynamic profile picture
                   Container(
                     width: 56,
                     height: 56,
                     decoration: BoxDecoration(
-                      color: AppColors.black,
                       shape: BoxShape.circle,
                       border: Border.all(color: AppColors.primary, width: 2),
                     ),
-                    child: ClipOval(
-                      child: Assets.icons.profileMotivationImg.image(),
-                    ),
+                    child: const UserAvatar(radius: 26),
                   ),
                   const SizedBox(width: 14),
                   // Name

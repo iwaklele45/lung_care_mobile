@@ -28,6 +28,9 @@ class _ProfilePageState extends State<ProfilePage> {
   // Cached across tab switches so re-opening Profile doesn't re-fetch.
   static Future<DocumentSnapshot<Map<String, dynamic>>?>? _cachedFuture;
 
+  /// True while uploading or deleting a profile picture.
+  bool _isUploading = false;
+
   @override
   void initState() {
     super.initState();
@@ -60,11 +63,35 @@ class _ProfilePageState extends State<ProfilePage> {
 
           return Column(
             children: [
-              ProfilePicturePicker(
-                imageUrl: (data['profilePictureUrl'] as String?)?.isNotEmpty == true
-                    ? data['profilePictureUrl'] as String
-                    : currentUser?.photoURL,
-                onChanged: (file) => _onProfilePicChanged(file, data),
+              Stack(
+                alignment: Alignment.center,
+                children: [
+                  ProfilePicturePicker(
+                    imageUrl: (data['profilePictureUrl'] as String?)?.isNotEmpty == true
+                        ? data['profilePictureUrl'] as String
+                        : currentUser?.photoURL,
+                    onChanged: (file) => _onProfilePicChanged(file, data),
+                  ),
+                  if (_isUploading)
+                    Container(
+                      width: 104,
+                      height: 104,
+                      decoration: BoxDecoration(
+                        color: Colors.black.withValues(alpha: 0.4),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Center(
+                        child: SizedBox(
+                          width: 28,
+                          height: 28,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 3,
+                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
               ),
               const SizedBox(height: 14),
               Text(
@@ -155,6 +182,8 @@ class _ProfilePageState extends State<ProfilePage> {
   Future<void> _onProfilePicChanged(File? file, Map<String, dynamic> data) async {
     if (_doc == null || !mounted) return;
 
+    setState(() => _isUploading = true);
+
     try {
       final uid = _user!.uid;
       final storage = ProfileStorageService();
@@ -162,24 +191,34 @@ class _ProfilePageState extends State<ProfilePage> {
       if (file != null) {
         // Upload new picture
         final url = await storage.upload(uid: uid, imageFile: file);
-        await _doc!.update({
+        // Use set + merge so it works even if the doc doesn't exist yet
+        await _doc!.set({
           'profilePictureUrl': url,
           'updatedAt': FieldValue.serverTimestamp(),
-        });
+        }, SetOptions(merge: true));
       } else {
         // Remove picture
         await storage.delete(uid);
-        await _doc!.update({
+        await _doc!.set({
           'profilePictureUrl': FieldValue.delete(),
           'updatedAt': FieldValue.serverTimestamp(),
-        });
+        }, SetOptions(merge: true));
       }
 
+      // Invalidate cache so the UI picks up the new URL
       if (mounted) {
-        setState(() => _cachedFuture = _doc!.get());
+        setState(() {
+          _isUploading = false;
+          _cachedFuture = _doc!.get();
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Foto profil berhasil diperbarui.')),
+        );
       }
-    } catch (_) {
+    } catch (e) {
+      debugPrint('[ProfilePage] Profile picture update failed: $e');
       if (mounted) {
+        setState(() => _isUploading = false);
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Gagal memperbarui foto profil.')),
         );
