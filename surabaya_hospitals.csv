@@ -1,0 +1,65 @@
+id;nama;propinsi;kab;alamat;jenis;kelas;status_blu;kepemilikan;total_tempat_tidur;total_layanan;total_tenaga_kerja
+3578261;RS Ibu dan Anak IBI Surabaya;Jawa Timur;Kota Surabaya;Jl. Dupak No. 15A Surabaya, kelurahan gundih, kecamatan bubutan kota surabaya provinsi jawa timur;Rumah Sakit Khusus Ibu dan Anak;C;Non BLU/BLUD;Organisasi Sosial;31;13;87
+3578769;RS Ibu dan Anak Kendangsari Merr;Jawa Timur;Kota Surabaya;Jl. Dr. Ir. Soekarno No. 2, Kalijudan, Mulyorejo, Surabaya, Jawa Timur, Indonesia;Rumah Sakit Khusus Ibu dan Anak;C;Non BLU/BLUD;SWASTA/LAINNYA;30;20;143
+3578768;RS Ibu dan Anak Lombok Dua Dua Lontar;Jawa Timur;Kota Surabaya;Jl. Lontar No. 206 (lama Jl. Raya Lontar No. 109) Surabaya;Rumah Sakit Khusus Ibu dan Anak;C;Non BLU/BLUD;Perusahaan;28;16;83
+3578100;RS Umum Adi Husada Kapasari;Jawa Timur;Kota Surabaya;Jl. Kapasari No. 97-101 Surabaya;Rumah Sakit Umum;C;Non BLU/BLUD;Organisasi Sosial;103;72;341
+3578793;RS PKU Muhammadiyah Surabaya;Jawa Timur;Kota Surabaya;JL. KH MAS MANSYUR 180-182, KELURAHAN NYAMPLUNGAN, KECAMATAN PABEAN CANTIAN, KOTA SURABAYA, PROVINSI JAWA TIMUR;Rumah Sakit Umum;D;Non BLU/BLUD;Organisasi Islam ;50;22;129
+3578781;RS Umum Royal Surabaya ;Jawa Timur;Kota Surabaya;JL. Rungkut Industri I/1 Surabaya;Rumah Sakit Umum;B;Non BLU/BLUD;SWASTA/LAINNYA;200;32;265
+3578810;RS Ubaya;Jawa Timur;Kota Surabaya;Jl. Panjang Jiwo Permai No. 89, Kecamatan Tenggilis Mejoyo;Rumah Sakit Umum;B;Non BLU/BLUD;Perusahaan;200;50;0
+3578603;RS Gotong Royong;Jawa Timur;Kota Surabaya;Jl. Medokan Semampir Indah No. 97 Surabaya;Rumah Sakit Umum;C;Non BLU/BLUD;Organisasi Sosial;138;42;323
+3578794;RS Ibu dan Anak Pusura Tegalsari;Jawa Timur;Kota Surabaya;JL. Tegalsari No.59 Surabaya;Rumah Sakit Khusus Ibu dan Anak;C;Non BLU/BLUD;SWASTA/LAINNYA;25;17;22
+3578476;RS Al Irsyad Surabaya;Jawa Timur;Kota Surabaya;Jl. KHM.Mansyur No. 210 - 214 dan 191 Surabaya;Rumah Sakit Umum;C;Non BLU/BLUD;Organisasi Sosial;146;73;412
+3578771;RS Ibu dan Anak Putri Surabaya;Jawa Timur;Kota Surabaya;Jl. Arief Rahman Hakim No. 130 Surabaya;Rumah Sakit Khusus Ibu dan Anak;C;Non BLU/BLUD;SWASTA/LAINNYA;49;21;186
+3578020;RSPAL dr. Ramelan;Jawa Timur;Kota Surabaya;Jl. Gadung No. 1 Surabaya;Rumah Sakit Umum;A;BLU;TNI AL;759;132;1022
+3578122;RS Umum Tk. III Brawijaya;Jawa Timur;Kota Surabaya;Jl. Kesatrian No.17 Surabaya;Rumah Sakit Umum;C;Non BLU/BLUD;TNI AD;111;52;308
+3578625;RS Gigi dan Mulut FKG Universitas Airlangga;Jawa Timur;Kota Surabaya;Jl. Prof Dr. Moestopo 47 Surabaya;Rumah Sakit Khusus Gigi dan Mulut;B;Non BLU/BLUD;Kementerian Lain;16;14;280
+3578778;RS National Hospital;Jawa Timur;Kota Surabaya;Jl. Boulevard Famili Selatan kav. 1, Surabaya;Rumah Sakit Umum;B;Non BLU/BLUD;SWASTA/LAINNYA;200;96;384
+3578812;RS Ibu dan Anak Adi Guna;Jawa Timur;Kota Surabaya;Jl. Alun-alun Rangkah no. 1-3 kelurahan. Rangkah kecamatan. Tambaksari Kota Surabaya;Rumah Sakit Khusus Ibu dan Anak;C;Non BLU/BLUD;Perorangan;25;17;0
+3578786;RS Mata Masyarakat Jawa Timur;Jawa Timur;Kota Surabaya; JL. Ketintang Baru Selatan I No. 1 Surabaya;Rumah Sakit Khusus Mata;B;BLUD;Pemprop;32;34;254
+3578556;RS Premier Surabaya;Jawa Timur;Kota Surabaya;Jl. Nginden Intan Barat B;Rumah Sakit Umum;B;Non BLU/BLUD;SWASTA/LAINNYA;198;114;534
+3578811;RS Umum Pusat Surabaya;Jawa Timur;Kota Surabaya;Jl. Indrapura No. 17 Kemayoran;Rumah Sakit Umum;A;Non BLU/BLUD;Kemkes ;7;16;0
+3578042;RS Katolik St. Vincentius a Paulo;Jawa Timur;Kota Surabaya;Jl. Diponegoro 51 Surabaya;Rumah Sakit Umum;B;Non BLU/BLUD;Organisasi Katholik;249;122;1206
+3578166;RS Soemitro Lanud Moeljono Surabaya;Jawa Timur;Kota Surabaya;Jl.Serayu No. 17 Surabaya;Rumah Sakit Umum;D;Non BLU/BLUD;TNI AU;56;32;141
+3578742;RS Islam Darus Syifa;Jawa Timur;Kota Surabaya;Jl. Raya Benowo No.5,Surabaya;Rumah Sakit Umum;C;Non BLU/BLUD;Organisasi Sosial;145;57;311
+3578322;RS Umum Daerah Husada Prima;Jawa Timur;Kota Surabaya;Jl. Karang Tembok No. 39 Surabaya;Rumah Sakit Umum;C;BLUD;Pemprop;108;34;208
+3578772;RS Manyar Medical Centre;Jawa Timur;Kota Surabaya;Jl. Manyar No.9, Surabaya;Rumah Sakit Umum;C;Non BLU/BLUD;Perusahaan;103;48;323
+3578571;RS Umum Daerah dr. Mohamad Soewandhie;Jawa Timur;Kota Surabaya;Jl. Tambakrejo No. 45-47 Surabaya;Rumah Sakit Umum;B;BLUD;Pemkot;396;49;1247
+3578064;RS Adi Husada Undaan;Jawa Timur;Kota Surabaya;Jl. Undaan Wetan No. 40-44, Surabaya;Rumah Sakit Umum;B;Non BLU/BLUD;SWASTA/LAINNYA;196;95;818
+3578202;RS Mata Undaan;Jawa Timur;Kota Surabaya;Jl. Undaan Kulon 17-19 Surabaya;Rumah Sakit Khusus Mata;B;Non BLU/BLUD;Organisasi Sosial;48;26;266
+3578764;RS Bhayangkara TK II HS. Samsoeri Mertojoso;Jawa Timur;Kota Surabaya;Jl. A. Yani No. 116, Surabaya;Rumah Sakit Umum;B;Non BLU/BLUD;POLRI;205;79;332
+3578224;RS Umum Islam Surabaya Jemursari ;Jawa Timur;Kota Surabaya;Jl. Jemursari No 51-57, Surabaya;Rumah Sakit Umum;B;Non BLU/BLUD;SWASTA/LAINNYA;290;63;910
+3578767;RS Ibu dan Anak Cempaka Putih Permata;Jawa Timur;Kota Surabaya;Jl. Jambangan Kebon Agung No.8, Kec. Jambangan, Surabaya, Jawa Timur;Rumah Sakit Khusus Ibu dan Anak;C;Non BLU/BLUD;Perusahaan;27;31;65
+3578090;RS TNI AL Dr. Oepomo;Jawa Timur;Kota Surabaya;Jl. Laksda M.Nazir No.56 Surabaya;Rumah Sakit Umum;D;Non BLU/BLUD;TNI AL;51;21;105
+3578593;RS Ibu dan Anak Pura Raharja;Jawa Timur;Kota Surabaya;JL. PUCANG ADI NO.12-14;Rumah Sakit Khusus Ibu dan Anak;C;Non BLU/BLUD;Organisasi Sosial;72;19;175
+3578789;RS Ibu dan Anak Kendangsari Surabaya;Jawa Timur;Kota Surabaya;Jl. Raya Kendangsari No. 38 Surabaya;Rumah Sakit Khusus Ibu dan Anak;C;Non BLU/BLUD;SWASTA/LAINNYA;20;32;210
+3578235;RS Bunda ;Jawa Timur;Kota Surabaya;Jl. Raya Kandangan 23-24 Surabaya;Rumah Sakit Umum;D;Non BLU/BLUD;SWASTA/LAINNYA;50;23;140
+3578443;RS Umum Siloam Hospitals Surabaya;Jawa Timur;Kota Surabaya;Jl. Gubeng Raya 70 Surabaya;Rumah Sakit Umum;B;Non BLU/BLUD;SWASTA/LAINNYA;201;110;508
+3578770;RS Wijaya Surabaya;Jawa Timur;Kota Surabaya;Jl. Raya Menganti No.398 Wiyung Surabaya;Rumah Sakit Umum;D;Non BLU/BLUD;Organisasi Sosial;71;32;109
+3578016;RS Umum Daerah Dr. Soetomo;Jawa Timur;Kota Surabaya; Jl. Mayjend. Prof. Dr. Moestopo No. 6 - 8 Surabaya, Jawa Timur;Rumah Sakit Umum;A;BLUD;Pemprop;1311;155;7939
+3578111;RS Islam Surabaya;Jawa Timur;Kota Surabaya;Jl. Jend A Yani 2-4 Surabaya;Rumah Sakit Umum;B;Non BLU/BLUD;SWASTA/LAINNYA;253;113;667
+3578795;RS Ibu dan Anak Ferina;Jawa Timur;Kota Surabaya;Jl. Irian Barat No. 7-11 Surabaya;Rumah Sakit Khusus Ibu dan Anak;C;Non BLU/BLUD;Perusahaan;25;15;129
+3578614;RS Bhakti Rahayu;Jawa Timur;Kota Surabaya;Jl. Ketintang Madya I/16 Surabaya;Rumah Sakit Umum;C;Non BLU/BLUD;SWASTA/LAINNYA;101;32;233
+3578777;RS Universitas Airlangga ;Jawa Timur;Kota Surabaya;Jl. Dharmahusada Permai, Desa/Kelurahan Mulyorejo, Kec. Mulyorejo, Kota Surabaya, Provinsi Jawa Timur;Rumah Sakit Umum;B;Non BLU/BLUD;Kementerian Lain;399;99;873
+3578816;RS Ibu dan Anak Idaf Husada;Jawa Timur;Kota Surabaya;Jl. KO Wisata Bukit Mas II Blok RF no. 11, Blok F no. 10 - 11,  Lidah Wetan, Lakarsantri;Rumah Sakit Khusus Ibu dan Anak;C;Non BLU/BLUD;SWASTA/LAINNYA;18;28;0
+3578523;RS Umum Daerah Haji Provinsi Jawa Timur;Jawa Timur;Kota Surabaya; Jl. Manyar Kertoadi  Surabaya;Rumah Sakit Umum;B;BLUD;Pemprop;301;63;1176
+3578780;RS Orthopedi dan Traumatologi Surabaya;Jawa Timur;Kota Surabaya;EMERALD MANSION TX 10 CITRALAND, SURABAYA;Rumah Sakit Khusus Orthopedi;C;Non BLU/BLUD;Perusahaan;36;63;194
+3578773;RS Ibu dan Anak Bantuan 05.08.05 Surabaya;Jawa Timur;Kota Surabaya;Gubeng Pojok No.21 Surabaya;Rumah Sakit Khusus Ibu dan Anak;C;Non BLU/BLUD;TNI AD;64;19;66
+3578031;RS William Booth Surabaya;Jawa Timur;Kota Surabaya;Jl. Diponegoro 34, Surabaya;Rumah Sakit Umum;C;Non BLU/BLUD;Organisasi Protestan;100;77;316
+3578144;RS Marinir Ewa Pangalila Gunungsari;Jawa Timur;Kota Surabaya;Jl. Golf 1  No. 1 Surabaya;Rumah Sakit Umum;C;Non BLU/BLUD;TNI AL;114;36;184
+3578782;RS Surabaya Medical Service;Jawa Timur;Kota Surabaya;Jl. Kapuas No. 2 Kelurahan Keputran Kecamatan Tegalsari Kota Surabaya Propinsi Jawa Timur ;Rumah Sakit Umum;D;Non BLU/BLUD;Organisasi Sosial;52;14;82
+3578808;Mayapada Hospital Surabaya ;Jawa Timur;Kota Surabaya;Jl. Mayjend Sungkono No. 16-20 ;Rumah Sakit Umum;C;Non BLU/BLUD;SWASTA/LAINNYA;106;91;0
+3578731;RS Gigi dan Mulut Nala Husada;Jawa Timur;Kota Surabaya;JL ARIEF RAHMAN HAKIM NO 150 SURABAYA;Rumah Sakit Khusus Gigi dan Mulut;B;Non BLU/BLUD;Organisasi Sosial;12;17;109
+3578779;RS Ibu dan Anak Lombok Dua Dua;Jawa Timur;Kota Surabaya;Jl. Flores No. 12 Surabaya;Rumah Sakit Khusus Ibu dan Anak;C;Non BLU/BLUD;Perusahaan;41;21;70
+3578791;RS Ibu dan Anak Graha Medika;Jawa Timur;Kota Surabaya;Graha Sampurna Indah E-3,6,8,10,12,14,16,18,20,22 Surabaya;Rumah Sakit Khusus Ibu dan Anak;C;Non BLU/BLUD;Perusahaan;39;23;101
+3578560;RS Husada Utama Surabaya;Jawa Timur;Kota Surabaya;Jl. Prof. Dr. Moestopo 31-33-35 Surabaya;Rumah Sakit Umum;B;Non BLU/BLUD;SWASTA/LAINNYA;243;59;556
+3578053;RS Darmo;Jawa Timur;Kota Surabaya;Jl. Raya Darmo 90,Surabaya;Rumah Sakit Umum;C;Non BLU/BLUD;Organisasi Sosial;171;68;780
+3578192;RS Jiwa Menur;Jawa Timur;Kota Surabaya;Jl. Raya Menur No.120, Kertajaya, Kec. Gubeng, Surabaya, Jawa Timur 60282;Rumah Sakit Khusus Jiwa;A;BLUD;Pemprop;390;75;287
+3578753;RS Onkologi;Jawa Timur;Kota Surabaya;Jl. Arief Rahman Hakim No. 184 (Araya Galaxi Bumi Permai Blok A2 no. 5,6,7);Rumah Sakit Khusus Kanker;C;Non BLU/BLUD;SWASTA/LAINNYA;25;18;99
+3578213;RS Umum Daerah Bhakti Dharma Husada;Jawa Timur;Kota Surabaya;Jl. Raya Kendung No.115-117, Surabaya ;Rumah Sakit Umum;B;BLUD;Pemkot;207;37;390
+3578766;RS Wiyung Sejahtera;Jawa Timur;Kota Surabaya;Jl. Karangan PDAM 1-3 Wiyung Surabaya;Rumah Sakit Umum;C;Non BLU/BLUD;SWASTA/LAINNYA;130;71;267
+3578246;RS Muji Rahayu;Jawa Timur;Kota Surabaya;JL.RAYA MANUKAN WETAN 68-68 A Surabaya;Rumah Sakit Umum;D;Non BLU/BLUD;SWASTA/LAINNYA;59;21;157
+3578774;RS Ibu dan Anak Nur Ummi Numbi;Jawa Timur;Kota Surabaya;Jl. Manukan Tengah 51 J/ 4-6;Rumah Sakit Khusus Ibu dan Anak;C;Non BLU/BLUD;Perusahaan;40;16;49
+3578784;RS Ibu dan Anak Perdana Medica;Jawa Timur;Kota Surabaya;JL Kutisari No. 6 Surabaya;Rumah Sakit Khusus Ibu dan Anak;C;Non BLU/BLUD;Perusahaan;27;20;50
+3578785;RS Mitra Keluarga Kenjeran;Jawa Timur;Kota Surabaya;Jl. Kenjeran No. 506 Surabaya;Rumah Sakit Umum;C;Non BLU/BLUD;Perusahaan;110;41;294
+3578582;RS Umum  Mitra Keluarga Surabaya;Jawa Timur;Kota Surabaya;Jl. Satelit Indah II darmo satelit;Rumah Sakit Umum;B;Non BLU/BLUD;SWASTA/LAINNYA;202;48;446
+3578086;RS Primasatya Husada Citra (PHC) Surabaya;Jawa Timur;Kota Surabaya;Jl. Prapat Kurung Selatan no 1 Tanjung Perak Surabaya;Rumah Sakit Umum;B;Non BLU/BLUD;SWASTA/LAINNYA;226;110;651
