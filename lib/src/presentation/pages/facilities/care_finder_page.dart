@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:lung_care_mobile/src/core/theme/app_colors.dart';
 import 'package:lung_care_mobile/src/data/models/facility.dart';
 import 'package:lung_care_mobile/src/presentation/pages/facilities/facility_detail_page.dart';
@@ -13,912 +16,56 @@ class CareFinderPage extends StatefulWidget {
 }
 
 class _CareFinderPageState extends State<CareFinderPage> {
-  /// Current filter: null = all, 'Rumah Sakit' or 'Puskesmas'
+  /// Current filter: null = all, or a specific type string.
   String? _selectedFilter;
 
-  /// TB-relevant healthcare facilities in Surabaya.
-  /// RS data: Kaggle "Hospital Data in Indonesia" (Kemenkes RI) — curated for TB care.
-  /// Puskesmas: Dinkes Surabaya.
-  static const List<Facility> _allFacilities = [
-    // ─── RUMAH SAKIT TB-RELEVANT (23 RS) ───
-    // Sumber: Kaggle "Hospital Data in Indonesia" (Kemenkes RI)
-    // Dikurasi: RS Umum Kelas A/B + RS Paru → poliklinik paru & program DOTS TB
-    Facility(
-      type: 'Rumah Sakit',
-      name: 'RSUD Dr. Soetomo',
-      address: 'Jl. Mayjend Prof. Dr. Moestopo No. 6-8, Surabaya',
-      phone: '(031) 5501000',
-      hours: 'Buka 24 Jam',
-      hoursWeekday: '24 Jam',
-      hoursWeekend: '24 Jam',
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1587351021759-3772687fe598?w=600&h=400&fit=crop',
-    ),
-    Facility(
-      type: 'Rumah Sakit',
-      name: 'RSUP Surabaya',
-      address: 'Jl. Indrapura No. 17, Kemayoran, Surabaya',
-      phone: '(031) 3523545',
-      hours: 'Buka 24 Jam',
-      hoursWeekday: '24 Jam',
-      hoursWeekend: '24 Jam',
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=600&h=400&fit=crop',
-    ),
-    Facility(
-      type: 'Rumah Sakit',
-      name: 'RSPAL dr. Ramelan',
-      address: 'Jl. Gadung No. 1, Surabaya',
-      phone: '(031) 8414100',
-      hours: 'Buka 24 Jam',
-      hoursWeekday: '24 Jam',
-      hoursWeekend: '24 Jam',
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1551076805-e1869033e561?w=600&h=400&fit=crop',
-    ),
-    Facility(
-      type: 'Rumah Sakit',
-      name: 'RS Adi Husada Undaan',
-      address: 'Jl. Undaan Wetan No. 40-44, Surabaya',
-      phone: '(031) 5451700',
-      hours: 'Buka 24 Jam',
-      hoursWeekday: '24 Jam',
-      hoursWeekend: '24 Jam',
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=600&h=400&fit=crop',
-    ),
-    Facility(
-      type: 'Rumah Sakit',
-      name: 'RS Bhayangkara Samsoeri Mertojoso',
-      address: 'Jl. A. Yani No. 116, Surabaya',
-      phone: '(031) 8290870',
-      hours: 'Buka 24 Jam',
-      hoursWeekday: '24 Jam',
-      hoursWeekend: '24 Jam',
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=600&h=400&fit=crop',
-    ),
-    Facility(
-      type: 'Rumah Sakit',
-      name: 'RS Husada Utama Surabaya',
-      address: 'Jl. Prof. Dr. Moestopo No. 31-35, Surabaya',
-      phone: '-',
-      hours: 'Buka 24 Jam',
-      hoursWeekday: '24 Jam',
-      hoursWeekend: '24 Jam',
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=600&h=400&fit=crop',
-    ),
-    Facility(
-      type: 'Rumah Sakit',
-      name: 'RS Islam Surabaya',
-      address: 'Jl. Jend. A. Yani No. 2-4, Surabaya',
-      phone: '-',
-      hours: 'Buka 24 Jam',
-      hoursWeekday: '24 Jam',
-      hoursWeekend: '24 Jam',
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1584515933487-779824d29309?w=600&h=400&fit=crop',
-    ),
-    Facility(
-      type: 'Rumah Sakit',
-      name: 'RS St. Vincentius Paulo',
-      address: 'Jl. Diponegoro No. 51, Surabaya',
-      phone: '(031) 5681201',
-      hours: 'Buka 24 Jam',
-      hoursWeekday: '24 Jam',
-      hoursWeekend: '24 Jam',
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1579154204601-01588f6f1a1c?w=600&h=400&fit=crop',
-    ),
-    Facility(
-      type: 'Rumah Sakit',
-      name: 'RS National Hospital',
-      address: 'Jl. Boulevard Famili Selatan kav. 1, Surabaya',
-      phone: '(031) 2975777',
-      hours: 'Buka 24 Jam',
-      hoursWeekday: '24 Jam',
-      hoursWeekend: '24 Jam',
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1538108149393-fbbd81895907?w=600&h=400&fit=crop',
-    ),
-    Facility(
-      type: 'Rumah Sakit',
-      name: 'RS Premier Surabaya',
-      address: 'Jl. Nginden Intan Barat No. B, Surabaya',
-      phone: '(031) 5924500',
-      hours: 'Buka 24 Jam',
-      hoursWeekday: '24 Jam',
-      hoursWeekend: '24 Jam',
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1551601651-2a8555f1a29f?w=600&h=400&fit=crop',
-    ),
-    Facility(
-      type: 'Rumah Sakit',
-      name: 'RS PHC Surabaya',
-      address: 'Jl. Prapat Kurung Selatan No. 1, Tanjung Perak, Surabaya',
-      phone: '(031) 3294804',
-      hours: 'Buka 24 Jam',
-      hoursWeekday: '24 Jam',
-      hoursWeekend: '24 Jam',
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1587351021759-3772687fe598?w=600&h=400&fit=crop',
-    ),
-    Facility(
-      type: 'Rumah Sakit',
-      name: 'RS Ubaya',
-      address: 'Jl. Panjang Jiwo Permai No. 89, Surabaya',
-      phone: '-',
-      hours: 'Buka 24 Jam',
-      hoursWeekday: '24 Jam',
-      hoursWeekend: '24 Jam',
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=600&h=400&fit=crop',
-    ),
-    Facility(
-      type: 'Rumah Sakit',
-      name: 'RS Mitra Keluarga Surabaya',
-      address: 'Jl. Satelit Indah II, Darmo Satelit, Surabaya',
-      phone: '-',
-      hours: 'Buka 24 Jam',
-      hoursWeekday: '24 Jam',
-      hoursWeekend: '24 Jam',
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1551076805-e1869033e561?w=600&h=400&fit=crop',
-    ),
-    Facility(
-      type: 'Rumah Sakit',
-      name: 'RSUD Bhakti Dharma Husada',
-      address: 'Jl. Raya Kendung No. 115-117, Surabaya',
-      phone: '-',
-      hours: 'Buka 24 Jam',
-      hoursWeekday: '24 Jam',
-      hoursWeekend: '24 Jam',
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=600&h=400&fit=crop',
-    ),
-    Facility(
-      type: 'Rumah Sakit',
-      name: 'RS Haji Provinsi Jawa Timur',
-      address: 'Jl. Manyar Kertoadi, Surabaya',
-      phone: '(031) 5942475',
-      hours: 'Buka 24 Jam',
-      hoursWeekday: '24 Jam',
-      hoursWeekend: '24 Jam',
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=600&h=400&fit=crop',
-    ),
-    Facility(
-      type: 'Rumah Sakit',
-      name: 'RSUD Dr. Mohamad Soewandhie',
-      address: 'Jl. Tambakrejo No. 45-47, Surabaya',
-      phone: '(031) 3710525',
-      hours: 'Buka 24 Jam',
-      hoursWeekday: '24 Jam',
-      hoursWeekend: '24 Jam',
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=600&h=400&fit=crop',
-    ),
-    Facility(
-      type: 'Rumah Sakit',
-      name: 'RS Islam Surabaya Jemursari',
-      address: 'Jl. Jemursari No. 51-57, Surabaya',
-      phone: '(031) 8477000',
-      hours: 'Buka 24 Jam',
-      hoursWeekday: '24 Jam',
-      hoursWeekend: '24 Jam',
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1584515933487-779824d29309?w=600&h=400&fit=crop',
-    ),
-    Facility(
-      type: 'Rumah Sakit',
-      name: 'RS Royal Surabaya',
-      address: 'Jl. Rungkut Industri I/1, Surabaya',
-      phone: '-',
-      hours: 'Buka 24 Jam',
-      hoursWeekday: '24 Jam',
-      hoursWeekend: '24 Jam',
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1579154204601-01588f6f1a1c?w=600&h=400&fit=crop',
-    ),
-    Facility(
-      type: 'Rumah Sakit',
-      name: 'RS Siloam Hospitals Surabaya',
-      address: 'Jl. Gubeng Raya No. 70, Surabaya',
-      phone: '(031) 5005151',
-      hours: 'Buka 24 Jam',
-      hoursWeekday: '24 Jam',
-      hoursWeekend: '24 Jam',
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1538108149393-fbbd81895907?w=600&h=400&fit=crop',
-    ),
-    Facility(
-      type: 'Rumah Sakit',
-      name: 'RS Universitas Airlangga',
-      address: 'Jl. Dharmahusada Permai, Mulyorejo, Surabaya',
-      phone: '(031) 5916421',
-      hours: 'Buka 24 Jam',
-      hoursWeekday: '24 Jam',
-      hoursWeekend: '24 Jam',
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1551601651-2a8555f1a29f?w=600&h=400&fit=crop',
-    ),
-    Facility(
-      type: 'Rumah Sakit',
-      name: 'Mayapada Hospital Surabaya',
-      address: 'Jl. Mayjend Sungkono No. 16-20, Surabaya',
-      phone: '(031) 99336111',
-      hours: 'Buka 24 Jam',
-      hoursWeekday: '24 Jam',
-      hoursWeekend: '24 Jam',
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1587351021759-3772687fe598?w=600&h=400&fit=crop',
-    ),
-    Facility(
-      type: 'Rumah Sakit',
-      name: 'RS Darmo',
-      address: 'Jl. Raya Darmo No. 90, Surabaya',
-      phone: '(031) 5611234',
-      hours: 'Buka 24 Jam',
-      hoursWeekday: '24 Jam',
-      hoursWeekend: '24 Jam',
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=600&h=400&fit=crop',
-    ),
-    Facility(
-      type: 'Rumah Sakit',
-      name: 'RS Paru Surabaya',
-      address: 'Jl. Karang Tembok No. 39, Surabaya',
-      phone: '(031) 3713288',
-      hours: 'Buka 24 Jam',
-      hoursWeekday: '24 Jam',
-      hoursWeekend: '24 Jam',
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1587351021759-3772687fe598?w=600&h=400&fit=crop',
-    ),
-    // ─── PUSKESMAS (57 Puskesmas, 31 Kecamatan Surabaya) ───
-    // Sumber: Dinas Kesehatan Kota Surabaya (knowledge-based compilation)
-    Facility(
-      type: 'Puskesmas',
-      name: 'Puskesmas Asemrowo',
-      address: 'Jl. Asemrowo No. 1, Asemrowo, Surabaya',
-      phone: '-',
-      hours: 'Buka - Tutup jam 14:00',
-      hoursWeekday: '08:00 - 14:00',
-      hoursWeekend: null,
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=600&h=400&fit=crop',
-    ),
-    Facility(
-      type: 'Puskesmas',
-      name: 'Puskesmas Benowo',
-      address: 'Jl. Raya Benowo No. 5, Benowo, Surabaya',
-      phone: '-',
-      hours: 'Buka - Tutup jam 14:00',
-      hoursWeekday: '08:00 - 14:00',
-      hoursWeekend: null,
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600&h=400&fit=crop',
-    ),
-    Facility(
-      type: 'Puskesmas',
-      name: 'Puskesmas Sememi',
-      address: 'Jl. Raya Sememi No. 10, Sememi, Benowo, Surabaya',
-      phone: '-',
-      hours: 'Buka - Tutup jam 14:00',
-      hoursWeekday: '08:00 - 14:00',
-      hoursWeekend: null,
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1538108149393-fbbd81895907?w=600&h=400&fit=crop',
-    ),
-    Facility(
-      type: 'Puskesmas',
-      name: 'Puskesmas Bubutan',
-      address: 'Jl. Bubutan No. 25, Bubutan, Surabaya',
-      phone: '-',
-      hours: 'Buka - Tutup jam 14:00',
-      hoursWeekday: '08:00 - 14:00',
-      hoursWeekend: null,
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=600&h=400&fit=crop',
-    ),
-    Facility(
-      type: 'Puskesmas',
-      name: 'Puskesmas Alun-Alun Contong',
-      address: 'Jl. Alun-Alun Contong No. 12, Bubutan, Surabaya',
-      phone: '-',
-      hours: 'Buka - Tutup jam 14:00',
-      hoursWeekday: '08:00 - 14:00',
-      hoursWeekend: null,
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600&h=400&fit=crop',
-    ),
-    Facility(
-      type: 'Puskesmas',
-      name: 'Puskesmas Bulak',
-      address: 'Jl. Kyai Tambak Deres No. 1, Bulak, Surabaya',
-      phone: '-',
-      hours: 'Buka - Tutup jam 14:00',
-      hoursWeekday: '08:00 - 14:00',
-      hoursWeekend: null,
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1538108149393-fbbd81895907?w=600&h=400&fit=crop',
-    ),
-    Facility(
-      type: 'Puskesmas',
-      name: 'Puskesmas Dukuh Pakis',
-      address: 'Jl. Dukuh Pakis No. 15, Dukuh Pakis, Surabaya',
-      phone: '-',
-      hours: 'Buka - Tutup jam 14:00',
-      hoursWeekday: '08:00 - 14:00',
-      hoursWeekend: null,
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=600&h=400&fit=crop',
-    ),
-    Facility(
-      type: 'Puskesmas',
-      name: 'Puskesmas Gayungan',
-      address: 'Jl. Gayungan No. 20, Gayungan, Surabaya',
-      phone: '-',
-      hours: 'Buka - Tutup jam 14:00',
-      hoursWeekday: '08:00 - 14:00',
-      hoursWeekend: null,
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600&h=400&fit=crop',
-    ),
-    Facility(
-      type: 'Puskesmas',
-      name: 'Puskesmas Gayung Kebonsari',
-      address: 'Jl. Gayung Kebonsari No. 5, Gayungan, Surabaya',
-      phone: '-',
-      hours: 'Buka - Tutup jam 14:00',
-      hoursWeekday: '08:00 - 14:00',
-      hoursWeekend: null,
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1538108149393-fbbd81895907?w=600&h=400&fit=crop',
-    ),
-    Facility(
-      type: 'Puskesmas',
-      name: 'Puskesmas Genteng',
-      address: 'Jl. Genteng Besar No. 30, Genteng, Surabaya',
-      phone: '-',
-      hours: 'Buka - Tutup jam 14:00',
-      hoursWeekday: '08:00 - 14:00',
-      hoursWeekend: null,
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=600&h=400&fit=crop',
-    ),
-    Facility(
-      type: 'Puskesmas',
-      name: 'Puskesmas Ketabang',
-      address: 'Jl. Ketabang Kali No. 5, Ketabang, Genteng, Surabaya',
-      phone: '(031) 5341090',
-      hours: 'Buka - Tutup jam 14:00',
-      hoursWeekday: '08:00 - 14:00',
-      hoursWeekend: null,
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600&h=400&fit=crop',
-    ),
-    Facility(
-      type: 'Puskesmas',
-      name: 'Puskesmas Gubeng',
-      address: 'Jl. Gubeng Kertajaya No. 12, Gubeng, Surabaya',
-      phone: '-',
-      hours: 'Buka - Tutup jam 14:00',
-      hoursWeekday: '08:00 - 14:00',
-      hoursWeekend: null,
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1538108149393-fbbd81895907?w=600&h=400&fit=crop',
-    ),
-    Facility(
-      type: 'Puskesmas',
-      name: 'Puskesmas Mojo',
-      address: 'Jl. Mojo No. 8, Mojo, Gubeng, Surabaya',
-      phone: '-',
-      hours: 'Buka - Tutup jam 14:00',
-      hoursWeekday: '08:00 - 14:00',
-      hoursWeekend: null,
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=600&h=400&fit=crop',
-    ),
-    Facility(
-      type: 'Puskesmas',
-      name: 'Puskesmas Gunung Anyar',
-      address: 'Jl. Gunung Anyar Lor No. 1, Gunung Anyar, Surabaya',
-      phone: '(031) 3812505',
-      hours: 'Buka - Tutup jam 14:00',
-      hoursWeekday: '08:00 - 14:00',
-      hoursWeekend: null,
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600&h=400&fit=crop',
-    ),
-    Facility(
-      type: 'Puskesmas',
-      name: 'Puskesmas Jambangan',
-      address: 'Jl. Jambangan No. 10, Jambangan, Surabaya',
-      phone: '-',
-      hours: 'Buka - Tutup jam 14:00',
-      hoursWeekday: '08:00 - 14:00',
-      hoursWeekend: null,
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1538108149393-fbbd81895907?w=600&h=400&fit=crop',
-    ),
-    Facility(
-      type: 'Puskesmas',
-      name: 'Puskesmas Kebonsari',
-      address: 'Jl. Kebonsari No. 5, Jambangan, Surabaya',
-      phone: '-',
-      hours: 'Buka - Tutup jam 14:00',
-      hoursWeekday: '08:00 - 14:00',
-      hoursWeekend: null,
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=600&h=400&fit=crop',
-    ),
-    Facility(
-      type: 'Puskesmas',
-      name: 'Puskesmas Karangpilang',
-      address: 'Jl. Karangpilang No. 22, Karangpilang, Surabaya',
-      phone: '-',
-      hours: 'Buka - Tutup jam 14:00',
-      hoursWeekday: '08:00 - 14:00',
-      hoursWeekend: null,
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600&h=400&fit=crop',
-    ),
-    Facility(
-      type: 'Puskesmas',
-      name: 'Puskesmas Kedurus',
-      address: 'Jl. Kedurus No. 30, Kedurus, Karangpilang, Surabaya',
-      phone: '(031) 7662105',
-      hours: 'Buka - Tutup jam 14:00',
-      hoursWeekday: '08:00 - 14:00',
-      hoursWeekend: null,
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1538108149393-fbbd81895907?w=600&h=400&fit=crop',
-    ),
-    Facility(
-      type: 'Puskesmas',
-      name: 'Puskesmas Kenjeran',
-      address: 'Jl. Kenjeran No. 250, Kenjeran, Surabaya',
-      phone: '-',
-      hours: 'Buka - Tutup jam 14:00',
-      hoursWeekday: '08:00 - 14:00',
-      hoursWeekend: null,
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=600&h=400&fit=crop',
-    ),
-    Facility(
-      type: 'Puskesmas',
-      name: 'Puskesmas Tanah Kali Kedinding',
-      address: 'Jl. Tanah Kali Kedinding No. 15, Kenjeran, Surabaya',
-      phone: '-',
-      hours: 'Buka - Tutup jam 14:00',
-      hoursWeekday: '08:00 - 14:00',
-      hoursWeekend: null,
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600&h=400&fit=crop',
-    ),
-    Facility(
-      type: 'Puskesmas',
-      name: 'Puskesmas Krembangan',
-      address: 'Jl. Krembangan No. 40, Krembangan, Surabaya',
-      phone: '-',
-      hours: 'Buka - Tutup jam 14:00',
-      hoursWeekday: '08:00 - 14:00',
-      hoursWeekend: null,
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1538108149393-fbbd81895907?w=600&h=400&fit=crop',
-    ),
-    Facility(
-      type: 'Puskesmas',
-      name: 'Puskesmas Dupak',
-      address: 'Jl. Dupak No. 8, Dupak, Krembangan, Surabaya',
-      phone: '-',
-      hours: 'Buka - Tutup jam 14:00',
-      hoursWeekday: '08:00 - 14:00',
-      hoursWeekend: null,
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=600&h=400&fit=crop',
-    ),
-    Facility(
-      type: 'Puskesmas',
-      name: 'Puskesmas Lakarsantri',
-      address: 'Jl. Raya Lakarsantri No. 30, Lakarsantri, Surabaya',
-      phone: '-',
-      hours: 'Buka - Tutup jam 14:00',
-      hoursWeekday: '08:00 - 14:00',
-      hoursWeekend: null,
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600&h=400&fit=crop',
-    ),
-    Facility(
-      type: 'Puskesmas',
-      name: 'Puskesmas Lidah Kulon',
-      address: 'Jl. Lidah Kulon No. 12, Lakarsantri, Surabaya',
-      phone: '-',
-      hours: 'Buka - Tutup jam 14:00',
-      hoursWeekday: '08:00 - 14:00',
-      hoursWeekend: null,
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1538108149393-fbbd81895907?w=600&h=400&fit=crop',
-    ),
-    Facility(
-      type: 'Puskesmas',
-      name: 'Puskesmas Mulyorejo',
-      address: 'Jl. Mulyorejo No. 1, Mulyorejo, Surabaya',
-      phone: '(031) 5942635',
-      hours: 'Buka - Tutup jam 14:00',
-      hoursWeekday: '08:00 - 14:00',
-      hoursWeekend: null,
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=600&h=400&fit=crop',
-    ),
-    Facility(
-      type: 'Puskesmas',
-      name: 'Puskesmas Kalijudan',
-      address: 'Jl. Kalijudan No. 25, Mulyorejo, Surabaya',
-      phone: '-',
-      hours: 'Buka - Tutup jam 14:00',
-      hoursWeekday: '08:00 - 14:00',
-      hoursWeekend: null,
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600&h=400&fit=crop',
-    ),
-    Facility(
-      type: 'Puskesmas',
-      name: 'Puskesmas Pabean Cantian',
-      address: 'Jl. Pabean Cantian No. 18, Pabean Cantian, Surabaya',
-      phone: '-',
-      hours: 'Buka - Tutup jam 14:00',
-      hoursWeekday: '08:00 - 14:00',
-      hoursWeekend: null,
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1538108149393-fbbd81895907?w=600&h=400&fit=crop',
-    ),
-    Facility(
-      type: 'Puskesmas',
-      name: 'Puskesmas Perak Timur',
-      address: 'Jl. Perak Timur No. 10, Pabean Cantian, Surabaya',
-      phone: '-',
-      hours: 'Buka - Tutup jam 14:00',
-      hoursWeekday: '08:00 - 14:00',
-      hoursWeekend: null,
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=600&h=400&fit=crop',
-    ),
-    Facility(
-      type: 'Puskesmas',
-      name: 'Puskesmas Pakal',
-      address: 'Jl. Raya Pakal No. 20, Pakal, Surabaya',
-      phone: '-',
-      hours: 'Buka - Tutup jam 14:00',
-      hoursWeekday: '08:00 - 14:00',
-      hoursWeekend: null,
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600&h=400&fit=crop',
-    ),
-    Facility(
-      type: 'Puskesmas',
-      name: 'Puskesmas Rungkut',
-      address: 'Jl. Rungkut Asri No. 15, Rungkut, Surabaya',
-      phone: '-',
-      hours: 'Buka - Tutup jam 14:00',
-      hoursWeekday: '08:00 - 14:00',
-      hoursWeekend: null,
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1538108149393-fbbd81895907?w=600&h=400&fit=crop',
-    ),
-    Facility(
-      type: 'Puskesmas',
-      name: 'Puskesmas Medokan Ayu',
-      address: 'Jl. Medokan Ayu No. 8, Rungkut, Surabaya',
-      phone: '-',
-      hours: 'Buka - Tutup jam 14:00',
-      hoursWeekday: '08:00 - 14:00',
-      hoursWeekend: null,
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=600&h=400&fit=crop',
-    ),
-    Facility(
-      type: 'Puskesmas',
-      name: 'Puskesmas Sambikerep',
-      address: 'Jl. Raya Sambikerep No. 25, Sambikerep, Surabaya',
-      phone: '-',
-      hours: 'Buka - Tutup jam 14:00',
-      hoursWeekday: '08:00 - 14:00',
-      hoursWeekend: null,
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600&h=400&fit=crop',
-    ),
-    Facility(
-      type: 'Puskesmas',
-      name: 'Puskesmas Made',
-      address: 'Jl. Made No. 5, Sambikerep, Surabaya',
-      phone: '-',
-      hours: 'Buka - Tutup jam 14:00',
-      hoursWeekday: '08:00 - 14:00',
-      hoursWeekend: null,
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1538108149393-fbbd81895907?w=600&h=400&fit=crop',
-    ),
-    Facility(
-      type: 'Puskesmas',
-      name: 'Puskesmas Sawahan',
-      address: 'Jl. Sawahan No. 12, Sawahan, Surabaya',
-      phone: '-',
-      hours: 'Buka - Tutup jam 14:00',
-      hoursWeekday: '08:00 - 14:00',
-      hoursWeekend: null,
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=600&h=400&fit=crop',
-    ),
-    Facility(
-      type: 'Puskesmas',
-      name: 'Puskesmas Putat Jaya',
-      address: 'Jl. Putat Jaya No. 8, Sawahan, Surabaya',
-      phone: '-',
-      hours: 'Buka - Tutup jam 14:00',
-      hoursWeekday: '08:00 - 14:00',
-      hoursWeekend: null,
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600&h=400&fit=crop',
-    ),
-    Facility(
-      type: 'Puskesmas',
-      name: 'Puskesmas Semampir',
-      address: 'Jl. Semampir No. 15, Semampir, Surabaya',
-      phone: '-',
-      hours: 'Buka - Tutup jam 14:00',
-      hoursWeekday: '08:00 - 14:00',
-      hoursWeekend: null,
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1538108149393-fbbd81895907?w=600&h=400&fit=crop',
-    ),
-    Facility(
-      type: 'Puskesmas',
-      name: 'Puskesmas Sidotopo',
-      address: 'Jl. Sidotopo No. 10, Semampir, Surabaya',
-      phone: '-',
-      hours: 'Buka - Tutup jam 14:00',
-      hoursWeekday: '08:00 - 14:00',
-      hoursWeekend: null,
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=600&h=400&fit=crop',
-    ),
-    Facility(
-      type: 'Puskesmas',
-      name: 'Puskesmas Simokerto',
-      address: 'Jl. Simokerto No. 8, Simokerto, Surabaya',
-      phone: '-',
-      hours: 'Buka - Tutup jam 14:00',
-      hoursWeekday: '08:00 - 14:00',
-      hoursWeekend: null,
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600&h=400&fit=crop',
-    ),
-    Facility(
-      type: 'Puskesmas',
-      name: 'Puskesmas Tambakrejo',
-      address: 'Jl. Tambak Rejo No. 1, Tambakrejo, Simokerto, Surabaya',
-      phone: '(031) 3713309',
-      hours: 'Buka - Tutup jam 14:00',
-      hoursWeekday: '08:00 - 14:00',
-      hoursWeekend: null,
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1538108149393-fbbd81895907?w=600&h=400&fit=crop',
-    ),
-    Facility(
-      type: 'Puskesmas',
-      name: 'Puskesmas Sukolilo',
-      address: 'Jl. Sukolilo Lor No. 2, Sukolilo, Surabaya',
-      phone: '(031) 5946420',
-      hours: 'Buka - Tutup jam 14:00',
-      hoursWeekday: '08:00 - 14:00',
-      hoursWeekend: null,
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=600&h=400&fit=crop',
-    ),
-    Facility(
-      type: 'Puskesmas',
-      name: 'Puskesmas Gebang Putih',
-      address: 'Jl. Gebang Putih No. 12, Sukolilo, Surabaya',
-      phone: '-',
-      hours: 'Buka - Tutup jam 14:00',
-      hoursWeekday: '08:00 - 14:00',
-      hoursWeekend: null,
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600&h=400&fit=crop',
-    ),
-    Facility(
-      type: 'Puskesmas',
-      name: 'Puskesmas Sukomanunggal',
-      address: 'Jl. Raya Sukomanunggal No. 18, Sukomanunggal, Surabaya',
-      phone: '-',
-      hours: 'Buka - Tutup jam 14:00',
-      hoursWeekday: '08:00 - 14:00',
-      hoursWeekend: null,
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1538108149393-fbbd81895907?w=600&h=400&fit=crop',
-    ),
-    Facility(
-      type: 'Puskesmas',
-      name: 'Puskesmas Tanjungsari',
-      address: 'Jl. Tanjungsari No. 5, Sukomanunggal, Surabaya',
-      phone: '-',
-      hours: 'Buka - Tutup jam 14:00',
-      hoursWeekday: '08:00 - 14:00',
-      hoursWeekend: null,
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=600&h=400&fit=crop',
-    ),
-    Facility(
-      type: 'Puskesmas',
-      name: 'Puskesmas Tambaksari',
-      address: 'Jl. Tambaksari No. 20, Tambaksari, Surabaya',
-      phone: '-',
-      hours: 'Buka - Tutup jam 14:00',
-      hoursWeekday: '08:00 - 14:00',
-      hoursWeekend: null,
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600&h=400&fit=crop',
-    ),
-    Facility(
-      type: 'Puskesmas',
-      name: 'Puskesmas Rangkah',
-      address: 'Jl. Rangkah No. 10, Tambaksari, Surabaya',
-      phone: '-',
-      hours: 'Buka - Tutup jam 14:00',
-      hoursWeekday: '08:00 - 14:00',
-      hoursWeekend: null,
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1538108149393-fbbd81895907?w=600&h=400&fit=crop',
-    ),
-    Facility(
-      type: 'Puskesmas',
-      name: 'Puskesmas Tandes',
-      address: 'Jl. Raya Tandes No. 22, Tandes, Surabaya',
-      phone: '-',
-      hours: 'Buka - Tutup jam 14:00',
-      hoursWeekday: '08:00 - 14:00',
-      hoursWeekend: null,
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=600&h=400&fit=crop',
-    ),
-    Facility(
-      type: 'Puskesmas',
-      name: 'Puskesmas Balongsari',
-      address: 'Jl. Balongsari No. 1, Balongsari, Tandes, Surabaya',
-      phone: '(031) 7401159',
-      hours: 'Buka - Tutup jam 14:00',
-      hoursWeekday: '08:00 - 14:00',
-      hoursWeekend: null,
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600&h=400&fit=crop',
-    ),
-    Facility(
-      type: 'Puskesmas',
-      name: 'Puskesmas Tegalsari',
-      address: 'Jl. Tegalsari No. 15, Tegalsari, Surabaya',
-      phone: '-',
-      hours: 'Buka - Tutup jam 14:00',
-      hoursWeekday: '08:00 - 14:00',
-      hoursWeekend: null,
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1538108149393-fbbd81895907?w=600&h=400&fit=crop',
-    ),
-    Facility(
-      type: 'Puskesmas',
-      name: 'Puskesmas Putat',
-      address: 'Jl. Putat No. 8, Tegalsari, Surabaya',
-      phone: '-',
-      hours: 'Buka - Tutup jam 14:00',
-      hoursWeekday: '08:00 - 14:00',
-      hoursWeekend: null,
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=600&h=400&fit=crop',
-    ),
-    Facility(
-      type: 'Puskesmas',
-      name: 'Puskesmas Tenggilis',
-      address: 'Jl. Tenggilis No. 12, Tenggilis Mejoyo, Surabaya',
-      phone: '-',
-      hours: 'Buka - Tutup jam 14:00',
-      hoursWeekday: '08:00 - 14:00',
-      hoursWeekend: null,
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600&h=400&fit=crop',
-    ),
-    Facility(
-      type: 'Puskesmas',
-      name: 'Puskesmas Panjang Jiwo',
-      address: 'Jl. Panjang Jiwo No. 5, Tenggilis Mejoyo, Surabaya',
-      phone: '-',
-      hours: 'Buka - Tutup jam 14:00',
-      hoursWeekday: '08:00 - 14:00',
-      hoursWeekend: null,
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1538108149393-fbbd81895907?w=600&h=400&fit=crop',
-    ),
-    Facility(
-      type: 'Puskesmas',
-      name: 'Puskesmas Wiyung',
-      address: 'Jl. Raya Wiyung No. 20, Wiyung, Surabaya',
-      phone: '-',
-      hours: 'Buka - Tutup jam 14:00',
-      hoursWeekday: '08:00 - 14:00',
-      hoursWeekend: null,
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=600&h=400&fit=crop',
-    ),
-    Facility(
-      type: 'Puskesmas',
-      name: 'Puskesmas Babatan',
-      address: 'Jl. Babatan No. 8, Wiyung, Surabaya',
-      phone: '-',
-      hours: 'Buka - Tutup jam 14:00',
-      hoursWeekday: '08:00 - 14:00',
-      hoursWeekend: null,
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600&h=400&fit=crop',
-    ),
-    Facility(
-      type: 'Puskesmas',
-      name: 'Puskesmas Wonocolo',
-      address: 'Jl. Wonocolo No. 15, Wonocolo, Surabaya',
-      phone: '-',
-      hours: 'Buka - Tutup jam 14:00',
-      hoursWeekday: '08:00 - 14:00',
-      hoursWeekend: null,
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1538108149393-fbbd81895907?w=600&h=400&fit=crop',
-    ),
-    Facility(
-      type: 'Puskesmas',
-      name: 'Puskesmas Sidosermo',
-      address: 'Jl. Sidosermo No. 10, Wonocolo, Surabaya',
-      phone: '-',
-      hours: 'Buka - Tutup jam 14:00',
-      hoursWeekday: '08:00 - 14:00',
-      hoursWeekend: null,
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=600&h=400&fit=crop',
-    ),
-    Facility(
-      type: 'Puskesmas',
-      name: 'Puskesmas Wonokromo',
-      address: 'Jl. Wonokromo No. 18, Wonokromo, Surabaya',
-      phone: '-',
-      hours: 'Buka - Tutup jam 14:00',
-      hoursWeekday: '08:00 - 14:00',
-      hoursWeekend: null,
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600&h=400&fit=crop',
-    ),
-    Facility(
-      type: 'Puskesmas',
-      name: 'Puskesmas Jagir',
-      address: 'Jl. Jagir Sidomukti No. 1, Jagir, Wonokromo, Surabaya',
-      phone: '(031) 8413357',
-      hours: 'Buka - Tutup jam 14:00',
-      hoursWeekday: '08:00 - 14:00',
-      hoursWeekend: null,
-      hasTbcService: true,
-      coverImageUrl: 'https://images.unsplash.com/photo-1538108149393-fbbd81895907?w=600&h=400&fit=crop',
-    ),
-  ];
+  /// All facilities loaded from JSON asset.
+  List<Facility> _allFacilities = [];
+
+  /// Whether data is still loading.
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadFacilities();
+  }
+
+  Future<void> _loadFacilities() async {
+    final jsonString =
+        await rootBundle.loadString('assets/data/hospitals.json');
+    final List<dynamic> jsonList = json.decode(jsonString) as List<dynamic>;
+
+    final facilities = jsonList
+        .map((e) => Facility.fromJson(e as Map<String, dynamic>))
+        .toList();
+
+    if (mounted) {
+      setState(() {
+        _allFacilities = facilities;
+        _isLoading = false;
+      });
+    }
+  }
 
   List<Facility> get _filteredFacilities {
     if (_selectedFilter == null) return _allFacilities;
     return _allFacilities.where((f) => f.type == _selectedFilter).toList();
   }
 
-  int get _totalCount => _allFacilities.length;
-  int get _rsCount => _allFacilities.where((f) => f.type == 'Rumah Sakit').length;
-  int get _puskesmasCount => _allFacilities.where((f) => f.type == 'Puskesmas').length;
+  /// Get unique type values and their counts for filter chips.
+  Map<String, int> get _typeCounts {
+    final counts = <String, int>{};
+    for (final f in _allFacilities) {
+      counts[f.type] = (counts[f.type] ?? 0) + 1;
+    }
+    return counts;
+  }
 
   @override
   Widget build(BuildContext context) {
     final filtered = _filteredFacilities;
+    final typeCounts = _typeCounts;
 
     return Scaffold(
       backgroundColor: AppColors.bodyColor,
@@ -949,69 +96,77 @@ class _CareFinderPageState extends State<CareFinderPage> {
           ],
         ),
       ),
-      body: ListView(
-        padding: const EdgeInsets.fromLTRB(20, 20, 20, 28),
-        children: [
-          const Text(
-            'Fasilitas Kesehatan',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.w800,
-              color: AppColors.black,
+      body: _isLoading
+          ? const Center(
+              child: CircularProgressIndicator(
+                color: AppColors.primary,
+              ),
+            )
+          : ListView(
+              padding: const EdgeInsets.fromLTRB(20, 20, 20, 28),
+              children: [
+                const Text(
+                  'Fasilitas Kesehatan',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w800,
+                    color: AppColors.black,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'Daftar ${_allFacilities.length} rumah sakit di Surabaya.',
+                  style:
+                      const TextStyle(fontSize: 14, color: AppColors.nautral),
+                ),
+                const SizedBox(height: 18),
+                // Type filter chips — scrollable
+                _FilterRow(
+                  selectedFilter: _selectedFilter,
+                  totalCount: _allFacilities.length,
+                  typeCounts: typeCounts,
+                  onFilter: (filter) {
+                    setState(() => _selectedFilter = filter);
+                  },
+                ),
+                const SizedBox(height: 12),
+                // Results count
+                Text(
+                  '${filtered.length} fasilitas${_selectedFilter != null ? ' ($_selectedFilter)' : ''}',
+                  style: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.nautral,
+                  ),
+                ),
+                const SizedBox(height: 14),
+                ...filtered.map((f) => FacilityCard(facility: f)),
+              ],
             ),
-          ),
-          const SizedBox(height: 4),
-          const Text(
-            'Daftar puskesmas dan rumah sakit TB-relevan di Surabaya.',
-            style: TextStyle(fontSize: 14, color: AppColors.nautral),
-          ),
-          const SizedBox(height: 18),
-          // Type filter chips — tappable now!
-          _FilterRow(
-            selectedFilter: _selectedFilter,
-            totalCount: _totalCount,
-            rsCount: _rsCount,
-            puskesmasCount: _puskesmasCount,
-            onFilter: (filter) {
-              setState(() => _selectedFilter = filter);
-            },
-          ),
-          const SizedBox(height: 12),
-          // Results count
-          Text(
-            '${filtered.length} fasilitas${_selectedFilter != null ? ' ${_selectedFilter!.toLowerCase()}' : ''}',
-            style: const TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
-              color: AppColors.nautral,
-            ),
-          ),
-          const SizedBox(height: 14),
-          ...filtered.map((f) => FacilityCard(facility: f)),
-        ],
-      ),
     );
   }
 }
 
-/// Filter chips for Semua / Rumah Sakit / Puskesmas
+/// Filter chips for all types + Semua
 class _FilterRow extends StatelessWidget {
   const _FilterRow({
     required this.selectedFilter,
     required this.totalCount,
-    required this.rsCount,
-    required this.puskesmasCount,
+    required this.typeCounts,
     required this.onFilter,
   });
 
   final String? selectedFilter;
   final int totalCount;
-  final int rsCount;
-  final int puskesmasCount;
+  final Map<String, int> typeCounts;
   final void Function(String?) onFilter;
 
   @override
   Widget build(BuildContext context) {
+    // Sort types so the most common ones appear first
+    final sortedTypes = typeCounts.entries.toList()
+      ..sort((a, b) => b.value.compareTo(a.value));
+
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
@@ -1022,17 +177,14 @@ class _FilterRow extends StatelessWidget {
             onTap: () => onFilter(null),
           ),
           const SizedBox(width: 10),
-          _Chip(
-            label: 'Rumah Sakit ($rsCount)',
-            selected: selectedFilter == 'Rumah Sakit',
-            onTap: () => onFilter('Rumah Sakit'),
-          ),
-          const SizedBox(width: 10),
-          _Chip(
-            label: 'Puskesmas ($puskesmasCount)',
-            selected: selectedFilter == 'Puskesmas',
-            onTap: () => onFilter('Puskesmas'),
-          ),
+          ...sortedTypes.map((entry) => Padding(
+                padding: const EdgeInsets.only(right: 10),
+                child: _Chip(
+                  label: '${entry.key} (${entry.value})',
+                  selected: selectedFilter == entry.key,
+                  onTap: () => onFilter(entry.key),
+                ),
+              )),
         ],
       ),
     );
@@ -1077,13 +229,12 @@ class _Chip extends StatelessWidget {
 }
 
 class FacilityCard extends StatelessWidget {
-  const FacilityCard({required this.facility});
+  const FacilityCard({super.key, required this.facility});
 
   final Facility facility;
 
   @override
   Widget build(BuildContext context) {
-    final isPuskesmas = facility.type == 'Puskesmas';
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(16),
@@ -1098,28 +249,30 @@ class FacilityCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                decoration: BoxDecoration(
-                  color: isPuskesmas
-                      ? AppColors.ternary
-                      : const Color(0xFFFADCDC),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Text(
-                  facility.type,
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    color: isPuskesmas
-                        ? AppColors.primary
-                        : const Color(0xFFD05A5A),
+              Flexible(
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFFADCDC),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    facility.type,
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: Color(0xFFD05A5A),
+                    ),
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
               ),
+              const SizedBox(width: 8),
               Row(
                 children: [
-                  const Icon(Icons.access_time, size: 14, color: AppColors.primary),
+                  const Icon(Icons.access_time,
+                      size: 14, color: AppColors.primary),
                   const SizedBox(width: 4),
                   Text(
                     facility.hours,
@@ -1146,13 +299,37 @@ class FacilityCard extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Icon(Icons.location_on_outlined, size: 16, color: AppColors.nautral),
+              const Icon(Icons.location_on_outlined,
+                  size: 16, color: AppColors.nautral),
               const SizedBox(width: 4),
               Expanded(
                 child: Text(
                   facility.address,
-                  style: const TextStyle(fontSize: 13, color: AppColors.nautral),
+                  style:
+                      const TextStyle(fontSize: 13, color: AppColors.nautral),
                 ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          // Rating & review count
+          Row(
+            children: [
+              const Icon(Icons.star_rounded, size: 16, color: Color(0xFFF5C842)),
+              const SizedBox(width: 4),
+              Text(
+                '${facility.rating}',
+                style: const TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.black,
+                ),
+              ),
+              const SizedBox(width: 4),
+              Text(
+                '(${facility.reviewCount} ulasan)',
+                style:
+                    const TextStyle(fontSize: 12, color: AppColors.nautral),
               ),
             ],
           ),
@@ -1169,14 +346,15 @@ class FacilityCard extends StatelessWidget {
                 backgroundColor: const Color(0xFF5B9BE8),
                 foregroundColor: Colors.white,
                 elevation: 0,
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
               ),
               icon: const Icon(Icons.navigation_outlined, size: 16),
               label: const Text(
-                'Directions',
+                'Detail',
                 style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
               ),
             ),

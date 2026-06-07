@@ -10,12 +10,19 @@ class FacilityDetailPage extends StatelessWidget {
   final Facility facility;
 
   String get _googleMapsUrl =>
+      facility.googleMapsUrl ??
       'https://www.google.com/maps/search/?api=1&query=${Uri.encodeQueryComponent(facility.address)}';
 
-  Future<void> _openGoogleMaps() async {
-    final uri = Uri.parse(_googleMapsUrl);
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(uri);
+  Future<void> _openGoogleMaps(BuildContext context) async {
+    try {
+      final uri = Uri.parse(_googleMapsUrl);
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    } catch (_) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Tidak dapat membuka Google Maps')),
+        );
+      }
     }
   }
 
@@ -35,6 +42,27 @@ class FacilityDetailPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // Rating & reviews
+                Row(
+                  children: [
+                    const Icon(Icons.star_rounded, size: 20, color: Color(0xFFF5C842)),
+                    const SizedBox(width: 4),
+                    Text(
+                      '${facility.rating}',
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.black,
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      '(${facility.reviewCount} ulasan)',
+                      style: const TextStyle(fontSize: 14, color: AppColors.nautral),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 18),
                 if (facility.hasTbcService) ...[
                   const _TbcServiceCard(),
                   const SizedBox(height: 22),
@@ -72,6 +100,10 @@ class FacilityDetailPage extends StatelessWidget {
                 const _SectionLabel('KONTAK'),
                 const SizedBox(height: 10),
                 _ContactCard(phone: facility.phone),
+                if (facility.website != null && facility.website!.isNotEmpty) ...[
+                  const SizedBox(height: 10),
+                  _WebsiteCard(url: facility.website!),
+                ],
                 const SizedBox(height: 22),
                 const _SectionLabel('JAM OPERASIONAL'),
                 const SizedBox(height: 10),
@@ -84,7 +116,7 @@ class FacilityDetailPage extends StatelessWidget {
                 SizedBox(
                   height: 54,
                   child: ElevatedButton.icon(
-                    onPressed: _openGoogleMaps,
+                    onPressed: () => _openGoogleMaps(context),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF5B9BE8),
                       foregroundColor: Colors.white,
@@ -344,48 +376,147 @@ class _ContactCard extends StatelessWidget {
 
   final String phone;
 
+  Future<void> _callPhone(BuildContext context) async {
+    // Clean the phone number: remove spaces, dashes, etc.
+    final cleaned = phone.replaceAll(RegExp(r'[\s\-()]'), '');
+    if (cleaned == '-' || cleaned.isEmpty) return;
+    try {
+      final uri = Uri.parse('tel:$cleaned');
+      await launchUrl(uri);
+    } catch (_) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Tidak dapat membuka telepon')),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFFE8EEF6)),
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 42,
-            height: 42,
-            decoration: BoxDecoration(
-              color: AppColors.ternary,
-              borderRadius: BorderRadius.circular(12),
+    return GestureDetector(
+      onTap: () => _callPhone(context),
+      child: Container(
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: AppColors.white,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: const Color(0xFFE8EEF6)),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 42,
+              height: 42,
+              decoration: BoxDecoration(
+                color: AppColors.ternary,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: const Icon(Icons.phone, color: AppColors.primary, size: 20),
             ),
-            child: const Icon(Icons.phone, color: AppColors.primary, size: 20),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Telepon',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.black,
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Telepon',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.black,
+                    ),
                   ),
-                ),
-                Text(
-                  phone,
-                  style: const TextStyle(fontSize: 13, color: AppColors.nautral),
-                ),
-              ],
+                  Text(
+                    phone,
+                    style: const TextStyle(fontSize: 13, color: AppColors.nautral),
+                  ),
+                ],
+              ),
             ),
-          ),
-          const Icon(Icons.chevron_right_rounded, color: AppColors.nautral),
-        ],
+            const Icon(Icons.chevron_right_rounded, color: AppColors.nautral),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _WebsiteCard extends StatelessWidget {
+  const _WebsiteCard({required this.url});
+
+  final String url;
+
+  String get _displayUrl {
+    var display = url
+        .replaceAll('https://', '')
+        .replaceAll('http://', '')
+        .replaceAll('www.', '');
+    if (display.endsWith('/')) display = display.substring(0, display.length - 1);
+    // Truncate long URLs
+    if (display.length > 35) display = '${display.substring(0, 35)}...';
+    return display;
+  }
+
+  Future<void> _openWebsite(BuildContext context) async {
+    try {
+      final uri = Uri.parse(url);
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    } catch (_) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Tidak dapat membuka website')),
+        );
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () => _openWebsite(context),
+      child: Container(
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: AppColors.white,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: const Color(0xFFE8EEF6)),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 42,
+              height: 42,
+              decoration: BoxDecoration(
+                color: AppColors.ternary,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: const Icon(Icons.language, color: AppColors.primary, size: 20),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Website',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.black,
+                    ),
+                  ),
+                  Text(
+                    _displayUrl,
+                    style: const TextStyle(fontSize: 13, color: AppColors.nautral),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+            ),
+            const Icon(Icons.chevron_right_rounded, color: AppColors.nautral),
+          ],
+        ),
       ),
     );
   }

@@ -1,0 +1,958 @@
+[
+  {
+    "id": "hospital_001",
+    "name": "Rumah Sakit Bunda Surabaya",
+    "rating": 4.9,
+    "reviewCount": 4182,
+    "address": "Jl. Raya Kandangan No.23-24",
+    "city": "Surabaya",
+    "province": "Jawa Timur",
+    "countryCode": "ID",
+    "phone": "+62 31 7409436",
+    "website": "https://www.instagram.com/rsbunda.sby",
+    "categories": [
+      "Rumah Sakit"
+    ],
+    "primaryCategory": "Rumah Sakit",
+    "type": "general",
+    "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Rumah%20Sakit%20Bunda%20Surabaya&query_place_id=ChIJpUVn-2n-1y0RzuvqxwA9iWY"
+  },
+  {
+    "id": "hospital_002",
+    "name": "Rumah Sakit Menur Provinsi Jawa Timur",
+    "rating": 4.9,
+    "reviewCount": 2381,
+    "address": "Jl. Raya Menur No.120",
+    "city": "Surabaya",
+    "province": "Jawa Timur",
+    "countryCode": "ID",
+    "phone": "+62 31 5021635",
+    "website": "https://rsmenur.jatimprov.go.id/",
+    "categories": [
+      "Klinik Kesehatan Mental",
+      "Rumah Sakit Jiwa"
+    ],
+    "primaryCategory": "Klinik Kesehatan Mental",
+    "type": "psychiatric",
+    "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Rumah%20Sakit%20Menur%20Provinsi%20Jawa%20Timur&query_place_id=ChIJRRPUTrz71y0RTo-RYueKepo"
+  },
+  {
+    "id": "hospital_003",
+    "name": "RSUP Kemenkes Surabaya (Official)",
+    "rating": 4.9,
+    "reviewCount": 1769,
+    "address": "Jl. Indrapura No.17",
+    "city": "Surabaya",
+    "province": "Jawa Timur",
+    "countryCode": "ID",
+    "phone": "",
+    "website": "https://rskemenkessurabaya.go.id/",
+    "categories": [
+      "Rumah Sakit"
+    ],
+    "primaryCategory": "Rumah Sakit",
+    "type": "general",
+    "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=RSUP%20Kemenkes%20Surabaya%20(Official)&query_place_id=ChIJB76gCwD51y0RkvcHIoDYekE"
+  },
+  {
+    "id": "hospital_004",
+    "name": "KLINIK MATA TRITYA",
+    "rating": 4.9,
+    "reviewCount": 1068,
+    "address": "Ruko Bratang Plaza, Jl. Barata Jaya No.59 Blok A3",
+    "city": "Surabaya",
+    "province": "Jawa Timur",
+    "countryCode": "ID",
+    "phone": "+62 821-1211-0048",
+    "website": "http://klinikmatatritya.co.id/",
+    "categories": [
+      "Ahli Bedah LASIK",
+      "Ahli Kacamata",
+      "Dokter Mata",
+      "Jasa perbaikan instrumen optik",
+      "Jasa reparasi kacamata",
+      "Klinik Mata",
+      "Laboratorium Medis",
+      "Produsen produk optik",
+      "Pusat Perawatan Mata",
+      "Toko Optik"
+    ],
+    "primaryCategory": "Pusat Perawatan Mata",
+    "type": "eye",
+    "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=KLINIK%20MATA%20TRITYA&query_place_id=ChIJm1WZ_6z71y0RkrGZmLPTBZM"
+  },
+  {
+    "id": "hospital_005",
+    "name": "Mitra Keluarga Surabaya",
+    "rating": 4.8,
+    "reviewCount": 10765,
+    "address": "Komplek Darmo Satelit, Jl. Satelit Indah V",
+    "city": "Surabaya",
+    "province": "Jawa Timur",
+    "countryCode": "ID",
+    "phone": "+62 1 500 247",
+    "website": "http://www.mitrakeluarga.com/",
+    "categories": [
+      "Rumah Sakit",
+      "Rumah Sakit Swasta",
+      "Rumah Sakit Umum"
+    ],
+    "primaryCategory": "Rumah Sakit Swasta",
+    "type": "private",
+    "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Mitra%20Keluarga%20Surabaya&query_place_id=ChIJE9tKeZ_-1y0RFpDLxNWJoE0"
+  },
+  {
+    "id": "hospital_006",
+    "name": "RSUD Bhakti Dharma Husada",
+    "rating": 4.8,
+    "reviewCount": 10152,
+    "address": "Jl. Kendung No.115-117",
+    "city": "Surabaya",
+    "province": "Jawa Timur",
+    "countryCode": "ID",
+    "phone": "+62 822-745-456",
+    "website": "http://rsudbdh.surabaya.go.id/",
+    "categories": [
+      "Rumah Sakit Umum"
+    ],
+    "primaryCategory": "Rumah Sakit Umum",
+    "type": "government",
+    "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=RSUD%20Bhakti%20Dharma%20Husada&query_place_id=ChIJicZk4Rb-1y0RQ8DYCOuQbhE"
+  },
+  {
+    "id": "hospital_007",
+    "name": "Rumah Sakit Adi Husada Undaan",
+    "rating": 4.8,
+    "reviewCount": 3387,
+    "address": "Jl. Undaan Wetan No.40-44",
+    "city": "Surabaya",
+    "province": "Jawa Timur",
+    "countryCode": "ID",
+    "phone": "+62 31 5318000",
+    "website": "https://adihusadaundaan.com/",
+    "categories": [
+      "Dokter",
+      "Rumah Sakit",
+      "Rumah Sakit Umum"
+    ],
+    "primaryCategory": "Rumah Sakit Umum",
+    "type": "general",
+    "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Rumah%20Sakit%20Adi%20Husada%20Undaan&query_place_id=ChIJI5JgqG751y0RG6zY91h64Hs"
+  },
+  {
+    "id": "hospital_008",
+    "name": "Rumah Sakit KORPRI Pura Raharja",
+    "rating": 4.8,
+    "reviewCount": 3236,
+    "address": "Jl. Pucang Adi No.12-14",
+    "city": "Surabaya",
+    "province": "Jawa Timur",
+    "countryCode": "ID",
+    "phone": "+62 31 5019898",
+    "website": "https://puraraharja.com/",
+    "categories": [
+      "Klinik Gigi",
+      "Klinik Kesehatan Mental",
+      "Klinik Kesehatan Perempuan",
+      "Klinik Medis",
+      "Klinik pediatri",
+      "Pusat bedah",
+      "Rumah Sakit Umum"
+    ],
+    "primaryCategory": "Rumah Sakit Umum",
+    "type": "psychiatric",
+    "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Rumah%20Sakit%20KORPRI%20Pura%20Raharja&query_place_id=ChIJr6iW68j71y0R7LVqOj3w0AA"
+  },
+  {
+    "id": "hospital_009",
+    "name": "RSIA Cempaka Putih Permata",
+    "rating": 4.8,
+    "reviewCount": 965,
+    "address": "Jl. Jambangan Kebon Agung No.8",
+    "city": "Surabaya",
+    "province": "Jawa Timur",
+    "countryCode": "ID",
+    "phone": "+62 31 8282350",
+    "website": "http://www.rsiacempakaputih.com/index.php/component/k2/item/3-rsia-cempaka-putih-permata-jadi-yang-pertama-mendapat-akreditasi-kars-di-surabaya",
+    "categories": [
+      "Rumah Sakit"
+    ],
+    "primaryCategory": "Rumah Sakit",
+    "type": "maternity_children",
+    "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=RSIA%20Cempaka%20Putih%20Permata&query_place_id=ChIJS22lnp381y0RNZKzZPmm1YE"
+  },
+  {
+    "id": "hospital_010",
+    "name": "Rumah Sakit Umum Siloam Surabaya",
+    "rating": 4.7,
+    "reviewCount": 10182,
+    "address": "Jl. Raya Gubeng No. 70, Jl. Raya Gubeng No.88",
+    "city": "Surabaya",
+    "province": "Jawa Timur",
+    "countryCode": "ID",
+    "phone": "+62 1 500 911",
+    "website": "http://www.siloamhospitals.com/",
+    "categories": [
+      "Rumah Sakit",
+      "Rumah Sakit Swasta"
+    ],
+    "primaryCategory": "Rumah Sakit Swasta",
+    "type": "private",
+    "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Rumah%20Sakit%20Umum%20Siloam%20Surabaya&query_place_id=ChIJq9LH-8_71y0Rtj3Zl6saB8w"
+  },
+  {
+    "id": "hospital_011",
+    "name": "Rumah Sakit Islam Darus Syifa'",
+    "rating": 4.7,
+    "reviewCount": 4908,
+    "address": "Jl. Raya Benowo No.5",
+    "city": "Surabaya",
+    "province": "Jawa Timur",
+    "countryCode": "ID",
+    "phone": "+62 31 7404603",
+    "website": "http://rsidarussyifa.co.id/",
+    "categories": [
+      "Dokter Kandungan",
+      "Rumah Sakit",
+      "Rumah Sakit Umum"
+    ],
+    "primaryCategory": "Rumah Sakit Umum",
+    "type": "private_religious",
+    "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Rumah%20Sakit%20Islam%20Darus%20Syifa'&query_place_id=ChIJswsdPYcAeC4RuKgykMlhU4o"
+  },
+  {
+    "id": "hospital_012",
+    "name": "Rumah Sakit Umum Daerah Haji Provinsi Jawa Timur",
+    "rating": 4.7,
+    "reviewCount": 4664,
+    "address": "Jl. Manyar Kertoadi",
+    "city": "Surabaya",
+    "province": "Jawa Timur",
+    "countryCode": "ID",
+    "phone": "+62 31 5924000",
+    "website": "http://rsuhaji.jatimprov.go.id/",
+    "categories": [
+      "Dokter",
+      "Rumah Sakit Umum"
+    ],
+    "primaryCategory": "Rumah Sakit Umum",
+    "type": "general",
+    "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Rumah%20Sakit%20Umum%20Daerah%20Haji%20Provinsi%20Jawa%20Timur&query_place_id=ChIJOx7KITn61y0RLHgL9DFaRMg"
+  },
+  {
+    "id": "hospital_013",
+    "name": "Mayapada Hospital Surabaya (MHSB)",
+    "rating": 4.7,
+    "reviewCount": 3866,
+    "address": "Jl. Mayjen Sungkono No.20",
+    "city": "Surabaya",
+    "province": "Jawa Timur",
+    "countryCode": "ID",
+    "phone": "+62 150770",
+    "website": "https://mayapadahospital.com/",
+    "categories": [
+      "Rumah Sakit"
+    ],
+    "primaryCategory": "Rumah Sakit",
+    "type": "general",
+    "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Mayapada%20Hospital%20Surabaya%20(MHSB)&query_place_id=ChIJS9tAFYL71y0RuaTblTAncdY"
+  },
+  {
+    "id": "hospital_014",
+    "name": "RSIA GRAHA MEDIKA",
+    "rating": 4.7,
+    "reviewCount": 1503,
+    "address": "Graha Sampurna Indah, Jl. Raya Babatan Sampurna No.22",
+    "city": "Surabaya",
+    "province": "Jawa Timur",
+    "countryCode": "ID",
+    "phone": "+62 31 7536157",
+    "website": "https://www.instagram.com/rsia.grahamedika/",
+    "categories": [
+      "Rumah Sakit",
+      "Rumah Sakit Anak",
+      "Rumah Sakit Bersalin"
+    ],
+    "primaryCategory": "Rumah Sakit Bersalin",
+    "type": "maternity_children",
+    "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=RSIA%20GRAHA%20MEDIKA&query_place_id=ChIJ3UBEo_f81y0RNzhE2vIEyII"
+  },
+  {
+    "id": "hospital_015",
+    "name": "Klinik Utama Mata JEC-Java @ Surabaya",
+    "rating": 4.7,
+    "reviewCount": 1212,
+    "address": "Jl. Raya Darmo No.127",
+    "city": "Surabaya",
+    "province": "Jawa Timur",
+    "countryCode": "ID",
+    "phone": "+62 31 5686111",
+    "website": "https://jec.co.id/id/hospital/jecjava-surabaya?utm_source=google&utm_medium=organic&utm_campaign=gmb_jec_java_surabaya",
+    "categories": [
+      "Klinik Mata"
+    ],
+    "primaryCategory": "Klinik Mata",
+    "type": "eye",
+    "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Klinik%20Utama%20Mata%20JEC-Java%20%40%20Surabaya&query_place_id=ChIJ58fRXcv71y0RMjPGA5gS610"
+  },
+  {
+    "id": "hospital_016",
+    "name": "RSUD Eka Candrarini",
+    "rating": 4.7,
+    "reviewCount": 953,
+    "address": "Jl. Medokan Asri Tengah",
+    "city": "Surabaya",
+    "province": "Jawa Timur",
+    "countryCode": "ID",
+    "phone": "+62 31 35929041",
+    "website": "https://rsudekacandrarini.surabaya.go.id/",
+    "categories": [
+      "Rumah Sakit",
+      "Rumah Sakit Pemerintah"
+    ],
+    "primaryCategory": "Rumah Sakit Pemerintah",
+    "type": "government",
+    "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=RSUD%20Eka%20Candrarini&query_place_id=ChIJx1UlkNX71y0RQp_YXAdH5Ak"
+  },
+  {
+    "id": "hospital_017",
+    "name": "RS TNI AU Soemitro",
+    "rating": 4.7,
+    "reviewCount": 415,
+    "address": "Jl. Serayu No.17",
+    "city": "Surabaya",
+    "province": "Jawa Timur",
+    "countryCode": "ID",
+    "phone": "+62 31 5669514",
+    "website": "http://rsausoemitro.com/",
+    "categories": [
+      "Rumah Sakit"
+    ],
+    "primaryCategory": "Rumah Sakit",
+    "type": "general",
+    "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=RS%20TNI%20AU%20Soemitro&query_place_id=ChIJ8YOybb771y0Ri44g7Y173Kw"
+  },
+  {
+    "id": "hospital_018",
+    "name": "Rumah Sakit Islam Surabaya",
+    "rating": 4.6,
+    "reviewCount": 6131,
+    "address": "Jl. Ahmad Yani No.2-4",
+    "city": "Surabaya",
+    "province": "Jawa Timur",
+    "countryCode": "ID",
+    "phone": "+62 31 8284505",
+    "website": "",
+    "categories": [
+      "Rumah Sakit"
+    ],
+    "primaryCategory": "Rumah Sakit",
+    "type": "private_religious",
+    "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Rumah%20Sakit%20Islam%20Surabaya&query_place_id=ChIJTfvU0mP51y0RaCwDyNxkVU0"
+  },
+  {
+    "id": "hospital_019",
+    "name": "Rumah Sakit Al-Irsyad Surabaya",
+    "rating": 4.6,
+    "reviewCount": 4924,
+    "address": "Jalan KH Mas Mansyur No.210-214 dan 191",
+    "city": "Surabaya",
+    "province": "Jawa Timur",
+    "countryCode": "ID",
+    "phone": "+62 31 99091800",
+    "website": "https://rs-alirsyadsurabaya.co.id/",
+    "categories": [
+      "Dokter",
+      "Rumah Sakit",
+      "Rumah Sakit Swasta"
+    ],
+    "primaryCategory": "Rumah Sakit Swasta",
+    "type": "private",
+    "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Rumah%20Sakit%20Al-Irsyad%20Surabaya&query_place_id=ChIJtc3K6h_51y0RbFJJ9VSDEFA"
+  },
+  {
+    "id": "hospital_020",
+    "name": "Rumah Sakit William Booth Surabaya",
+    "rating": 4.6,
+    "reviewCount": 4239,
+    "address": "Jl. Diponegoro No.34",
+    "city": "Surabaya",
+    "province": "Jawa Timur",
+    "countryCode": "ID",
+    "phone": "+62 31 5678917",
+    "website": "http://www.rswilliamboothsby.com/",
+    "categories": [
+      "Rumah Sakit",
+      "Rumah Sakit Umum"
+    ],
+    "primaryCategory": "Rumah Sakit Umum",
+    "type": "general",
+    "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Rumah%20Sakit%20William%20Booth%20Surabaya&query_place_id=ChIJ9eOitpX71y0RS2xAcGGwYs8"
+  },
+  {
+    "id": "hospital_021",
+    "name": "RS Husada Utama",
+    "rating": 4.6,
+    "reviewCount": 3296,
+    "address": "Jl. Prof. DR. Moestopo No.31-35",
+    "city": "Surabaya",
+    "province": "Jawa Timur",
+    "countryCode": "ID",
+    "phone": "+62 31 5018335",
+    "website": "https://www.husadautamahospital.com/",
+    "categories": [
+      "Rumah Sakit",
+      "Rumah Sakit Swasta",
+      "Rumah Sakit Umum"
+    ],
+    "primaryCategory": "Rumah Sakit",
+    "type": "private",
+    "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=RS%20Husada%20Utama&query_place_id=ChIJ4e_R3H351y0RS5JFtt5QWGQ"
+  },
+  {
+    "id": "hospital_022",
+    "name": "Rumah Sakit PHC Surabaya",
+    "rating": 4.6,
+    "reviewCount": 2632,
+    "address": "Jl. Prapat Kurung Selatan No.1",
+    "city": "Surabaya",
+    "province": "Jawa Timur",
+    "countryCode": "ID",
+    "phone": "+62 31 3294801",
+    "website": "https://rsphc.ihc.id/",
+    "categories": [
+      "Rumah Sakit",
+      "Rumah Sakit Swasta"
+    ],
+    "primaryCategory": "Rumah Sakit Swasta",
+    "type": "private",
+    "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Rumah%20Sakit%20PHC%20Surabaya&query_place_id=ChIJK7QX_MD41y0RiYBpPQRaWYU"
+  },
+  {
+    "id": "hospital_023",
+    "name": "Rumah Sakit Umum Surabaya Medical Service (RS SMS)",
+    "rating": 4.6,
+    "reviewCount": 1988,
+    "address": "Jl. Kapuas No.2",
+    "city": "Surabaya",
+    "province": "Jawa Timur",
+    "countryCode": "ID",
+    "phone": "+62 821-3988-2229",
+    "website": "https://rssurabayamedicalservice.id/",
+    "categories": [
+      "Rumah Sakit"
+    ],
+    "primaryCategory": "Rumah Sakit",
+    "type": "general",
+    "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Rumah%20Sakit%20Umum%20Surabaya%20Medical%20Service%20(RS%20SMS)&query_place_id=ChIJazlxr7_71y0RJV2nCpsdASQ"
+  },
+  {
+    "id": "hospital_024",
+    "name": "RS Bhayangkara Surabaya H.S Samsoeri Mertojoso",
+    "rating": 4.6,
+    "reviewCount": 1777,
+    "address": "Jl. Ahmad Yani No.116",
+    "city": "Surabaya",
+    "province": "Jawa Timur",
+    "countryCode": "ID",
+    "phone": "+62 31 8292227",
+    "website": "http://rs-bhayangkarasurabaya.id/",
+    "categories": [
+      "Rumah Sakit"
+    ],
+    "primaryCategory": "Rumah Sakit",
+    "type": "general",
+    "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=RS%20Bhayangkara%20Surabaya%20H.S%20Samsoeri%20Mertojoso&query_place_id=ChIJlW0cPmn71y0R0EkYy1eh1ok"
+  },
+  {
+    "id": "hospital_025",
+    "name": "RSUD Husada Prima",
+    "rating": 4.6,
+    "reviewCount": 1586,
+    "address": "Jl. Karang Tembok No.39",
+    "city": "Surabaya",
+    "province": "Jawa Timur",
+    "countryCode": "ID",
+    "phone": "+62 31 3713836",
+    "website": "https://rsudhusadaprima.jatimprov.go.id/",
+    "categories": [
+      "Dokter",
+      "Rumah Sakit",
+      "Rumah Sakit Pemerintah"
+    ],
+    "primaryCategory": "Rumah Sakit Pemerintah",
+    "type": "government",
+    "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=RSUD%20Husada%20Prima&query_place_id=ChIJJexZT-L41y0RAhWlEZsTtqQ"
+  },
+  {
+    "id": "hospital_026",
+    "name": "Rumah Sakit Islam Surabaya Jemursari",
+    "rating": 4.5,
+    "reviewCount": 5188,
+    "address": "Jl. Raya Jemursari No.51-57",
+    "city": "Surabaya",
+    "province": "Jawa Timur",
+    "countryCode": "ID",
+    "phone": "+62 31 8471877",
+    "website": "http://rsisjs.id/",
+    "categories": [
+      "Rumah Sakit Umum"
+    ],
+    "primaryCategory": "Rumah Sakit Umum",
+    "type": "private_religious",
+    "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Rumah%20Sakit%20Islam%20Surabaya%20Jemursari&query_place_id=ChIJw5pdIBX71y0RqwREGuzJgMY"
+  },
+  {
+    "id": "hospital_027",
+    "name": "National Hospital Surabaya",
+    "rating": 4.5,
+    "reviewCount": 3055,
+    "address": "Jl. Boulevard Famili Sel. No.Kav. 1",
+    "city": "Surabaya",
+    "province": "Jawa Timur",
+    "countryCode": "ID",
+    "phone": "+62 31 2975777",
+    "website": "https://national-hospital.com/",
+    "categories": [
+      "Rumah Sakit",
+      "Rumah Sakit Swasta"
+    ],
+    "primaryCategory": "Rumah Sakit Swasta",
+    "type": "private",
+    "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=National%20Hospital%20Surabaya&query_place_id=ChIJuQihqdz91y0Rx-TOTxI0f6U"
+  },
+  {
+    "id": "hospital_028",
+    "name": "RSIA Kendangsari Surabaya",
+    "rating": 4.5,
+    "reviewCount": 1517,
+    "address": "Jl. Raya Kendangsari No.38",
+    "city": "Surabaya",
+    "province": "Jawa Timur",
+    "countryCode": "ID",
+    "phone": "+62 31 8436200",
+    "website": "https://rsia.kendangsari.com/",
+    "categories": [
+      "Rumah Sakit Swasta"
+    ],
+    "primaryCategory": "Rumah Sakit Swasta",
+    "type": "maternity_children",
+    "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=RSIA%20Kendangsari%20Surabaya&query_place_id=ChIJJxX5fBb71y0RDOY81KGI7vQ"
+  },
+  {
+    "id": "hospital_029",
+    "name": "Rumah Sakit Mata Masyarakat Jawa Timur (RSMM Jawa Timur) - IGD buka 24 Jam.",
+    "rating": 4.5,
+    "reviewCount": 1495,
+    "address": "Jl. Ketintang Baru Sel. I No.1",
+    "city": "Surabaya",
+    "province": "Jawa Timur",
+    "countryCode": "ID",
+    "phone": "+62 31 82010000",
+    "website": "http://rsmm.jatimprov.go.id/",
+    "categories": [
+      "Ahli Bedah LASIK",
+      "Ahli Kacamata",
+      "Dokter Mata",
+      "Dokter Spesialis Mata Anak",
+      "Pusat Kesehatan Masyarakat",
+      "Pusat Perawatan Mata",
+      "Rumah Sakit Umum",
+      "Rumah sakit spesialis"
+    ],
+    "primaryCategory": "Pusat Perawatan Mata",
+    "type": "maternity_children",
+    "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Rumah%20Sakit%20Mata%20Masyarakat%20Jawa%20Timur%20(RSMM%20Jawa%20Timur)%20-%20IGD%20buka%2024%20Jam.&query_place_id=ChIJedZzhWT71y0RWoEfVDmzQVI"
+  },
+  {
+    "id": "hospital_030",
+    "name": "Rumah Sakit Onkologi Surabaya",
+    "rating": 4.5,
+    "reviewCount": 365,
+    "address": "Araya, A2 No 7, Jl. Galaxy Bumi Permai No.A2 No 7",
+    "city": "Surabaya",
+    "province": "Jawa Timur",
+    "countryCode": "ID",
+    "phone": "+62 31 5914855",
+    "website": "http://www.rsonkologi.com/",
+    "categories": [
+      "Rumah sakit spesialis"
+    ],
+    "primaryCategory": "Rumah sakit spesialis",
+    "type": "specialist",
+    "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Rumah%20Sakit%20Onkologi%20Surabaya&query_place_id=ChIJd8M_sWH51y0RFVpQ4C4Kpl4"
+  },
+  {
+    "id": "hospital_031",
+    "name": "Rumah Sakit Gigi dan Mulut Pendidikan Nala Husada - Universitas Hang Tuah Surabaya",
+    "rating": 4.5,
+    "reviewCount": 108,
+    "address": "Arief Rahman Hakim No.150",
+    "city": "Surabaya",
+    "province": "Jawa Timur",
+    "countryCode": "ID",
+    "phone": "+62 31 59173300",
+    "website": "http://rsgmnalahusada.com/",
+    "categories": [
+      "Fakultas Kedokteran Gigi",
+      "Rumah Sakit",
+      "Unit Gawat Darurat Gigi"
+    ],
+    "primaryCategory": "Rumah Sakit",
+    "type": "general",
+    "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Rumah%20Sakit%20Gigi%20dan%20Mulut%20Pendidikan%20Nala%20Husada%20-%20Universitas%20Hang%20Tuah%20Surabaya&query_place_id=ChIJByWw8W761y0RTmpWApzrudY"
+  },
+  {
+    "id": "hospital_032",
+    "name": "Royal Hospital Surabaya",
+    "rating": 4.4,
+    "reviewCount": 4164,
+    "address": "Jl. Rungkut Industri I Jl. Raya Kendangsari Industri No.1",
+    "city": "Surabaya",
+    "province": "Jawa Timur",
+    "countryCode": "ID",
+    "phone": "+62 31 8476111",
+    "website": "http://www.rsroyalsurabaya.com/",
+    "categories": [
+      "Rumah Sakit",
+      "Rumah Sakit Swasta"
+    ],
+    "primaryCategory": "Rumah Sakit Swasta",
+    "type": "private",
+    "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Royal%20Hospital%20Surabaya&query_place_id=ChIJS-OFLT371y0RWNIcoq7OfkQ"
+  },
+  {
+    "id": "hospital_033",
+    "name": "RS Wiyung Sejahtera",
+    "rating": 4.4,
+    "reviewCount": 4133,
+    "address": "Jl. Karangan Pdam No.1-3",
+    "city": "Surabaya",
+    "province": "Jawa Timur",
+    "countryCode": "ID",
+    "phone": "+62 31 7532653",
+    "website": "http://www.rswiyungsejahtera.id/",
+    "categories": [
+      "Rumah Sakit"
+    ],
+    "primaryCategory": "Rumah Sakit",
+    "type": "general",
+    "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=RS%20Wiyung%20Sejahtera&query_place_id=ChIJCS9hnfX81y0R1RINedUtsWk"
+  },
+  {
+    "id": "hospital_034",
+    "name": "RS UBAYA",
+    "rating": 4.4,
+    "reviewCount": 2348,
+    "address": "Jl. Raya Panjang Jiwo Permai No.87-89",
+    "city": "Surabaya",
+    "province": "Jawa Timur",
+    "countryCode": "ID",
+    "phone": "+62 31 99211515",
+    "website": "http://rs.ubaya.ac.id/",
+    "categories": [
+      "Rumah Sakit"
+    ],
+    "primaryCategory": "Rumah Sakit",
+    "type": "general",
+    "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=RS%20UBAYA&query_place_id=ChIJ3Q76sJ371y0RG6WxqPUWuM8"
+  },
+  {
+    "id": "hospital_035",
+    "name": "RS PKU Muhammadiyah Surabaya",
+    "rating": 4.4,
+    "reviewCount": 967,
+    "address": "Jl. KH Mas Mansyur No.180 - 182",
+    "city": "Surabaya",
+    "province": "Jawa Timur",
+    "countryCode": "ID",
+    "phone": "+62 823-1126-2646",
+    "website": "http://rspkumusby.com/",
+    "categories": [
+      "Rumah Sakit"
+    ],
+    "primaryCategory": "Rumah Sakit",
+    "type": "general",
+    "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=RS%20PKU%20Muhammadiyah%20Surabaya&query_place_id=ChIJE6ECDh_51y0R_8vrL0Cbeno"
+  },
+  {
+    "id": "hospital_036",
+    "name": "RSIA Putri Surabaya",
+    "rating": 4.4,
+    "reviewCount": 831,
+    "address": "Arief Rahman Hakim No.130",
+    "city": "Surabaya",
+    "province": "Jawa Timur",
+    "countryCode": "ID",
+    "phone": "+62 31 5999987",
+    "website": "https://www.rsiaputri.com/",
+    "categories": [
+      "Rumah Sakit",
+      "Rumah Sakit Anak",
+      "Rumah Sakit Bersalin"
+    ],
+    "primaryCategory": "Rumah Sakit Anak",
+    "type": "maternity_children",
+    "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=RSIA%20Putri%20Surabaya&query_place_id=ChIJW7eTZEH61y0RjZdi5vDPBSw"
+  },
+  {
+    "id": "hospital_037",
+    "name": "Rumah Sakit Darmo",
+    "rating": 4.4,
+    "reviewCount": 642,
+    "address": "Jl. Raya Darmo No.90",
+    "city": "Surabaya",
+    "province": "Jawa Timur",
+    "countryCode": "ID",
+    "phone": "+62 31 5676253",
+    "website": "http://rsdarmo.co.id/",
+    "categories": [
+      "Rumah Sakit"
+    ],
+    "primaryCategory": "Rumah Sakit",
+    "type": "general",
+    "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Rumah%20Sakit%20%22RS%22%20Darmo&query_place_id=ChIJj-sviL371y0RmY9ohtWip8M"
+  },
+  {
+    "id": "hospital_038",
+    "name": "RSIA Lombok Dua Dua Surabaya",
+    "rating": 4.4,
+    "reviewCount": 562,
+    "address": "Jl. Flores No.12",
+    "city": "Surabaya",
+    "province": "Jawa Timur",
+    "countryCode": "ID",
+    "phone": "+62 31 5022044",
+    "website": "https://www.rsialombokduadua.com/",
+    "categories": [
+      "Rumah Sakit Bersalin"
+    ],
+    "primaryCategory": "Rumah Sakit Bersalin",
+    "type": "maternity_children",
+    "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=RSIA%20Lombok%20Dua%20Dua%20Surabaya&query_place_id=ChIJHTXJEcX71y0R9egY3JgtjT4"
+  },
+  {
+    "id": "hospital_039",
+    "name": "RS Premier Surabaya",
+    "rating": 4.3,
+    "reviewCount": 2096,
+    "address": "Jl. Nginden Intan Barat No.Blok B",
+    "city": "Surabaya",
+    "province": "Jawa Timur",
+    "countryCode": "ID",
+    "phone": "+62 31 5993211",
+    "website": "https://www.rspremiersurabaya.com/",
+    "categories": [
+      "Rumah Sakit",
+      "Rumah Sakit Umum"
+    ],
+    "primaryCategory": "Rumah Sakit Umum",
+    "type": "general",
+    "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=RS%20Premier%20Surabaya&query_place_id=ChIJlYM9dVX61y0R5he2MfgRJsQ"
+  },
+  {
+    "id": "hospital_040",
+    "name": "Rumah Sakit Gotong Royong",
+    "rating": 4.3,
+    "reviewCount": 1662,
+    "address": "Jl. Medokan Semampir Indah No.97",
+    "city": "Surabaya",
+    "province": "Jawa Timur",
+    "countryCode": "ID",
+    "phone": "+62 851-9836-0100",
+    "website": "http://rsgotongroyong.com/",
+    "categories": [
+      "Dokter Gigi",
+      "Rumah Sakit",
+      "Rumah Sakit Umum"
+    ],
+    "primaryCategory": "Rumah Sakit Umum",
+    "type": "general",
+    "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Rumah%20Sakit%20Gotong%20Royong&query_place_id=ChIJSVjrK4v61y0RpN8vT3afFy8"
+  },
+  {
+    "id": "hospital_041",
+    "name": "RSU. Bhakti Rahayu Surabaya",
+    "rating": 4.3,
+    "reviewCount": 1599,
+    "address": "Jl. Ketintang Madya I No.16",
+    "city": "Surabaya",
+    "province": "Jawa Timur",
+    "countryCode": "ID",
+    "phone": "+62 31 8295922",
+    "website": "",
+    "categories": [
+      "Dokter",
+      "Rumah Sakit Umum"
+    ],
+    "primaryCategory": "Rumah Sakit Umum",
+    "type": "general",
+    "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=RSU.%20Bhakti%20Rahayu%20Surabaya&query_place_id=ChIJ2_RzhmT71y0Rwtn21CMPzEY"
+  },
+  {
+    "id": "hospital_042",
+    "name": "Rumah Sakit Tk.III Brawijaya",
+    "rating": 4.3,
+    "reviewCount": 1200,
+    "address": "Jl. Kesatriyan No.17",
+    "city": "Surabaya",
+    "province": "Jawa Timur",
+    "countryCode": "ID",
+    "phone": "+62 851-4117-0005",
+    "website": "https://www.rsbrawijaya.com/",
+    "categories": [
+      "Rumah Sakit Militer",
+      "Rumah Sakit Umum"
+    ],
+    "primaryCategory": "Rumah Sakit Militer",
+    "type": "military",
+    "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Rumah%20Sakit%20Tk.III%20Brawijaya&query_place_id=ChIJwUPiFY_71y0RdR5Ai36auOk"
+  },
+  {
+    "id": "hospital_043",
+    "name": "Rumah Sakit Manyar Medical Centre",
+    "rating": 4.3,
+    "reviewCount": 891,
+    "address": "Jl. Raya Manyar No.9",
+    "city": "Surabaya",
+    "province": "Jawa Timur",
+    "countryCode": "ID",
+    "phone": "+62 31 5999339",
+    "website": "https://rsmmcsby.co.id/",
+    "categories": [
+      "Rumah Sakit"
+    ],
+    "primaryCategory": "Rumah Sakit",
+    "type": "general",
+    "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Rumah%20Sakit%20Manyar%20Medical%20Centre&query_place_id=ChIJg6F-1rL71y0RHG1YkH0j3Aw"
+  },
+  {
+    "id": "hospital_044",
+    "name": "Rumah Sakit RS Wijaya Surabaya",
+    "rating": 4.3,
+    "reviewCount": 650,
+    "address": "Jl. Raya Menganti No.398",
+    "city": "Surabaya",
+    "province": "Jawa Timur",
+    "countryCode": "ID",
+    "phone": "+62 31 7523087",
+    "website": "https://rswijayasurabaya.simkeskhanza.com/",
+    "categories": [
+      "Dokter",
+      "Rumah Sakit Umum"
+    ],
+    "primaryCategory": "Rumah Sakit Umum",
+    "type": "general",
+    "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Rumah%20Sakit%20RS%20Wijaya%20Surabaya&query_place_id=ChIJu2zsLYv81y0RuCnAgezOQAI"
+  },
+  {
+    "id": "hospital_045",
+    "name": "Klinik Siloam Surabaya (Siloam Hospitals Group)",
+    "rating": 4.3,
+    "reviewCount": 99,
+    "address": "Jl. Nginden Semolo No.91",
+    "city": "Surabaya",
+    "province": "Jawa Timur",
+    "countryCode": "ID",
+    "phone": "+62 811-8629-166",
+    "website": "https://www.siloamhospitals.com/id/Hospitals-and-Clinics/Clinics/View-All-Clinics",
+    "categories": [
+      "Klinik Medis"
+    ],
+    "primaryCategory": "Klinik Medis",
+    "type": "general",
+    "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Klinik%20Siloam%20Surabaya%20(Siloam%20Hospitals%20Group)&query_place_id=ChIJxZECuKL71y0RDFF5b9Lntzo"
+  },
+  {
+    "id": "hospital_046",
+    "name": "RSPAL dr RAMELAN SURABAYA",
+    "rating": 4.2,
+    "reviewCount": 3143,
+    "address": "Jl. Gadung No.1",
+    "city": "Surabaya",
+    "province": "Jawa Timur",
+    "countryCode": "ID",
+    "phone": "+62 31 8438153",
+    "website": "https://rspaldrramelan.com/",
+    "categories": [
+      "Rumah Sakit Militer"
+    ],
+    "primaryCategory": "Rumah Sakit Militer",
+    "type": "military",
+    "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=RSPAL%20dr%20RAMELAN%20SURABAYA&query_place_id=ChIJrVQdnKD71y0RMzm4Ozn5Xy0"
+  },
+  {
+    "id": "hospital_047",
+    "name": "Rumah Sakit Katolik St. Vincentius a Paulo",
+    "rating": 4.2,
+    "reviewCount": 1302,
+    "address": "Jl. Diponegoro No.51",
+    "city": "Surabaya",
+    "province": "Jawa Timur",
+    "countryCode": "ID",
+    "phone": "+62 819-7989-900",
+    "website": "http://rkzsurabaya.com/",
+    "categories": [
+      "Rumah Sakit Swasta"
+    ],
+    "primaryCategory": "Rumah Sakit Swasta",
+    "type": "private_religious",
+    "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Rumah%20Sakit%20Katolik%20St.%20Vincentius%20a%20Paulo&query_place_id=ChIJH6u3iJb71y0RVj6VQE2kDKw"
+  },
+  {
+    "id": "hospital_048",
+    "name": "Medical Center ITS Surabaya",
+    "rating": 4.2,
+    "reviewCount": 619,
+    "address": "Arief Rahman Hakim No.213",
+    "city": "Surabaya",
+    "province": "Jawa Timur",
+    "countryCode": "ID",
+    "phone": "+62 31 5925405",
+    "website": "http://www.its.ac.id/",
+    "categories": [
+      "Klinik Medis",
+      "Rumah Sakit",
+      "Rumah Sakit Universitas"
+    ],
+    "primaryCategory": "Rumah Sakit",
+    "type": "university",
+    "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Medical%20Center%20ITS%20Surabaya&query_place_id=ChIJ3X3GBmr61y0Rt368aYQZeoo"
+  },
+  {
+    "id": "hospital_049",
+    "name": "RSUD Dr. Soetomo",
+    "rating": 4.1,
+    "reviewCount": 5923,
+    "address": "Jl. Prof. DR. Moestopo No.6-8",
+    "city": "Surabaya",
+    "province": "Jawa Timur",
+    "countryCode": "ID",
+    "phone": "+62 1 500 995",
+    "website": "https://rsudrsoetomo.jatimprov.go.id/",
+    "categories": [
+      "Rumah Sakit Pemerintah"
+    ],
+    "primaryCategory": "Rumah Sakit Pemerintah",
+    "type": "government",
+    "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=RSUD%20Dr.%20Soetomo&query_place_id=ChIJr2S_EtX71y0R_r9n8YEpS8Q"
+  },
+  {
+    "id": "hospital_050",
+    "name": "Rumah Sakit Marinir Ewa Pangalila",
+    "rating": 4.1,
+    "reviewCount": 329,
+    "address": "Jl. Golf 1 Surabaya",
+    "city": "Surabaya",
+    "province": "Jawa Timur",
+    "countryCode": "ID",
+    "phone": "+62 812-3233-1626",
+    "website": "http://rsewapangalila.tnial.mil.id/",
+    "categories": [
+      "Rumah Sakit Militer"
+    ],
+    "primaryCategory": "Rumah Sakit Militer",
+    "type": "military",
+    "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Rumah%20Sakit%20Marinir%20Ewa%20Pangalila&query_place_id=ChIJ-7pCEnz81y0RyQJYKrLHoKk"
+  }
+]
