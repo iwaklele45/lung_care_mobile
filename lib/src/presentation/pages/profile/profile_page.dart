@@ -67,7 +67,9 @@ class _ProfilePageState extends State<ProfilePage> {
                 alignment: Alignment.center,
                 children: [
                   ProfilePicturePicker(
-                    imageUrl: (data['profilePictureUrl'] as String?)?.isNotEmpty == true
+                    imageUrl:
+                        (data['profilePictureUrl'] as String?)?.isNotEmpty ==
+                            true
                         ? data['profilePictureUrl'] as String
                         : currentUser?.photoURL,
                     onChanged: (file) => _onProfilePicChanged(file, data),
@@ -86,7 +88,9 @@ class _ProfilePageState extends State<ProfilePage> {
                           height: 28,
                           child: CircularProgressIndicator(
                             strokeWidth: 3,
-                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              Colors.white,
+                            ),
                           ),
                         ),
                       ),
@@ -146,7 +150,10 @@ class _ProfilePageState extends State<ProfilePage> {
                   icon: const Icon(Icons.logout_rounded, size: 20),
                   label: Text(
                     l.logout,
-                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
               ),
@@ -179,7 +186,10 @@ class _ProfilePageState extends State<ProfilePage> {
   /// Called when the user picks or removes a profile picture.
   ///
   /// Uploads to Firebase Storage, updates Firestore, and refreshes the view.
-  Future<void> _onProfilePicChanged(File? file, Map<String, dynamic> data) async {
+  Future<void> _onProfilePicChanged(
+    File? file,
+    Map<String, dynamic> data,
+  ) async {
     if (_doc == null || !mounted) return;
 
     setState(() => _isUploading = true);
